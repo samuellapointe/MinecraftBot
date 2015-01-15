@@ -1,7 +1,7 @@
 // MinecraftBot.cpp : main project file.
 
 #include "stdafx.h"
-#include "Form1.h"
+#include "VisualInterface.h"
 
 using namespace MinecraftBot;
 
@@ -13,6 +13,6 @@ int main(array<System::String ^> ^args)
 	Application::SetCompatibleTextRenderingDefault(false); 
 
 	// Create the main window and run it
-	Application::Run(gcnew Form1());
+	Application::Run(gcnew VisualInterface());
 	return 0;
 }
