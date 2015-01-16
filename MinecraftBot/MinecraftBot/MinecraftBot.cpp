@@ -1,4 +1,5 @@
 // MinecraftBot.cpp : main project file.
+// The only purpose of this file is to launch the interface...
 
 #include "stdafx.h"
 #include "VisualInterface.h"

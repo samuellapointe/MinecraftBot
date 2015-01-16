@@ -1,6 +1,7 @@
 #pragma once
 
-namespace MinecraftBot {
+namespace MinecraftBot 
+{
 
 	using namespace System;
 	using namespace System::ComponentModel;
@@ -57,13 +58,6 @@ namespace MinecraftBot {
 	private: System::Windows::Forms::CheckBox^  EnableAuthentificationCheckbox;
 	private: System::Windows::Forms::Button^  ConnectButton;
 
-
-
-
-
-
-
-
 	protected: 
 
 	private:
@@ -71,6 +65,7 @@ namespace MinecraftBot {
 		/// Required designer variable.
 		/// </summary>
 		System::ComponentModel::Container ^components;
+		void Connect();
 
 #pragma region Windows Form Designer generated code
 		/// <summary>
@@ -175,6 +170,7 @@ namespace MinecraftBot {
 			this->ChatSendButton->TabIndex = 8;
 			this->ChatSendButton->Text = L"Send";
 			this->ChatSendButton->UseVisualStyleBackColor = true;
+			this->ChatSendButton->Click += gcnew System::EventHandler(this, &VisualInterface::ChatSendButton_Click);
 			// 
 			// PacketList
 			// 
@@ -308,8 +304,15 @@ namespace MinecraftBot {
 
 		}
 #pragma endregion
-private: System::Void VisualInterface_Load(System::Object^  sender, System::EventArgs^  e) {
-		 }
+private: 
+	System::Void VisualInterface_Load(System::Object^  sender, System::EventArgs^  e) 
+	{
+		 
+	}
+	System::Void ChatSendButton_Click(System::Object^  sender, System::EventArgs^  e) 
+	{
+		Connect();
+	}
 };
 }
 
