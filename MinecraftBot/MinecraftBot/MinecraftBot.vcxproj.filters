@@ -16,9 +16,6 @@
   </ItemGroup>
   <ItemGroup>
     <None Include="ReadMe.txt" />
-    <None Include="app.ico">
-      <Filter>Resource Files</Filter>
-    </None>
   </ItemGroup>
   <ItemGroup>
     <ClCompile Include="MinecraftBot.cpp">
@@ -44,11 +41,6 @@
     <ClInclude Include="VisualInterface.h">
       <Filter>Header Files</Filter>
     </ClInclude>
-  </ItemGroup>
-  <ItemGroup>
-    <ResourceCompile Include="app.rc">
-      <Filter>Resource Files</Filter>
-    </ResourceCompile>
   </ItemGroup>
   <ItemGroup>
     <EmbeddedResource Include="VisualInterface.resX">

@@ -82,7 +82,6 @@
     <Reference Include="System.Xml" />
   </ItemGroup>
   <ItemGroup>
-    <None Include="app.ico" />
     <None Include="ReadMe.txt" />
   </ItemGroup>
   <ItemGroup>
@@ -100,9 +99,6 @@
     </ClInclude>
     <ClInclude Include="resource.h" />
     <ClInclude Include="stdafx.h" />
-  </ItemGroup>
-  <ItemGroup>
-    <ResourceCompile Include="app.rc" />
   </ItemGroup>
   <ItemGroup>
     <EmbeddedResource Include="VisualInterface.resX">

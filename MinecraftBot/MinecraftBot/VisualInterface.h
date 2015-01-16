@@ -1,4 +1,5 @@
 #pragma once
+#include "stdafx.h"
 
 namespace MinecraftBot 
 {
@@ -9,6 +10,7 @@ namespace MinecraftBot
 	using namespace System::Windows::Forms;
 	using namespace System::Data;
 	using namespace System::Drawing;
+	using namespace std;
 
 	/// <summary>
 	/// Summary for VisualInterface
@@ -23,6 +25,13 @@ namespace MinecraftBot
 			//TODO: Add the constructor code here
 			//
 		}
+
+		//My functions
+		void WriteToConsole(string text); //Write in the console
+		void WriteToConsole(string text, bool skipLine); //Overload with option to skip line
+
+		void WriteToChat(string text); //Write in the console
+		void WriteToChat(string text, bool skipLine); //Overload with option to skip line
 
 	protected:
 		/// <summary>
@@ -65,7 +74,11 @@ namespace MinecraftBot
 		/// Required designer variable.
 		/// </summary>
 		System::ComponentModel::Container ^components;
+
+		//My functions
 		void Connect();
+		string ConvertString(System::String^ text);
+		System::String^ ConvertString(string text);
 
 #pragma region Windows Form Designer generated code
 		/// <summary>
@@ -268,6 +281,7 @@ namespace MinecraftBot
 			this->ConnectButton->TabIndex = 6;
 			this->ConnectButton->Text = L"Connect";
 			this->ConnectButton->UseVisualStyleBackColor = true;
+			this->ConnectButton->Click += gcnew System::EventHandler(this, &VisualInterface::ConnectButton_Click);
 			// 
 			// VisualInterface
 			// 
@@ -310,6 +324,10 @@ private:
 		 
 	}
 	System::Void ChatSendButton_Click(System::Object^  sender, System::EventArgs^  e) 
+	{
+		
+	}
+private: System::Void ConnectButton_Click(System::Object^  sender, System::EventArgs^  e) 
 	{
 		Connect();
 	}
