@@ -17,6 +17,7 @@ build/
 bld/
 [Bb]in/
 [Oo]bj/
+MinecraftBotQt/build*
 
 # Roslyn cache directories
 *.ide/
