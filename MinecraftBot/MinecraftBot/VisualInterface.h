@@ -110,7 +110,7 @@ namespace MinecraftBot
 			// NetworkConsole
 			// 
 			this->NetworkConsole->BackColor = System::Drawing::SystemColors::WindowText;
-			this->NetworkConsole->Font = (gcnew System::Drawing::Font(L"Lucida Console", 9.75F, System::Drawing::FontStyle::Regular, System::Drawing::GraphicsUnit::Point, 
+			this->NetworkConsole->Font = (gcnew System::Drawing::Font(L"Lucida Console", 8.25F, System::Drawing::FontStyle::Regular, System::Drawing::GraphicsUnit::Point, 
 				static_cast<System::Byte>(0)));
 			this->NetworkConsole->ForeColor = System::Drawing::SystemColors::Info;
 			this->NetworkConsole->Location = System::Drawing::Point(14, 28);
@@ -235,6 +235,7 @@ namespace MinecraftBot
 			this->PortTextBox->Name = L"PortTextBox";
 			this->PortTextBox->Size = System::Drawing::Size(158, 18);
 			this->PortTextBox->TabIndex = 4;
+			this->PortTextBox->Text = L"25565";
 			// 
 			// PortLabel
 			// 
@@ -260,6 +261,7 @@ namespace MinecraftBot
 			this->ServerIPTextBox->Name = L"ServerIPTextBox";
 			this->ServerIPTextBox->Size = System::Drawing::Size(158, 18);
 			this->ServerIPTextBox->TabIndex = 3;
+			this->ServerIPTextBox->Text = L"127.0.0.1";
 			// 
 			// EnableAuthentificationCheckbox
 			// 
