@@ -18,12 +18,16 @@ class MainWindow : public QMainWindow
 public:
     explicit MainWindow(QWidget *parent = 0);
     ~MainWindow();
+    void writeToConsole(const QString &text); //Append to the left console
+    void writeToChat(const QString &text); //Append to the right console
 
 private:
     Ui::MainWindow *ui;
 
+//Functions called by the interface (slots)
 private slots:
-    void handleButton();
+    void menuExit();
+    void connectClient();
 };
 
 #endif // MAINWINDOW_H
