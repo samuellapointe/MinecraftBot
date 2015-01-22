@@ -1,3 +1,7 @@
+/*  mainwindow.h
+ *  This is the header file for mainwindow.cpp, which handles the visual interface
+ */
+
 #ifndef MAINWINDOW_H
 #define MAINWINDOW_H
 
@@ -17,6 +21,9 @@ public:
 
 private:
     Ui::MainWindow *ui;
+
+private slots:
+    void handleButton();
 };
 
 #endif // MAINWINDOW_H
