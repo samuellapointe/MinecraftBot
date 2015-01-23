@@ -4,8 +4,8 @@
 
 #ifndef MAINWINDOW_H
 #define MAINWINDOW_H
-
 #include <QMainWindow>
+#include "Client.h"
 
 namespace Ui {
 class MainWindow;
@@ -20,9 +20,11 @@ public:
     ~MainWindow();
     void writeToConsole(const QString &text); //Append to the left console
     void writeToChat(const QString &text); //Append to the right console
+    Ui::MainWindow *ui;
+
 
 private:
-    Ui::MainWindow *ui;
+
 
 //Functions called by the interface (slots)
 private slots:
