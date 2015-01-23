@@ -24,7 +24,7 @@ public:
 
 
 private:
-
+    Client * client;
 
 //Functions called by the interface (slots)
 private slots:

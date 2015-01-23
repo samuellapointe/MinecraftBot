@@ -11,7 +11,7 @@ Client::Client(MainWindow * i_ui, const string &i_username, const string &i_pass
     port = i_port;
     ui = i_ui;
 
-    ui->writeToConsole("OK");
+
 }
 
 Client::~Client()

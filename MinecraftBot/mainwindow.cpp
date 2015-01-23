@@ -74,7 +74,7 @@ void MainWindow::connectClient()
     if(validated)
     {
         //I convert QStrings to STD strings before sending it to the client
-        Client * client = new Client(this, username.toStdString(), password.toStdString(), ip.toStdString(), port);
+        client = new Client(this, username.toStdString(), password.toStdString(), ip.toStdString(), port);
     }
 }
 
