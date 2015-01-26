@@ -3,7 +3,7 @@
 #include "Client.h"
 #include "mainwindow.h"
 
-Client::Client(MainWindow * i_ui, const string &i_username, const string &i_password, const string &i_ip, const short i_port)
+Client::Client(MainWindow * i_ui, const string &i_username, const string &i_password, const QString &i_ip, const int i_port)
 {
     username = i_username;
     password = i_password;
@@ -11,10 +11,14 @@ Client::Client(MainWindow * i_ui, const string &i_username, const string &i_pass
     port = i_port;
     ui = i_ui;
 
-
 }
 
 Client::~Client()
 {
+}
 
+void Client::startConnect()
+{
+    socket.ui = ui; //Give the socket the interface to write to
+    socket.doConnect(ip, port);
 }

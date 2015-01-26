@@ -37,7 +37,7 @@ void MainWindow::connectClient()
     QString &password = ui->PasswordInput->text();
     QString &ip = ui->IPInput->text();
     QString &portString = ui->PortInput->text();
-    short port;
+    int port;
 
     //Validate it
     if(username.length() == 0)
@@ -63,7 +63,7 @@ void MainWindow::connectClient()
     else
     {
         bool conversionAccepted;
-        port = portString.toShort(&conversionAccepted, 10);
+        port = portString.toInt(&conversionAccepted, 10);
         if(!conversionAccepted)
         {
             writeToConsole("The port must be a number!");
@@ -74,7 +74,9 @@ void MainWindow::connectClient()
     if(validated)
     {
         //I convert QStrings to STD strings before sending it to the client
-        client = new Client(this, username.toStdString(), password.toStdString(), ip.toStdString(), port);
+        client = new Client(this, username.toStdString(), password.toStdString(), ip, port);
+        client->startConnect();
+
     }
 }
 

@@ -15,9 +15,11 @@ TEMPLATE = app
 
 SOURCES += main.cpp\
         mainwindow.cpp \
-    Client.cpp
+    Client.cpp \
+    mytcpsocket.cpp
 
 HEADERS  += mainwindow.h \
-    Client.h
+    Client.h \
+    mytcpsocket.h
 
 FORMS    += mainwindow.ui

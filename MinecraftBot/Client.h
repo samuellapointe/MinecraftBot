@@ -4,6 +4,7 @@
 #define CLIENT_H
 
 #include <string>
+#include "mytcpsocket.h"
 
 using std::string;
 
@@ -11,14 +12,16 @@ class MainWindow; //MainWindow includes this header file, so I have to use this 
 class Client
 {
 public:
-    Client(MainWindow * i_ui, const string &i_username, const string &i_password, const string &i_ip, const short i_port);
+    Client(MainWindow * i_ui, const string &i_username, const string &i_password, const QString &i_ip, const int i_port);
     ~Client();
+    void startConnect();
 private:
     string username;
     string password;
-    string ip;
-    short port;
+    QString ip;
+    int port;
     MainWindow * ui;
+    MyTcpSocket socket;
 };
 
 #endif // CLIENT_H
