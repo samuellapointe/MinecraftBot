@@ -5,7 +5,7 @@
 #ifndef MAINWINDOW_H
 #define MAINWINDOW_H
 #include <QMainWindow>
-#include "network/packets/Client.h"
+#include "Client.h"
 
 namespace Ui {
 class MainWindow;
