@@ -14,6 +14,8 @@ MyTcpSocket::MyTcpSocket(QObject *parent) :
 //Called doConnect because Qt already uses a connect function everywhere
 void MyTcpSocket::doConnect(const QString &ip, const int port)
 {
+    connectedBool = false;
+
     //The socket iself
     socket = new QTcpSocket(this);
 
@@ -39,14 +41,14 @@ void MyTcpSocket::doConnect(const QString &ip, const int port)
 void MyTcpSocket::connected()
 {
     ui->writeToConsole("connected...");
+    connectedBool=true;
 
-    //TO REPLACE
-    //socket->write("HEAD / HTTP/1.0\r\n\r\n\r\n\r\n");
 }
 
 void MyTcpSocket::disconnected()
 {
     ui->writeToConsole("Disconnected!");
+    connectedBool=false;
 }
 
 void MyTcpSocket::bytesWritten(qint64 bytes)
@@ -60,4 +62,10 @@ void MyTcpSocket::readyRead()
 
     // read the data from the socket
     ui->writeToConsole(socket->readAll());
+}
+
+void MyTcpSocket::write(vector<char> data)
+{
+    socket->write(&data[0]);
+    socket->waitForBytesWritten(5000);
 }

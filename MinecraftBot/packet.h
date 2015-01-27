@@ -13,14 +13,16 @@ using namespace std;
 class Packet
 {
 public:
+    Packet();
     Packet(const uint32_t id, const vector<char> &data);
     ~Packet();
-    vector<char> packPacket();
+    vector<char> packPacket(const vector<char> &data);
     vector<char> packString(const string &text);
 private:
     uint32_t length;
-    uint32_t packetID;
     vector<char> data;
+protected:
+    uint32_t packetID;
 };
 
 #endif // PACKET_H

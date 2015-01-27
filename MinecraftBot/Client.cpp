@@ -2,6 +2,8 @@
 
 #include "Client.h"
 #include "mainwindow.h"
+#include "handshake.h"
+#include "loginstart.h"
 
 Client::Client(MainWindow * i_ui, const string &i_username, const string &i_password, const QString &i_ip, const int i_port)
 {
@@ -20,7 +22,16 @@ Client::~Client()
 void Client::startConnect()
 {
     socket.ui = ui; //Give the socket the interface to write to
-    //socket.doConnect(ip, port);
+    socket.doConnect(ip, port);
 
-
+    if(socket.connectedBool)
+    {
+        Handshake hs = Handshake(47, ip.toStdString(), port, 2);
+        socket.write(hs.packPacket());
+        ui->writeToConsole("test1");
+        LoginStart ls = LoginStart(username);
+        socket.write(ls.packPacket());
+        ui->writeToConsole("test2");
+    }
 }
+

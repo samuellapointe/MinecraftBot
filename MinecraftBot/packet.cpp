@@ -3,6 +3,11 @@
  * */
 #include "packet.h"
 
+Packet::Packet()
+{
+
+}
+
 Packet::Packet(const uint32_t id, const vector<char> &d)
 {
     packetID = id;
@@ -18,8 +23,9 @@ Packet::~Packet()
  * First, the size of the packet as a varint
  * then, the ID of the packet as a varint
  * finally, the data itself. */
-vector<char> Packet::packPacket()
+vector<char> Packet::packPacket(const vector<char> &d)
 {
+    data = d;
     uint8_t length = 4 + data.size(); //size of ID is 4
     uint32_t varintLength;
     Varint::encode_signed_varint(&length, varintLength);
@@ -34,7 +40,7 @@ vector<char> Packet::packPacket()
 /* String format:
  * First, the length in bytes of the string as a varint
  * Then, the string itself */
-vector<char> Packet::packString(const string text)
+vector<char> Packet::packString(const string &text)
 {
     uint8_t length = text.length(); //size of ID is 4
     uint32_t varintLength;

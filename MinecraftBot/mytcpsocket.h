@@ -9,6 +9,9 @@
 #include <QTcpSocket>
 #include <QAbstractSocket>
 #include <QDebug>
+#include <vector>
+
+using namespace std;
 
 class MainWindow;
 class MyTcpSocket : public QObject
@@ -19,6 +22,8 @@ public:
     
     void doConnect(const QString &ip, const int port);
     MainWindow * ui; //For writing in the console
+    void write(vector<char> data);
+    bool connectedBool;
 
 signals:
 
