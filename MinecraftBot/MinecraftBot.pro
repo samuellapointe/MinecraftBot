@@ -13,22 +13,17 @@ TARGET = MinecraftBot
 TEMPLATE = app
 
 
-SOURCES +=\
-    network/packets/packet.cpp \
-    network/packets/varint.cpp \
-    network/Client.cpp \
-    network/mytcpsocket.cpp \
-    main.cpp \
-    mainwindow.cpp
+SOURCES += main.cpp\
+        mainwindow.cpp \
+    Client.cpp \
+    mytcpsocket.cpp \
+    packet.cpp \
+    varint.cpp
 
-HEADERS  += \
-    network/packets/packet.h \
-    network/packets/varint.h \
-    network/Client.h \
-    network/mytcpsocket.h \
-    mainwindow.h
+HEADERS  += mainwindow.h \
+    Client.h \
+    mytcpsocket.h \
+    packet.h \
+    varint.h
 
 FORMS    += mainwindow.ui
-
-DISTFILES += \
-    network/packets/clientbound/test.txt
