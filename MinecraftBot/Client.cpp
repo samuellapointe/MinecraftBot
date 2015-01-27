@@ -27,7 +27,8 @@ void Client::startConnect()
     if(socket.connectedBool)
     {
         Handshake hs = Handshake(47, ip.toStdString(), port, 2);
-        socket.write(hs.packPacket());
+        QByteArray packetTmp = hs.packPacket();
+        socket.write(packetTmp);
         ui->writeToConsole("test1");
         LoginStart ls = LoginStart(username);
         socket.write(ls.packPacket());

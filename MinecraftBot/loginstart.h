@@ -8,7 +8,7 @@ class LoginStart : public Packet
 public:
     LoginStart(const string &login);
     ~LoginStart();
-    vector<char> packPacket();
+    QByteArray packPacket();
 private:
     string login;
 };

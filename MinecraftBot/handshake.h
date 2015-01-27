@@ -6,13 +6,13 @@
 class Handshake : public Packet
 {
 public:
-    Handshake(const uint8_t protocolVersion, const string &serverAdress, const short serverPort, const uint8_t nextState);
+    Handshake(const uint8_t protocolVersion, const string &serverAdress, const uint16_t serverPort, const uint8_t nextState);
     ~Handshake();
-    vector<char> packPacket();
+    QByteArray packPacket();
 private:
     uint8_t protocolVersion;
     string serverAdress;
-    short serverPort;
+    uint16_t serverPort;
     uint8_t nextState;
 };
 

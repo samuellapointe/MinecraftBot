@@ -1,8 +1,7 @@
 #include "handshake.h"
 
-Handshake::Handshake(const uint8_t pV, const string &sA, const short sP, const uint8_t nS)
+Handshake::Handshake(const uint8_t pV, const string &sA, const uint16_t sP, const uint8_t nS)
 {
-    packetID = 0;
     protocolVersion = pV;
     serverAdress = sA;
     serverPort = sP;
@@ -14,29 +13,25 @@ Handshake::~Handshake()
 
 }
 
-vector<char> Handshake::packPacket()
+QByteArray Handshake::packPacket()
 {
     //The data buffer
-    vector<char> tmp;
+    QByteArray tmp;
 
     //protocol version (encode to varint)
-    uint32_t varintProtocolVersion;
-    Varint::encode_signed_varint(&protocolVersion, varintProtocolVersion);
-    tmp.push_back(varintProtocolVersion);
+    tmp.push_back(protocolVersion);
 
     //server address
-    vector<char> vectorServerAdress = Packet::packString(serverAdress);
-    tmp.insert(tmp.end(),vectorServerAdress.begin(),vectorServerAdress.end());
+    QByteArray bytesServerAdress = Packet::packString(serverAdress);
+    tmp.append(bytesServerAdress);
 
     //server port
-    tmp.push_back(serverPort);
+    tmp.append((const char*)&serverPort, sizeof(ushort));
 
     //next state
-    uint32_t varintNextState;
-    Varint::encode_signed_varint(&nextState, varintNextState);
-    tmp.push_back(varintNextState);
+    tmp.append(nextState);
 
     //Call parent function to finish packing
-    return(Packet::packPacket(tmp));
+    return(Packet::packPacket(tmp, 0));
 
 }

@@ -64,8 +64,8 @@ void MyTcpSocket::readyRead()
     ui->writeToConsole(socket->readAll());
 }
 
-void MyTcpSocket::write(vector<char> data)
+void MyTcpSocket::write(QByteArray data)
 {
-    socket->write(&data[0]);
+    socket->write(data);
     socket->waitForBytesWritten(5000);
 }

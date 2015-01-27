@@ -22,7 +22,7 @@ public:
     
     void doConnect(const QString &ip, const int port);
     MainWindow * ui; //For writing in the console
-    void write(vector<char> data);
+    void write(QByteArray data);
     bool connectedBool;
 
 signals:

@@ -10,17 +10,17 @@ LoginStart::~LoginStart()
 
 }
 
-vector<char> LoginStart::packPacket()
+QByteArray LoginStart::packPacket()
 {
     //The data buffer
-    vector<char> tmp;
+    QByteArray tmp;
 
     //server address
-    vector<char> vectorLogin = Packet::packString(login);
-    tmp.insert(tmp.end(),vectorLogin.begin(),vectorLogin.end());
+    QByteArray vectorLogin = Packet::packString(login);
+    tmp.append(vectorLogin);
 
     //Call parent function to finish packing
-    return(Packet::packPacket(tmp));
+    return(Packet::packPacket(tmp, 0));
 
 }
 
