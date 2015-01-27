@@ -20,5 +20,7 @@ Client::~Client()
 void Client::startConnect()
 {
     socket.ui = ui; //Give the socket the interface to write to
-    socket.doConnect(ip, port);
+    //socket.doConnect(ip, port);
+
+
 }
