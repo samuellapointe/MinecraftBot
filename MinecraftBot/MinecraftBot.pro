@@ -15,15 +15,16 @@ TEMPLATE = app
 
 SOURCES += main.cpp\
         mainwindow.cpp \
-    Client.cpp \
-    mytcpsocket.cpp \
-    packet.cpp \
-    varint.cpp
+    network/packets/packet.cpp \
+    network/packets/varint.cpp \
+    network/Client.cpp \
+    network/mytcpsocket.cpp
 
 HEADERS  += mainwindow.h \
-    Client.h \
-    mytcpsocket.h \
-    packet.h \
-    varint.h
+    network/packets/packet.h \
+    network/packets/varint.h \
+    network/Client.h \
+    network/mytcpsocket.h
+
 
 FORMS    += mainwindow.ui

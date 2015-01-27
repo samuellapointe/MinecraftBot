@@ -34,7 +34,7 @@ vector<char> Packet::packPacket()
 /* String format:
  * First, the length in bytes of the string as a varint
  * Then, the string itself */
-vector<char> Packet::packString(const string text)
+vector<char> Packet::packString(const string &text)
 {
     uint8_t length = text.length(); //size of ID is 4
     uint32_t varintLength;
