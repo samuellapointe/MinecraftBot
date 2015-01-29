@@ -27,6 +27,7 @@ int64_t Varint::decode_signed_varint( const uint8_t *const data, int &decoded_by
                                          :  (unsigned_value >> 1) );
 }
 
+
 // Encode an unsigned 64-bit varint.  Returns number of encoded bytes.
 // 'buffer' must have room for up to 10 bytes.
 int Varint::encode_unsigned_varint(uint8_t *const buffer, uint64_t value)

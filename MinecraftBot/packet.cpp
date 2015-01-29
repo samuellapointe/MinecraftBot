@@ -9,14 +9,18 @@
  * finally, the data itself. */
 QByteArray Packet::packPacket(const QByteArray &d, int packetID)
 {
-    QByteArray tmp;
-    tmp.append(packetID);
-    tmp.append(d);
+    QByteArray packet;
+    appendVarint(packet, packetID);
+    packet.append(d);
 
-    int packetLength = tmp.size();
-    tmp.push_front(packetLength);
+    int packetLength = packet.size();
 
-    return tmp;
+    QByteArray packetFront;
+    appendVarint(packetFront, packetLength);
+
+    packetFront.push_back(packet);
+
+    return packetFront;
 }
 
 /* String format:
@@ -25,8 +29,28 @@ QByteArray Packet::packPacket(const QByteArray &d, int packetID)
 QByteArray Packet::packString(const string &text)
 {
     QByteArray tmp;
-    tmp.append(text.size());
+    appendVarint(tmp, text.size());
     tmp.append(text.c_str());
 
     return tmp;
 }
+
+//This function takes the adress to a byte array and adds a varint to it
+void Packet::appendVarint(QByteArray &input, int value)
+{
+    //Buffer to give the function to fill
+    uint8_t fillerBuffer[10];
+
+    //Function itself
+    int nbBytesEncoded = Varint::encode_unsigned_varint(fillerBuffer, value);
+    for(int i = 0; i < nbBytesEncoded; i++)
+    {
+        input.append(fillerBuffer[i]);
+    }
+}
+
+/*
+//DECODING
+int nbBytesDecoded;
+int decodedValue = Varint::decode_unsigned_varint(fillerBuffer, nbBytesDecoded);
+*/

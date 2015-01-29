@@ -29,10 +29,8 @@ void Client::startConnect()
         Handshake hs = Handshake(47, ip.toStdString(), port, 2);
         QByteArray packetTmp = hs.packPacket();
         socket.write(packetTmp);
-        ui->writeToConsole("test1");
         LoginStart ls = LoginStart(username);
         socket.write(ls.packPacket());
-        ui->writeToConsole("test2");
     }
 }
 

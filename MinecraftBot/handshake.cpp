@@ -19,7 +19,7 @@ QByteArray Handshake::packPacket()
     QByteArray tmp;
 
     //protocol version (encode to varint)
-    tmp.push_back(protocolVersion);
+    appendVarint(tmp, protocolVersion);
 
     //server address
     QByteArray bytesServerAdress = Packet::packString(serverAdress);
@@ -29,7 +29,7 @@ QByteArray Handshake::packPacket()
     tmp.append((const char*)&serverPort, sizeof(ushort));
 
     //next state
-    tmp.append(nextState);
+    appendVarint(tmp, nextState);
 
     //Call parent function to finish packing
     return(Packet::packPacket(tmp, 0));

@@ -58,7 +58,7 @@ void MyTcpSocket::bytesWritten(qint64 bytes)
 
 void MyTcpSocket::readyRead()
 {
-    ui->writeToConsole("reading...");
+    //ui->writeToConsole("reading...");
 
     // read the data from the socket
     ui->writeToConsole(socket->readAll());
