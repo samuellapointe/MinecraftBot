@@ -14,6 +14,7 @@
 using namespace std;
 
 class MainWindow;
+class Client;
 class MyTcpSocket : public QObject
 {
     Q_OBJECT
@@ -22,6 +23,7 @@ public:
     
     void doConnect(const QString &ip, const int port);
     MainWindow * ui; //For writing in the console
+    Client * client; //To send the client the packets
     void write(QByteArray data);
     bool connectedBool;
 

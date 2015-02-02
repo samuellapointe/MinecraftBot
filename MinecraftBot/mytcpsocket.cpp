@@ -61,7 +61,10 @@ void MyTcpSocket::readyRead()
     //ui->writeToConsole("reading...");
 
     // read the data from the socket
-    ui->writeToConsole(socket->readAll());
+    QByteArray received = socket->readAll();
+    ui->writeToConsole(received);
+    //Interpret it
+    client->decodePacket(received);
 }
 
 void MyTcpSocket::write(QByteArray data)

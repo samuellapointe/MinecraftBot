@@ -22,6 +22,7 @@ Client::~Client()
 void Client::startConnect()
 {
     socket.ui = ui; //Give the socket the interface to write to
+    socket.client = this;
     socket.doConnect(ip, port);
 
     if(socket.connectedBool)
@@ -34,3 +35,32 @@ void Client::startConnect()
     }
 }
 
+void Client::decodePacket(QByteArray data)
+{
+    //The first value should be a varint with the packet's size
+    int nbBytesDecoded;
+    uint8_t * buffer = (uint8_t*)data.data();
+    uint64_t decodedSize = Varint::decode_unsigned_varint(buffer, nbBytesDecoded);
+
+    //Next, the packet ID
+    //ui->writeToChat(QString::number(data.size()) + " - " + QString::number(nbBytesDecoded));
+    data = data.right(data.length() - nbBytesDecoded); //Remove the bytes decoded so far
+    buffer = (uint8_t*)data.data();
+    uint64_t decodedID = Varint::decode_unsigned_varint(buffer, nbBytesDecoded);
+
+    if(decodedID == 3)
+    {
+        ui->writeToChat("KEEP ALIVE");
+        data = data.right(data.length() - nbBytesDecoded); //Remove the bytes decoded so far
+        buffer = (uint8_t*)data.data();
+        uint64_t decodedKeepAlive = Varint::decode_unsigned_varint(buffer, nbBytesDecoded);
+        ui->writeToChat(QString::number(decodedKeepAlive));
+        QByteArray tmp;
+        Packet::appendVarint(tmp, decodedKeepAlive);
+        socket.write(Packet::packPacket(tmp, 0));
+    }
+
+    ui->writeToChat(QString::number(decodedID));
+    //ui->writeToChat(QString::number(data.size()));
+    //ui->writeToChat("Nb Decoded: " + QString::number(nbBytesDecoded) + " - " + QString::number(decodedValue) + " - " + QString::number(data.size()));
+}
