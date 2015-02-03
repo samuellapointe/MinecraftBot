@@ -35,32 +35,47 @@ void Client::startConnect()
     }
 }
 
-void Client::decodePacket(QByteArray data)
+void Client::decodePacket(QByteArray &data)
 {
     //The first value should be a varint with the packet's size
     int nbBytesDecoded;
     uint8_t * buffer = (uint8_t*)data.data();
     uint64_t decodedSize = Varint::decode_unsigned_varint(buffer, nbBytesDecoded);
 
-    //Next, the packet ID
-    //ui->writeToChat(QString::number(data.size()) + " - " + QString::number(nbBytesDecoded));
+    //Next, the data length, 0 if uncompressed. Don't need to care about compressed packets right now so I'll only interpret those with the value 0.
     data = data.right(data.length() - nbBytesDecoded); //Remove the bytes decoded so far
     buffer = (uint8_t*)data.data();
-    uint64_t decodedID = Varint::decode_unsigned_varint(buffer, nbBytesDecoded);
+    uint64_t uncompressedLength = Varint::decode_unsigned_varint(buffer, nbBytesDecoded);
 
-    if(decodedID == 3)
+    if(uncompressedLength == 0) //If it's not compressed
     {
-        ui->writeToChat("KEEP ALIVE");
+        //Next, the packet ID
+        //ui->writeToChat(QString::number(data.size()) + " - " + QString::number(nbBytesDecoded));
         data = data.right(data.length() - nbBytesDecoded); //Remove the bytes decoded so far
         buffer = (uint8_t*)data.data();
-        uint64_t decodedKeepAlive = Varint::decode_unsigned_varint(buffer, nbBytesDecoded);
-        ui->writeToChat(QString::number(decodedKeepAlive));
-        QByteArray tmp;
-        Packet::appendVarint(tmp, decodedKeepAlive);
-        socket.write(Packet::packPacket(tmp, 0));
-    }
+        uint64_t decodedID = Varint::decode_unsigned_varint(buffer, nbBytesDecoded);
+        handlePacket(decodedID, data);
 
-    ui->writeToChat(QString::number(decodedID));
-    //ui->writeToChat(QString::number(data.size()));
-    //ui->writeToChat("Nb Decoded: " + QString::number(nbBytesDecoded) + " - " + QString::number(decodedValue) + " - " + QString::number(data.size()));
+        //ui->writeToChat(QString::number(decodedID));
+        //ui->writeToChat(QString::number(data.size()));
+        //ui->writeToChat("Nb Decoded: " + QString::number(nbBytesDecoded) + " - " + QString::number(decodedValue) + " - " + QString::number(data.size()));
+    }
+}
+
+void Client::handlePacket(int packetID, QByteArray &data)
+{
+    switch(packetID)
+    {
+        case 3:
+            ui->writeToChat("KEEP ALIVE");
+            uint8_t * buffer = (uint8_t*)data.data();
+            int nbBytesDecoded;
+            uint64_t decodedKeepAlive = Varint::decode_unsigned_varint(buffer, nbBytesDecoded);
+
+            QByteArray tmp;
+            Packet::appendVarint(tmp, 0); //Tell the server it's not compressed
+            Packet::appendVarint(tmp, decodedKeepAlive);
+            socket.write(Packet::packPacket(tmp, 0));
+            break;
+    }
 }
