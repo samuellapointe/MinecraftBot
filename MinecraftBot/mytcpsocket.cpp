@@ -53,7 +53,7 @@ void MyTcpSocket::disconnected()
 
 void MyTcpSocket::bytesWritten(qint64 bytes)
 {
-    ui->writeToConsole(QString::number(bytes) + " bytes written...");
+    //ui->writeToConsole(QString::number(bytes) + " bytes written...");
 }
 
 void MyTcpSocket::readyRead()
@@ -62,7 +62,7 @@ void MyTcpSocket::readyRead()
 
     // read the data from the socket
     QByteArray received = socket->readAll();
-    ui->writeToConsole(received);
+    //ui->writeToConsole(received);
     //Interpret it
     client->decodePacket(received);
 }

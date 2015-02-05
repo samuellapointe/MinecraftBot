@@ -7,16 +7,28 @@
  * First, the size of the packet as a varint
  * then, the ID of the packet as a varint
  * finally, the data itself. */
-QByteArray Packet::packPacket(const QByteArray &d, int packetID)
+QByteArray Packet::packPacket(const QByteArray &d, bool compress)
 {
     QByteArray packet;
+
+    if(compress)
+    {
+        //No compression
+        appendVarint(packet, 0);
+    }
+
+    //ID
     appendVarint(packet, packetID);
+
+    //Data
     packet.append(d);
 
-    int packetLength = packet.size();
+    packetSize = packet.size();
 
     QByteArray packetFront;
-    appendVarint(packetFront, packetLength);
+
+    //Packet size
+    appendVarint(packetFront, packetSize);
 
     packetFront.push_back(packet);
 

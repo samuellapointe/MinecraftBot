@@ -4,6 +4,7 @@
 #include "mainwindow.h"
 #include "handshake.h"
 #include "loginstart.h"
+#include "keepalive.h"
 
 Client::Client(MainWindow * i_ui, const string &i_username, const string &i_password, const QString &i_ip, const int i_port)
 {
@@ -12,7 +13,6 @@ Client::Client(MainWindow * i_ui, const string &i_username, const string &i_pass
     ip = i_ip;
     port = i_port;
     ui = i_ui;
-
 }
 
 Client::~Client()
@@ -30,8 +30,10 @@ void Client::startConnect()
         Handshake hs = Handshake(47, ip.toStdString(), port, 2);
         QByteArray packetTmp = hs.packPacket();
         socket.write(packetTmp);
+        ui->displayPacket(false, hs.packetID, hs.packetSize, QColor(255, 200, 200), "Handshake");
         LoginStart ls = LoginStart(username);
         socket.write(ls.packPacket());
+        ui->displayPacket(false, ls.packetID, ls.packetSize, QColor(200, 255, 200), "Login Start");
     }
 }
 
@@ -50,32 +52,33 @@ void Client::decodePacket(QByteArray &data)
     if(uncompressedLength == 0) //If it's not compressed
     {
         //Next, the packet ID
-        //ui->writeToChat(QString::number(data.size()) + " - " + QString::number(nbBytesDecoded));
         data = data.right(data.length() - nbBytesDecoded); //Remove the bytes decoded so far
         buffer = (uint8_t*)data.data();
         uint64_t decodedID = Varint::decode_unsigned_varint(buffer, nbBytesDecoded);
-        handlePacket(decodedID, data);
+        data = data.right(data.length() - nbBytesDecoded);
+        handlePacket(decodedID, decodedSize, data);
 
-        //ui->writeToChat(QString::number(decodedID));
-        //ui->writeToChat(QString::number(data.size()));
-        //ui->writeToChat("Nb Decoded: " + QString::number(nbBytesDecoded) + " - " + QString::number(decodedValue) + " - " + QString::number(data.size()));
     }
 }
 
-void Client::handlePacket(int packetID, QByteArray &data)
+void Client::handlePacket(int packetID, int packetSize, QByteArray &data)
 {
     switch(packetID)
     {
         case 3:
-            ui->writeToChat("KEEP ALIVE");
-            uint8_t * buffer = (uint8_t*)data.data();
-            int nbBytesDecoded;
-            uint64_t decodedKeepAlive = Varint::decode_unsigned_varint(buffer, nbBytesDecoded);
-
-            QByteArray tmp;
-            Packet::appendVarint(tmp, 0); //Tell the server it's not compressed
-            Packet::appendVarint(tmp, decodedKeepAlive);
-            socket.write(Packet::packPacket(tmp, 0));
+            {
+                ui->displayPacket(true, packetID, packetSize, QColor(150,150,255), "Keep alive");
+                KeepAlive ka = KeepAlive(data);
+                socket.write(ka.packPacket());
+                ui->displayPacket(false, ka.packetID, ka.packetSize, QColor(150, 200, 200), "Keep alive");
+            }
+            break;
+        default:
+            if(ui->showUnknownPackets())
+            {
+                ui->displayPacket(true, packetID, packetSize);
+            }
             break;
     }
+
 }

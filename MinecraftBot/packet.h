@@ -14,9 +14,11 @@ using namespace std;
 class Packet
 {
 public:
-    static QByteArray packPacket(const QByteArray &data, int packetID);
-    static QByteArray packString(const string &text);
-    static void appendVarint(QByteArray &input, int value);
+    QByteArray packPacket(const QByteArray &data, bool compress=false);
+    QByteArray packString(const string &text);
+    void appendVarint(QByteArray &input, int value);
+    int packetID;
+    int packetSize;
 };
 
 #endif // PACKET_H

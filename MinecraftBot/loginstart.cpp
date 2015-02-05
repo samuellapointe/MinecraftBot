@@ -3,6 +3,7 @@
 LoginStart::LoginStart(const string &l)
 {
     login = l;
+    packetID = 0;
 }
 
 LoginStart::~LoginStart()
@@ -20,7 +21,7 @@ QByteArray LoginStart::packPacket()
     tmp.append(vectorLogin);
 
     //Call parent function to finish packing
-    return(Packet::packPacket(tmp, 0));
+    return(Packet::packPacket(tmp));
 
 }
 

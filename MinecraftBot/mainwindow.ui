@@ -189,11 +189,17 @@ p, li { white-space: pre-wrap; }
       <x>340</x>
       <y>30</y>
       <width>321</width>
-      <height>351</height>
+      <height>321</height>
      </rect>
     </property>
+    <property name="autoFillBackground">
+     <bool>false</bool>
+    </property>
     <property name="alternatingRowColors">
-     <bool>true</bool>
+     <bool>false</bool>
+    </property>
+    <property name="movement">
+     <enum>QListView::Free</enum>
     </property>
    </widget>
    <widget class="QLabel" name="PacketListLabel">
@@ -444,6 +450,22 @@ p, li { white-space: pre-wrap; }
     </property>
     <property name="text">
      <string>Connect</string>
+    </property>
+   </widget>
+   <widget class="QCheckBox" name="ShowUnknownPacketsCheckbox">
+    <property name="geometry">
+     <rect>
+      <x>350</x>
+      <y>360</y>
+      <width>161</width>
+      <height>17</height>
+     </rect>
+    </property>
+    <property name="text">
+     <string>Show unknown packets</string>
+    </property>
+    <property name="checked">
+     <bool>false</bool>
     </property>
    </widget>
   </widget>

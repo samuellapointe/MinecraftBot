@@ -16,7 +16,7 @@ public:
     ~Client();
     void startConnect();
     void decodePacket(QByteArray &data);
-    void handlePacket(int packetID, QByteArray &data);
+    void handlePacket(int packetID, int packetSize, QByteArray &data);
 private:
     string username;
     string password;

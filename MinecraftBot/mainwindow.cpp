@@ -91,3 +91,26 @@ void MainWindow::writeToChat(const QString & text)
 {
     ui->ChatDisplay->append(text);
 }
+
+void MainWindow::displayPacket(const bool received, const int id, const int size, const QColor &color, const QString &info)
+{
+    if(received)
+    {
+        ui->PacketList->addItem("Received: ID: " + QString::number(id) + "   Size: " + QString::number(size) + "   Info: " + info);
+    }
+    else
+    {
+        ui->PacketList->addItem("Sent: ID: " + QString::number(id) + "   Size: " + QString::number(size) + "   Info: " + info);
+    }
+    ui->PacketList->item(ui->PacketList->count()-1)->setBackgroundColor(color);
+    if(ui->PacketList->count() > 100) //Vider la liste
+    {
+        delete ui->PacketList->item(0);
+    }
+    //ui->PacketList->scrollToBottom();
+}
+
+bool MainWindow::showUnknownPackets()
+{
+    return ui->ShowUnknownPacketsCheckbox->checkState();
+}

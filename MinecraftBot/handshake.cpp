@@ -6,6 +6,7 @@ Handshake::Handshake(const uint8_t pV, const string &sA, const uint16_t sP, cons
     serverAdress = sA;
     serverPort = sP;
     nextState = nS;
+    packetID = 0;
 }
 
 Handshake::~Handshake()
@@ -32,6 +33,6 @@ QByteArray Handshake::packPacket()
     appendVarint(tmp, nextState);
 
     //Call parent function to finish packing
-    return(Packet::packPacket(tmp, 0));
+    return(Packet::packPacket(tmp));
 
 }

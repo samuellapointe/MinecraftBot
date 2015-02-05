@@ -6,6 +6,7 @@
 #define MAINWINDOW_H
 #include <QMainWindow>
 #include "Client.h"
+#include "packet.h"
 
 namespace Ui {
 class MainWindow;
@@ -20,6 +21,8 @@ public:
     ~MainWindow();
     void writeToConsole(const QString &text); //Append to the left console
     void writeToChat(const QString &text); //Append to the right console
+    void displayPacket(const bool received, const int id, const int size, const QColor &color = QColor(255,255,255), const QString &info = "none");
+    bool showUnknownPackets();
     Ui::MainWindow *ui;
 
 
