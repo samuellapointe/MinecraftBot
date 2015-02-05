@@ -24,6 +24,7 @@ private:
     int port;
     MainWindow * ui;
     MyTcpSocket socket;
+    bool compressionSet; //Pour savoir si la compression à été activée
 };
 
 #endif // CLIENT_H
