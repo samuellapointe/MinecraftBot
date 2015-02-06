@@ -5,6 +5,7 @@
 #include "handshake.h"
 #include "loginstart.h"
 #include "keepalive.h"
+#include "encryptionrequest.h"
 
 Client::Client(MainWindow * i_ui, const string &i_username, const string &i_password, const QString &i_ip, const int i_port)
 {
@@ -80,7 +81,10 @@ void Client::handlePacket(int packetID, int packetSize, QByteArray &data)
     switch(packetID)
     {
     case 1: //Encryption request
-        ui->displayPacket(true, packetID, packetSize, QColor(255, 100, 100), "Encryption request");
+        {
+            ui->displayPacket(true, packetID, packetSize, QColor(255, 100, 100), "Encryption request");
+            EncryptionRequest er = EncryptionRequest(data);
+        }
         break;
     case 3:
         {

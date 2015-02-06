@@ -1,2 +1,4 @@
-SOURCES +=
-HEADERS +=
+SOURCES += \
+    $$PWD/encryptionrequest.cpp
+HEADERS += \
+    $$PWD/encryptionrequest.h
