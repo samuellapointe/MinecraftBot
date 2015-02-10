@@ -5,6 +5,7 @@
 
 #include <string>
 #include "mytcpsocket.h"
+#include "cryptmanager.h"
 
 using std::string;
 
@@ -18,6 +19,7 @@ public:
     void decodePacket(QByteArray &data);
     void handlePacket(int packetID, int packetSize, QByteArray &data);
 private:
+    CryptManager crypt;
     string username;
     string password;
     QString ip;

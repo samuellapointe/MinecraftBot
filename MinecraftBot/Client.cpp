@@ -84,6 +84,7 @@ void Client::handlePacket(int packetID, int packetSize, QByteArray &data)
         {
             ui->displayPacket(true, packetID, packetSize, QColor(255, 100, 100), "Encryption request");
             EncryptionRequest er = EncryptionRequest(data);
+            crypt.loadKey(er.publicKey);
         }
         break;
     case 3:

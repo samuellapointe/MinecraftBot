@@ -18,11 +18,18 @@ SOURCES += main.cpp\
         mainwindow.cpp \
     Client.cpp \
     mytcpsocket.cpp \
-    varint.cpp
+    varint.cpp \
+    cryptmanager.cpp \
+
 
 HEADERS  += mainwindow.h \
     Client.h \
     mytcpsocket.h \
-    varint.h
+    varint.h \
+    cryptmanager.h \
 
 FORMS    += mainwindow.ui
+
+INCLUDEPATH += $$PWD/cryptoInclude
+LIBS += -L"$$_PRO_FILE_PWD_/cryptoLib" -lcryptopp
+
