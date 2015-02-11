@@ -2,7 +2,7 @@
 #define CRYPTOPP_BASE64_H
 
 #include "basecode.h"
-
+#pragma warning(push, 0)
 NAMESPACE_BEGIN(CryptoPP)
 
 //! Base64 Encoder Class 
@@ -30,7 +30,7 @@ public:
 private:
 	static const int * CRYPTOPP_API GetDecodingLookupArray();
 };
-
+#pragma warning(pop)
 NAMESPACE_END
 
 #endif

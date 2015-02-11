@@ -8,7 +8,7 @@
 #include <assert.h>
 
 NAMESPACE_BEGIN(CryptoPP)
-
+#pragma warning(push, 0)
 // ************** secure memory allocation ***************
 
 template<class T>
@@ -461,7 +461,7 @@ __stl_alloc_rebind(CryptoPP::AllocatorWithCleanup<_Tp1>& __a, const _Tp2*)
 	return (CryptoPP::AllocatorWithCleanup<_Tp2>&)(__a);
 }
 #endif
-
+#pragma warning(pop)
 NAMESPACE_END
 
 #endif

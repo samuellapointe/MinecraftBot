@@ -32,4 +32,4 @@ FORMS    += mainwindow.ui
 
 INCLUDEPATH += $$PWD/cryptoInclude
 LIBS += -L"$$_PRO_FILE_PWD_/cryptoLib" -lcryptopp
-
+LIBS += -L"$$_PRO_FILE_PWD_/cryptoLib" -lcryptlib

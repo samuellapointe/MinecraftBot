@@ -4,7 +4,7 @@
 #include "cryptlib.h"
 #include "smartptr.h"
 #include <string.h>		// for memcpy and memmove
-
+#pragma warning(push, 0)
 #ifdef _MSC_VER
 	#if _MSC_VER >= 1400
 		// VC2005 workaround: disable declarations that conflict with winnt.h
@@ -1278,5 +1278,5 @@ inline T SafeLeftShift(T value)
 #define CRYPTOPP_BLOCKS_END(i) size_t SST() {return SS##i();} void AllocateBlocks() {m_aggregate.New(SST());} AlignedSecByteBlock m_aggregate;
 
 NAMESPACE_END
-
+#pragma warning(pop)
 #endif

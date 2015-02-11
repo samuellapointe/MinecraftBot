@@ -2,6 +2,7 @@
  * This class is the entry point of the program, the only thing it does is launch the main window.
  */
 
+#include "dll.h"
 #include "mainwindow.h"
 #include <QApplication>
 

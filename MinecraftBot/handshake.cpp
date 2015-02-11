@@ -1,6 +1,6 @@
 #include "handshake.h"
 
-Handshake::Handshake(const uint8_t pV, const string &sA, const uint16_t sP, const uint8_t nS)
+Handshake::Handshake(const uint8_t pV, const std::string &sA, const uint16_t sP, const uint8_t nS)
 {
     protocolVersion = pV;
     serverAdress = sA;

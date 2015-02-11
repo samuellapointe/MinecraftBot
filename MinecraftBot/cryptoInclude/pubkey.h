@@ -41,7 +41,7 @@
 
 // VC60 workaround: this macro is defined in shlobj.h and conflicts with a template parameter used in this file
 #undef INTERFACE
-
+#pragma warning(push, 0)
 NAMESPACE_BEGIN(CryptoPP)
 
 //! _
@@ -1672,7 +1672,8 @@ public:
 	//! implements PK_Encryptor interface
 	typedef PK_FinalTemplate<DL_EncryptorImpl<SchemeOptions> > Encryptor;
 };
-
+#pragma warning(pop)
 NAMESPACE_END
 
 #endif
+

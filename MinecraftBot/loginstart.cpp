@@ -1,6 +1,6 @@
 #include "loginstart.h"
 
-LoginStart::LoginStart(const string &l)
+LoginStart::LoginStart(const std::string &l)
 {
     login = l;
     packetID = 0;

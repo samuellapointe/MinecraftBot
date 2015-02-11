@@ -1,6 +1,6 @@
 #ifndef CRYPTOPP_MODARITH_H
 #define CRYPTOPP_MODARITH_H
-
+#pragma warning(push, 0)
 // implementations are in integer.cpp
 
 #include "cryptlib.h"
@@ -152,7 +152,7 @@ private:
 	Integer m_u;
 	mutable IntegerSecBlock m_workspace;
 };
-
+#pragma warning(pop)
 NAMESPACE_END
 
 #endif

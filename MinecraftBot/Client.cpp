@@ -6,6 +6,7 @@
 #include "loginstart.h"
 #include "keepalive.h"
 #include "encryptionrequest.h"
+#include "encryptionresponse.h"
 
 Client::Client(MainWindow * i_ui, const string &i_username, const string &i_password, const QString &i_ip, const int i_port)
 {
@@ -85,6 +86,9 @@ void Client::handlePacket(int packetID, int packetSize, QByteArray &data)
             ui->displayPacket(true, packetID, packetSize, QColor(255, 100, 100), "Encryption request");
             EncryptionRequest er = EncryptionRequest(data);
             crypt.loadKey(er.publicKey);
+            EncryptionResponse er2 = EncryptionResponse(crypt.sharedSecret, crypt.encodeRSA(er.verifyToken));
+            socket.write(er2.packPacket());
+
         }
         break;
     case 3:

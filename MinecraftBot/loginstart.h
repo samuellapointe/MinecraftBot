@@ -6,11 +6,11 @@
 class LoginStart : public Packet
 {
 public:
-    LoginStart(const string &login);
+    LoginStart(const std::string &login);
     ~LoginStart();
     QByteArray packPacket();
 private:
-    string login;
+    std::string login;
 };
 
 #endif // LOGINSTART_H

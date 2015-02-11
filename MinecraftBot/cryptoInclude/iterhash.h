@@ -94,11 +94,13 @@ protected:
 };
 
 #ifndef __GNUC__
+#pragma warning(push, 0)
 	CRYPTOPP_DLL_TEMPLATE_CLASS IteratedHashBase<word64, HashTransformation>;
 	CRYPTOPP_STATIC_TEMPLATE_CLASS IteratedHashBase<word64, MessageAuthenticationCode>;
 
 	CRYPTOPP_DLL_TEMPLATE_CLASS IteratedHashBase<word32, HashTransformation>;
 	CRYPTOPP_STATIC_TEMPLATE_CLASS IteratedHashBase<word32, MessageAuthenticationCode>;
+#pragma warning(pop)
 #endif
 
 NAMESPACE_END

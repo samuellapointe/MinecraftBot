@@ -1,6 +1,6 @@
 #ifndef CRYPTOPP_OSRNG_H
 #define CRYPTOPP_OSRNG_H
-
+#pragma warning(push, 0)
 //! \file
 
 #include "config.h"
@@ -150,7 +150,7 @@ typedef AutoSeededRandomPool DefaultAutoSeededRNG;
 #endif
 
 NAMESPACE_END
-
+#pragma warning(pop)
 #endif
 
 #endif

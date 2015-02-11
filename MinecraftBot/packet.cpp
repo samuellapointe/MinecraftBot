@@ -38,7 +38,7 @@ QByteArray Packet::packPacket(const QByteArray &d, bool compress)
 /* String format:
  * First, the length in bytes of the string as a varint
  * Then, the string itself */
-QByteArray Packet::packString(const string &text)
+QByteArray Packet::packString(const std::string &text)
 {
     QByteArray tmp;
     appendVarint(tmp, text.size());

@@ -6,7 +6,7 @@
 #include "secblock.h"
 
 NAMESPACE_BEGIN(CryptoPP)
-
+#pragma warning(push, 0)
 //! used to pass byte array input as part of a NameValuePairs object
 /*! the deepCopy option is used when the NameValuePairs object can't
 	keep a copy of the data available */
@@ -394,5 +394,5 @@ AlgorithmParameters MakeParameters(const char *name, const T &value, bool throwI
 #define CRYPTOPP_SET_FUNCTION_ENTRY2(name1, name2)	(Name::name1(), Name::name2(), &ThisClass::Set##name1##And##name2)
 
 NAMESPACE_END
-
+#pragma warning(pop)
 #endif

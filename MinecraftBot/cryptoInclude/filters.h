@@ -11,6 +11,8 @@
 #include "algparam.h"
 #include <deque>
 
+#pragma warning(push, 0)
+
 NAMESPACE_BEGIN(CryptoPP)
 
 /// provides an implementation of BufferedTransformation's attachment interface
@@ -804,7 +806,8 @@ public:
 		: SourceTemplate<RandomNumberStore>(attachment) 
 		{SourceInitialize(pumpAll, MakeParameters("RandomNumberGeneratorPointer", &rng)("RandomNumberStoreSize", length));}
 };
-
+#pragma warning(pop)
 NAMESPACE_END
 
 #endif
+

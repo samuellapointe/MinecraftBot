@@ -11,8 +11,6 @@
 #include <QDebug>
 #include <vector>
 
-using namespace std;
-
 class MainWindow;
 class Client;
 class MyTcpSocket : public QObject

@@ -9,6 +9,7 @@
 #include "cryptlib.h"
 #include "misc.h"
 
+#pragma warning(push, 0)
 NAMESPACE_BEGIN(CryptoPP)
 
 //! _
@@ -203,7 +204,8 @@ public:
 	size_t Put2(const byte *begin, size_t length, int messageEnd, bool blocking)
 		{return 0;}
 };
-
+#pragma warning(pop)
 NAMESPACE_END
 
 #endif
+

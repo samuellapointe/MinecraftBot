@@ -1,6 +1,6 @@
 #ifndef CRYPTOPP_ASN_H
 #define CRYPTOPP_ASN_H
-
+#pragma warning(push, 0)
 #include "filters.h"
 #include "queue.h"
 #include <vector>
@@ -10,7 +10,7 @@ NAMESPACE_BEGIN(CryptoPP)
 // these tags and flags are not complete
 enum ASNTag
 {
-	BOOLEAN 			= 0x01,
+        BOOLEAN 			= 0x01,
 	INTEGER 			= 0x02,
 	BIT_STRING			= 0x03,
 	OCTET_STRING		= 0x04,
@@ -365,5 +365,5 @@ inline ::CryptoPP::OID operator+(const ::CryptoPP::OID &lhs, unsigned long rhs)
 	{return ::CryptoPP::OID(lhs)+=rhs;}
 
 NAMESPACE_END
-
+#pragma warning(pop)
 #endif

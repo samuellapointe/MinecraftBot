@@ -5,7 +5,7 @@
 #include "sha.h"
 
 NAMESPACE_BEGIN(CryptoPP)
-
+#pragma warning(push, 0)
 //! _
 class CRYPTOPP_DLL OAEP_Base : public PK_EncryptionMessageEncodingMethod
 {
@@ -36,7 +36,7 @@ protected:
 };
 
 CRYPTOPP_DLL_TEMPLATE_CLASS OAEP<SHA>;
-
+#pragma warning(pop)
 NAMESPACE_END
 
 #endif

@@ -9,13 +9,11 @@
 #include <QByteArray>
 #include <QString>
 
-using namespace std;
-
 class Packet
 {
 public:
     QByteArray packPacket(const QByteArray &data, bool compress=false);
-    QByteArray packString(const string &text);
+    QByteArray packString(const std::string &text);
     void appendVarint(QByteArray &input, int value);
     int packetID;
     int packetSize;

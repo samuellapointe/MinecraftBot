@@ -54,7 +54,7 @@ CRYPTOPP_DLL_TEMPLATE_CLASS EMSA2HashId<SHA256>;
 CRYPTOPP_DLL_TEMPLATE_CLASS EMSA2HashId<SHA384>;
 CRYPTOPP_DLL_TEMPLATE_CLASS EMSA2HashId<SHA512>;
 #endif
-
+#pragma warning(push, 0)
 //! _
 class CRYPTOPP_DLL EMSA2Pad : public EMSA2HashIdLookup<PK_DeterministicSignatureMessageEncodingMethod>
 {
@@ -82,5 +82,5 @@ struct P1363_EMSA2 : public SignatureStandard
 };
 
 NAMESPACE_END
-
+#pragma warning(pop)
 #endif
