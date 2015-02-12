@@ -1,6 +1,6 @@
 #ifndef CRYPTOPP_GF2N_H
 #define CRYPTOPP_GF2N_H
-
+#pragma warning(push, 0)
 /*! \file */
 
 #include "cryptlib.h"
@@ -365,5 +365,5 @@ template<> inline void swap(CryptoPP::PolynomialMod2 &a, CryptoPP::PolynomialMod
 }
 NAMESPACE_END
 #endif
-
+#pragma warning(pop)
 #endif

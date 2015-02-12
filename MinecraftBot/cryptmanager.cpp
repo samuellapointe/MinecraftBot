@@ -9,28 +9,19 @@ CryptManager::CryptManager()
 
 void CryptManager::loadKey(QByteArray &key)
 {
+    //Transform QByteArray into ByteQueue
     ByteQueue keyQueue;
     QByteArray test = key.toBase64();
     for(int i = 0; i < key.size(); i++)
     {
         keyQueue.Put((byte)key.at(i));
     }
-    //Base64Decoder decoder2;
-    /*Base64Decoder decoder;
-    decoder.Attach(new Redirector(keyQueue));
-    decoder.Put((const byte*)str.data(), str.length());
-    decoder.MessageEnd();*/
 
+    sharedSecret = "0123456789abcdef"; //A very complex private key
+
+    //Finish making the key and the encryptor
     publicKey.BERDecode(keyQueue);
-    CryptoPP::RSAES_PKCS1v15_Encryptor e(publicKey);
-
-    AutoSeededRandomPool rng;
-    std::string plain="RSA Encryption", cipher, recovered;
-    /*StringSource ss1(plain, true,
-        new PK_EncryptorFilter(rng, e,
-            new StringSink(cipher)
-       ) // PK_EncryptorFilter
-    ); // StringSource*/
+    encryptor = CryptoPP::RSAES_PKCS1v15_Encryptor(publicKey);
 }
 
 CryptManager::~CryptManager()
@@ -40,7 +31,15 @@ CryptManager::~CryptManager()
 
 QByteArray CryptManager::encodeRSA(QByteArray data)
 {
-
-    return data;
+    AutoSeededRandomPool rng;
+    std::string plain, cipher, recovered;
+    plain = data.toStdString();
+    StringSource ss1(plain, true,
+        new PK_EncryptorFilter(rng, encryptor,
+            new StringSink(cipher)
+       ) // PK_EncryptorFilter
+    ); // StringSource
+    QByteArray output = QByteArray(cipher.c_str(), cipher.length());
+    return output;
 }
 

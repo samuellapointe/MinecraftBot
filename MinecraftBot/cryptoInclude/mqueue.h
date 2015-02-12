@@ -1,6 +1,6 @@
 #ifndef CRYPTOPP_MQUEUE_H
 #define CRYPTOPP_MQUEUE_H
-
+#pragma warning(push, 0)
 #include "queue.h"
 #include "filters.h"
 #include <deque>
@@ -96,5 +96,5 @@ template<> inline void swap(CryptoPP::MessageQueue &a, CryptoPP::MessageQueue &b
 }
 NAMESPACE_END
 #endif
-
+#pragma warning(pop)
 #endif

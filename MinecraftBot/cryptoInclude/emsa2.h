@@ -1,6 +1,6 @@
 #ifndef CRYPTOPP_EMSA2_H
 #define CRYPTOPP_EMSA2_H
-
+#pragma warning(push, 0)
 /** \file
 	This file contains various padding schemes for public key algorithms.
 */
@@ -54,7 +54,6 @@ CRYPTOPP_DLL_TEMPLATE_CLASS EMSA2HashId<SHA256>;
 CRYPTOPP_DLL_TEMPLATE_CLASS EMSA2HashId<SHA384>;
 CRYPTOPP_DLL_TEMPLATE_CLASS EMSA2HashId<SHA512>;
 #endif
-#pragma warning(push, 0)
 //! _
 class CRYPTOPP_DLL EMSA2Pad : public EMSA2HashIdLookup<PK_DeterministicSignatureMessageEncodingMethod>
 {

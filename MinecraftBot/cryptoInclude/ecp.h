@@ -1,6 +1,6 @@
 #ifndef CRYPTOPP_ECP_H
 #define CRYPTOPP_ECP_H
-
+#pragma warning(push, 0)
 #include "modarith.h"
 #include "eprecomp.h"
 #include "smartptr.h"
@@ -122,5 +122,5 @@ private:
 };
 
 NAMESPACE_END
-
+#pragma warning(pop)
 #endif

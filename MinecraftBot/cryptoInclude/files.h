@@ -1,6 +1,6 @@
 #ifndef CRYPTOPP_FILES_H
 #define CRYPTOPP_FILES_H
-
+#pragma warning(push, 0)
 #include "cryptlib.h"
 #include "filters.h"
 #include "argnames.h"
@@ -108,5 +108,5 @@ private:
 };
 
 NAMESPACE_END
-
+#pragma warning(pop)
 #endif

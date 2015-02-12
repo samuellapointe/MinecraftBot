@@ -1,6 +1,6 @@
 #ifndef CRYPTOPP_TRDLOCAL_H
 #define CRYPTOPP_TRDLOCAL_H
-
+#pragma warning(push, 0)
 #include "config.h"
 
 #ifdef THREADS_AVAILABLE
@@ -40,5 +40,5 @@ private:
 NAMESPACE_END
 
 #endif	// #ifdef THREADS_AVAILABLE
-
+#pragma warning(pop)
 #endif

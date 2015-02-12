@@ -1,6 +1,6 @@
 #ifndef CRYPTOPP_DES_H
 #define CRYPTOPP_DES_H
-
+#pragma warning(push, 0)
 /** \file
 */
 
@@ -140,5 +140,5 @@ typedef DES_XEX3::Encryption DES_XEX3_Encryption;
 typedef DES_XEX3::Decryption DES_XEX3_Decryption;
 
 NAMESPACE_END
-
+#pragma warning(pop)
 #endif

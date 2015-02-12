@@ -1,6 +1,6 @@
 #ifndef CRYPTOPP_SHA_H
 #define CRYPTOPP_SHA_H
-
+#pragma warning(push, 0)
 #include "iterhash.h"
 
 NAMESPACE_BEGIN(CryptoPP)
@@ -59,5 +59,5 @@ public:
 };
 
 NAMESPACE_END
-
+#pragma warning(pop)
 #endif

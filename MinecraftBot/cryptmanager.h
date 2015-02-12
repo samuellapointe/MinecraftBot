@@ -25,7 +25,7 @@ public:
 private:
     //VARS
     RSA::PublicKey publicKey;
-    //RSAES<PKCS1v15>::Encryptor encryptor;
+    RSAES<PKCS1v15>::Encryptor encryptor;
 };
 
 #endif // CRYPTMANAGER_H

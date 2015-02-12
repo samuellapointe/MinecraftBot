@@ -1,6 +1,6 @@
 #ifndef CRYPTOPP_RIJNDAEL_H
 #define CRYPTOPP_RIJNDAEL_H
-
+#pragma warning(push, 0)
 /** \file
 */
 
@@ -64,5 +64,5 @@ typedef Rijndael::Encryption RijndaelEncryption;
 typedef Rijndael::Decryption RijndaelDecryption;
 
 NAMESPACE_END
-
+#pragma warning(pop)
 #endif

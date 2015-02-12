@@ -1,6 +1,6 @@
 #ifndef CRYPTOPP_MODES_H
 #define CRYPTOPP_MODES_H
-
+#pragma warning(push, 0)
 /*! \file
 */
 
@@ -418,5 +418,5 @@ typedef CTR_Mode_ExternalCipher::Encryption CounterMode;
 #endif
 
 NAMESPACE_END
-
+#pragma warning(pop)
 #endif

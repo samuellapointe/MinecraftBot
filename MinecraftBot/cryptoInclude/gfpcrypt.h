@@ -1,6 +1,6 @@
 #ifndef CRYPTOPP_GFPCRYPT_H
 #define CRYPTOPP_GFPCRYPT_H
-
+#pragma warning(push, 0)
 /** \file
 	Implementation of schemes based on DL over GF(p)
 */
@@ -524,5 +524,5 @@ struct DLIES
 };
 
 NAMESPACE_END
-
+#pragma warning( pop )
 #endif

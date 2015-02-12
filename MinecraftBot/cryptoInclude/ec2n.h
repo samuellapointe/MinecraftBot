@@ -1,6 +1,6 @@
 #ifndef CRYPTOPP_EC2N_H
 #define CRYPTOPP_EC2N_H
-
+#pragma warning(push, 0)
 #include "gf2n.h"
 #include "eprecomp.h"
 #include "smartptr.h"
@@ -109,5 +109,5 @@ private:
 };
 
 NAMESPACE_END
-
+#pragma warning(pop)
 #endif

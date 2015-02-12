@@ -27,7 +27,7 @@
 
 #ifndef CRYPTOPP_STRCIPHR_H
 #define CRYPTOPP_STRCIPHR_H
-
+#pragma warning(push, 0)
 #include "seckey.h"
 #include "secblock.h"
 #include "argnames.h"
@@ -302,5 +302,5 @@ CRYPTOPP_DLL_TEMPLATE_CLASS CFB_CipherTemplate<AbstractPolicyHolder<CFB_CipherAb
 CRYPTOPP_DLL_TEMPLATE_CLASS CFB_EncryptionTemplate<AbstractPolicyHolder<CFB_CipherAbstractPolicy, SymmetricCipher> >;
 CRYPTOPP_DLL_TEMPLATE_CLASS CFB_DecryptionTemplate<AbstractPolicyHolder<CFB_CipherAbstractPolicy, SymmetricCipher> >;
 NAMESPACE_END
-
+#pragma warning(pop)
 #endif

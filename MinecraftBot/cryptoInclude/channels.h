@@ -1,6 +1,6 @@
 #ifndef CRYPTOPP_CHANNELS_H
 #define CRYPTOPP_CHANNELS_H
-
+#pragma warning(push, 0)
 #include "simple.h"
 #include "smartptr.h"
 #include <map>
@@ -119,5 +119,5 @@ private:
 };
 
 NAMESPACE_END
-
+#pragma warning(pop)
 #endif

@@ -1,6 +1,6 @@
 #ifndef CRYPTOPP_SKIPJACK_H
 #define CRYPTOPP_SKIPJACK_H
-
+#pragma warning(push, 0)
 /** \file
 */
 
@@ -57,5 +57,5 @@ typedef SKIPJACK::Encryption SKIPJACKEncryption;
 typedef SKIPJACK::Decryption SKIPJACKDecryption;
 
 NAMESPACE_END
-
+#pragma warning(pop)
 #endif

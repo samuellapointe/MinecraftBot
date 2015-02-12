@@ -1,6 +1,6 @@
 #ifndef CRYPTOPP_BASECODE_H
 #define CRYPTOPP_BASECODE_H
-
+#pragma warning(push, 0)
 #include "filters.h"
 #include "algparam.h"
 #include "argnames.h"
@@ -82,5 +82,5 @@ private:
 };
 
 NAMESPACE_END
-
+#pragma warning(pop)
 #endif

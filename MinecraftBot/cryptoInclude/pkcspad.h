@@ -3,7 +3,7 @@
 
 #include "cryptlib.h"
 #include "pubkey.h"
-
+#pragma warning(push, 0)
 #ifdef CRYPTOPP_IS_DLL
 #include "sha.h"
 #endif
@@ -90,5 +90,5 @@ struct PKCS1v15 : public SignatureStandard, public EncryptionStandard
 };
 
 NAMESPACE_END
-
+#pragma warning(pop)
 #endif

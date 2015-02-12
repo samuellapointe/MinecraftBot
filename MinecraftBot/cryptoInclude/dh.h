@@ -1,6 +1,6 @@
 #ifndef CRYPTOPP_DH_H
 #define CRYPTOPP_DH_H
-
+#pragma warning(push, 0)
 /** \file
 */
 
@@ -95,5 +95,5 @@ CRYPTOPP_DLL_TEMPLATE_CLASS DH_Domain<DL_GroupParameters_GFP_DefaultSafePrime>;
 typedef DH_Domain<DL_GroupParameters_GFP_DefaultSafePrime> DH;
 
 NAMESPACE_END
-
+#pragma warning( pop )
 #endif

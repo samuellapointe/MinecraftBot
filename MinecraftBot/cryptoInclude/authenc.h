@@ -1,6 +1,6 @@
 #ifndef CRYPTOPP_AUTHENC_H
 #define CRYPTOPP_AUTHENC_H
-
+#pragma warning(push, 0)
 #include "cryptlib.h"
 #include "secblock.h"
 
@@ -45,5 +45,5 @@ protected:
 };
 
 NAMESPACE_END
-
+#pragma warning(pop)
 #endif

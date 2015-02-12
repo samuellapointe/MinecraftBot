@@ -1,6 +1,6 @@
 #ifndef CRYPTOPP_CBCMAC_H
 #define CRYPTOPP_CBCMAC_H
-
+#pragma warning(push, 0)
 #include "seckey.h"
 #include "secblock.h"
 
@@ -46,5 +46,5 @@ private:
 };
 
 NAMESPACE_END
-
+#pragma warning(pop)
 #endif

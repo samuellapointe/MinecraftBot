@@ -1,10 +1,10 @@
 #ifndef CRYPTOPP_MISC_H
 #define CRYPTOPP_MISC_H
-
+#pragma warning(push, 0)
 #include "cryptlib.h"
 #include "smartptr.h"
 #include <string.h>		// for memcpy and memmove
-#pragma warning(push, 0)
+
 #ifdef _MSC_VER
 	#if _MSC_VER >= 1400
 		// VC2005 workaround: disable declarations that conflict with winnt.h

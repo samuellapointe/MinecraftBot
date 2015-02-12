@@ -1,6 +1,6 @@
 #ifndef CRYPTOPP_EPRECOMP_H
 #define CRYPTOPP_EPRECOMP_H
-
+#pragma warning(push, 0)
 #include "integer.h"
 #include "algebra.h"
 #include <vector>
@@ -71,5 +71,5 @@ NAMESPACE_END
 #ifdef CRYPTOPP_MANUALLY_INSTANTIATE_TEMPLATES
 #include "eprecomp.cpp"
 #endif
-
+#pragma warning(pop)
 #endif
