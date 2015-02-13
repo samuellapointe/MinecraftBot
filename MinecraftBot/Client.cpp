@@ -46,6 +46,10 @@ void Client::startConnect()
 
 void Client::decodePacket(QByteArray &data)
 {
+    if(encrypted)
+    {
+        QByteArray data2 = crypt.decodeAES(data);
+    }
     //The first value should be a varint with the packet's size
     int nbBytesDecoded;
     uint8_t * buffer = (uint8_t*)data.data();

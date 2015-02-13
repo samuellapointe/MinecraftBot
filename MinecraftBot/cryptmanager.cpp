@@ -5,6 +5,10 @@
 CryptManager::CryptManager()
 {
     sharedSecret = "0123456789abcdef"; //A very complex private key
+    byte IV[AES::BLOCKSIZE];
+    memcpy(IV,sharedSecret,16);
+    AESEncryptor = CFB_Mode<AES>::Encryption((byte*)sharedSecret.data(),(unsigned int)16,IV,1);
+    AESDecryptor = CFB_Mode<AES>::Decryption((byte*)sharedSecret.data(),(unsigned int)16,IV,1);
 }
 
 void CryptManager::loadKey(QByteArray &key)
@@ -96,6 +100,26 @@ std::string CryptManager::javaHexDigest(std::string input)
         input.insert(0, "-");
     }
     return input;
+}
+
+QByteArray CryptManager::decodeAES(QByteArray input) //Code taken from http://pastebin.com/MjvR0T98
+{
+    byte output[1000];
+    AESDecryptor.ProcessData((byte*)input.data(), output, input.length());
+    return input;
+}
+
+QByteArray CryptManager::encodeAES(QByteArray input) //Code taken from http://pastebin.com/MjvR0T98
+{
+    std::string output("");
+    std::string inputString = input.toStdString();
+    try {
+    StringSource(inputString, true, new StreamTransformationFilter(AESEncryptor, new StringSink(output)));
+    } catch (CryptoPP::Exception)
+    {
+        //Woops
+    }
+    return QString::fromStdString(output).toUtf8();
 }
 
 const char* CryptManager::hex_char_to_bin(char c) //Function taken on http://stackoverflow.com/questions/18310952/convert-strings-between-hex-format-and-binary-format

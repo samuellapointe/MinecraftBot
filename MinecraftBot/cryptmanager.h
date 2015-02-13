@@ -10,6 +10,8 @@
 //#include <files.h>
 #include <QString>
 #include <QByteArray>
+#include <aes.h>
+#include <modes.h>
 using namespace CryptoPP;
 
 class CryptManager
@@ -24,10 +26,15 @@ public:
     void loadKey(QByteArray &key);
     QByteArray encodeRSA(QByteArray data);
     QByteArray getHash(QByteArray key);
+
+    QByteArray encodeAES(QByteArray input);
+    QByteArray decodeAES(QByteArray input);
 private:
     //VARS
     RSA::PublicKey publicKey;
     RSAES<PKCS1v15>::Encryptor encryptor;
+    CFB_Mode<AES>::Decryption AESDecryptor;
+    CFB_Mode<AES>::Encryption AESEncryptor;
     //Functions
     std::string javaHexDigest(std::string input);
 
