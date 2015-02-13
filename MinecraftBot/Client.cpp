@@ -24,6 +24,7 @@ Client::~Client()
 void Client::startConnect()
 {
     compressionSet = false;
+    encrypted = false;
 
     socket.ui = ui; //Give the socket the interface to write to
     socket.client = this;
@@ -82,13 +83,23 @@ void Client::handlePacket(int packetID, int packetSize, QByteArray &data)
     switch(packetID)
     {
     case 1: //Encryption request
+        if(!encrypted)
         {
             ui->displayPacket(true, packetID, packetSize, QColor(255, 100, 100), "Encryption request");
             EncryptionRequest er = EncryptionRequest(data);
             crypt.loadKey(er.publicKey);
-            crypt.getHash(er.publicKey);
+            QByteArray hash = crypt.getHash(er.publicKey);
             EncryptionResponse er2 = EncryptionResponse(crypt.encodeRSA(crypt.sharedSecret), crypt.encodeRSA(er.verifyToken));
+            //Auth
+            Authentificator auth = Authentificator();
+            auth.ui = this->ui;
+            auth.authentificate(username, password, hash);
+            //Session
+
+            //Finish
             socket.write(er2.packPacket());
+            ui->displayPacket(false, packetID, packetSize, QColor(255, 100, 200), "Encryption response");
+            encrypted = true;
 
         }
         break;

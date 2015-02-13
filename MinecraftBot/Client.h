@@ -6,6 +6,7 @@
 #include <string>
 #include "mytcpsocket.h"
 #include "cryptmanager.h"
+#include "authentificator.h"
 
 using std::string;
 
@@ -19,6 +20,7 @@ public:
     void decodePacket(QByteArray &data);
     void handlePacket(int packetID, int packetSize, QByteArray &data);
 private:
+    //Vars
     CryptManager crypt;
     string username;
     string password;
@@ -27,6 +29,10 @@ private:
     MainWindow * ui;
     MyTcpSocket socket;
     bool compressionSet; //Pour savoir si la compression à été activée
+    bool encrypted;
+    //Functions
+    void authentificate();
+
 };
 
 #endif // CLIENT_H

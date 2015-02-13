@@ -20,6 +20,7 @@ SOURCES += main.cpp\
     mytcpsocket.cpp \
     varint.cpp \
     cryptmanager.cpp \
+    authentificator.cpp
 
 
 HEADERS  += mainwindow.h \
@@ -27,6 +28,7 @@ HEADERS  += mainwindow.h \
     mytcpsocket.h \
     varint.h \
     cryptmanager.h \
+    authentificator.h
 
 FORMS    += mainwindow.ui
 
