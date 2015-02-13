@@ -86,6 +86,7 @@ void Client::handlePacket(int packetID, int packetSize, QByteArray &data)
             ui->displayPacket(true, packetID, packetSize, QColor(255, 100, 100), "Encryption request");
             EncryptionRequest er = EncryptionRequest(data);
             crypt.loadKey(er.publicKey);
+            crypt.getHash(er.publicKey);
             EncryptionResponse er2 = EncryptionResponse(crypt.encodeRSA(crypt.sharedSecret), crypt.encodeRSA(er.verifyToken));
             socket.write(er2.packPacket());
 
