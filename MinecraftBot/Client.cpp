@@ -15,6 +15,7 @@ Client::Client(MainWindow * i_ui, const string &i_username, const string &i_pass
     ip = i_ip;
     port = i_port;
     ui = i_ui;
+    crypt = new CryptManager();
 }
 
 Client::~Client()
@@ -48,14 +49,15 @@ void Client::decodePacket(QByteArray &data)
 {
     if(encrypted)
     {
-        QByteArray data2 = crypt.decodeAES(data);
+        data = crypt->decodeAES(data.toStdString());
     }
     //The first value should be a varint with the packet's size
     int nbBytesDecoded;
     uint8_t * buffer = (uint8_t*)data.data();
     uint64_t decodedSize = Varint::decode_unsigned_varint(buffer, nbBytesDecoded);
+    ui->writeToChat(QString::number(decodedSize) + ", " + QString::number(data.size()));
     data = data.right(data.length() - nbBytesDecoded); //Remove the bytes decoded so far
-
+    ui->writeToConsole(data);
     if(compressionSet)
     {
         //Next, the data length, 0 if uncompressed. Don't need to care about compressed packets right now so I'll only interpret those with the value 0.
@@ -91,9 +93,9 @@ void Client::handlePacket(int packetID, int packetSize, QByteArray &data)
         {
             ui->displayPacket(true, packetID, packetSize, QColor(255, 100, 100), "Encryption request");
             EncryptionRequest er = EncryptionRequest(data);
-            crypt.loadKey(er.publicKey);
-            QByteArray hash = crypt.getHash(er.publicKey);
-            EncryptionResponse er2 = EncryptionResponse(crypt.encodeRSA(crypt.sharedSecret), crypt.encodeRSA(er.verifyToken));
+            crypt->loadKey(er.publicKey);
+            QByteArray hash = crypt->getHash(er.publicKey);
+            EncryptionResponse er2 = EncryptionResponse(crypt->encodeRSA(crypt->sharedSecretString.c_str()), crypt->encodeRSA(er.verifyToken));
             //Auth
             Authentificator auth = Authentificator();
             auth.ui = this->ui;

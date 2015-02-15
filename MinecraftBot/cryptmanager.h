@@ -18,7 +18,8 @@ class CryptManager
 {
 public:
     //VARS
-    QByteArray sharedSecret;
+    SecByteBlock sharedSecret;
+    std::string sharedSecretString;
 
     //Functions
     CryptManager();
@@ -28,7 +29,7 @@ public:
     QByteArray getHash(QByteArray key);
 
     QByteArray encodeAES(QByteArray input);
-    QByteArray decodeAES(QByteArray input);
+    QByteArray decodeAES(std::string input);
 private:
     //VARS
     RSA::PublicKey publicKey;

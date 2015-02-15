@@ -4,11 +4,26 @@
 
 CryptManager::CryptManager()
 {
-    sharedSecret = "0123456789abcdef"; //A very complex private key
+    /*sharedSecret = "0123456789abcdef"; //A very complex private key
     byte IV[AES::BLOCKSIZE];
-    memcpy(IV,sharedSecret,16);
-    AESEncryptor = CFB_Mode<AES>::Encryption((byte*)sharedSecret.data(),(unsigned int)16,IV,1);
-    AESDecryptor = CFB_Mode<AES>::Decryption((byte*)sharedSecret.data(),(unsigned int)16,IV,1);
+    memcpy(IV,sharedSecret.c_str(),16);
+    AESEncryptor;
+    AESEncryptor.SetKeyWithIV((byte*)sharedSecret.c_str(), sharedSecret.size(), IV);
+    AESDecryptor = CFB_Mode<AES>::Decryption((byte*)sharedSecret.c_str(),(unsigned int)16,IV,1);*/
+    AutoSeededRandomPool prng;
+
+    sharedSecret = SecByteBlock(AES::DEFAULT_KEYLENGTH);
+    prng.GenerateBlock( sharedSecret, sharedSecret.size() );
+
+    sharedSecretString = std::string((char*)sharedSecret.data(), sharedSecret.size());
+
+    byte iv[ AES::BLOCKSIZE ];
+    memcpy(iv,sharedSecretString.c_str(),16);
+
+    AESDecryptor.SetKeyWithIV( sharedSecret, sharedSecret.size(), iv );
+
+
+
 }
 
 void CryptManager::loadKey(QByteArray &key)
@@ -48,7 +63,7 @@ QByteArray CryptManager::encodeRSA(QByteArray data)
 QByteArray CryptManager::getHash(QByteArray key)
 {
     SHA1 sha1;
-    std::string source = sharedSecret.toStdString() + key.toStdString();
+    std::string source = sharedSecretString + key.toStdString();
     //std::string source = "simon";
     std::string hash;
     StringSource(source, true, new HashFilter(sha1, new HexEncoder(new StringSink(hash))));
@@ -102,11 +117,25 @@ std::string CryptManager::javaHexDigest(std::string input)
     return input;
 }
 
-QByteArray CryptManager::decodeAES(QByteArray input) //Code taken from http://pastebin.com/MjvR0T98
+QByteArray CryptManager::decodeAES(std::string input)//Code taken from http://pastebin.com/MjvR0T98
 {
-    byte output[1000];
-    AESDecryptor.ProcessData((byte*)input.data(), output, input.length());
-    return input;
+
+    std::string output;
+    try
+    {
+        // CFB mode must not use padding. Specifying
+        //  a scheme will result in an exception
+        StringSource ss1( input, true,
+            new StreamTransformationFilter( AESDecryptor,
+                new StringSink( output )
+            ) // StreamTransformationFilter
+        ); // StringSource
+    }
+    catch (CryptoPP::Exception)
+    {
+        //Woops
+    }
+    return output.data();
 }
 
 QByteArray CryptManager::encodeAES(QByteArray input) //Code taken from http://pastebin.com/MjvR0T98

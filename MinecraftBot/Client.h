@@ -21,7 +21,7 @@ public:
     void handlePacket(int packetID, int packetSize, QByteArray &data);
 private:
     //Vars
-    CryptManager crypt;
+    CryptManager * crypt;
     string username;
     string password;
     QString ip;
