@@ -18,8 +18,8 @@ class CryptManager
 {
 public:
     //VARS
-    SecByteBlock sharedSecret;
-    std::string sharedSecretString;
+    //SecByteBlock sharedSecret;
+    std::string sharedSecret;
 
     //Functions
     CryptManager();

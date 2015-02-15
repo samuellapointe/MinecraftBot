@@ -95,7 +95,7 @@ void Client::handlePacket(int packetID, int packetSize, QByteArray &data)
             EncryptionRequest er = EncryptionRequest(data);
             crypt->loadKey(er.publicKey);
             QByteArray hash = crypt->getHash(er.publicKey);
-            EncryptionResponse er2 = EncryptionResponse(crypt->encodeRSA(crypt->sharedSecretString.c_str()), crypt->encodeRSA(er.verifyToken));
+            EncryptionResponse er2 = EncryptionResponse(crypt->encodeRSA(crypt->sharedSecret.data()), crypt->encodeRSA(er.verifyToken));
             //Auth
             Authentificator auth = Authentificator();
             auth.ui = this->ui;
@@ -113,7 +113,7 @@ void Client::handlePacket(int packetID, int packetSize, QByteArray &data)
         {
             if(!compressionSet) //Set compression
             {
-                compressionSet = true; //ID 3 sets compression in the login phase
+                //compressionSet = true; //ID 3 sets compression in the login phase
                 ui->displayPacket(true, packetID, packetSize, QColor(100,125,255), "Set compression!");
             }
             else //Keep alive

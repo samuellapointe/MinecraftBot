@@ -10,17 +10,19 @@ CryptManager::CryptManager()
     AESEncryptor;
     AESEncryptor.SetKeyWithIV((byte*)sharedSecret.c_str(), sharedSecret.size(), IV);
     AESDecryptor = CFB_Mode<AES>::Decryption((byte*)sharedSecret.c_str(),(unsigned int)16,IV,1);*/
-    AutoSeededRandomPool prng;
+    //AutoSeededRandomPool prng;
 
-    sharedSecret = SecByteBlock(AES::DEFAULT_KEYLENGTH);
-    prng.GenerateBlock( sharedSecret, sharedSecret.size() );
+    //sharedSecret = SecByteBlock(16);
+    //prng.GenerateBlock( sharedSecret, sharedSecret.size() );
 
-    sharedSecretString = std::string((char*)sharedSecret.data(), sharedSecret.size());
+    sharedSecret = "0123456789abcdef";;
 
     byte iv[ AES::BLOCKSIZE ];
-    memcpy(iv,sharedSecretString.c_str(),16);
+    memcpy(iv,sharedSecret.c_str(),16);
 
-    AESDecryptor.SetKeyWithIV( sharedSecret, sharedSecret.size(), iv );
+    //AESDecryptor.SetKeyWithIV( sharedSecret, sharedSecret.size(), iv);
+    //AESDecryptor = CFB_Mode<AES>::Decryption((byte*)sharedSecret.c_str(), 16, iv, 8);
+    AESDecryptor.SetKeyWithIV( (byte*)sharedSecret.data(), sharedSecret.size(), iv);
 
 
 
@@ -63,7 +65,7 @@ QByteArray CryptManager::encodeRSA(QByteArray data)
 QByteArray CryptManager::getHash(QByteArray key)
 {
     SHA1 sha1;
-    std::string source = sharedSecretString + key.toStdString();
+    std::string source = sharedSecret + key.toStdString();
     //std::string source = "simon";
     std::string hash;
     StringSource(source, true, new HashFilter(sha1, new HexEncoder(new StringSink(hash))));
@@ -120,7 +122,7 @@ std::string CryptManager::javaHexDigest(std::string input)
 QByteArray CryptManager::decodeAES(std::string input)//Code taken from http://pastebin.com/MjvR0T98
 {
 
-    std::string output;
+    /*std::string output;
     try
     {
         // CFB mode must not use padding. Specifying
@@ -135,7 +137,28 @@ QByteArray CryptManager::decodeAES(std::string input)//Code taken from http://pa
     {
         //Woops
     }
-    return output.data();
+    return output.c_str();*/
+    byte IV[AES::BLOCKSIZE];
+    memcpy(IV,sharedSecret.c_str(),16);
+
+    /* De/Encryptor */
+    CFB_Mode<AES>::Decryption d((byte*)sharedSecret.c_str(),(unsigned int)16,IV,1);
+
+    /* Encrypt Data */
+    std::string sTarget("");
+    try {
+    StringSource(input, true,
+                 new StreamTransformationFilter(d,
+                                               new StringSink(sTarget)
+                                               )
+                );
+    }
+    catch(CryptoPP::Exception)
+    {
+
+
+    }
+    return sTarget.c_str();
 }
 
 QByteArray CryptManager::encodeAES(QByteArray input) //Code taken from http://pastebin.com/MjvR0T98
