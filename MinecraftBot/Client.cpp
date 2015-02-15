@@ -49,7 +49,7 @@ void Client::decodePacket(QByteArray &data)
 {
     if(encrypted)
     {
-        data = crypt->decodeAES(data.toStdString());
+        data = crypt->decodeAES(data);
     }
     //The first value should be a varint with the packet's size
     int nbBytesDecoded;
@@ -88,6 +88,14 @@ void Client::handlePacket(int packetID, int packetSize, QByteArray &data)
 {
     switch(packetID)
     {
+    case 0:
+        if(compressionSet)
+        {
+            ui->displayPacket(true, packetID, packetSize, QColor(150,150,255), "Keep alive");
+            KeepAlive ka = KeepAlive(data);
+            socket.write(crypt->encodeAES(ka.packPacket()));
+            ui->displayPacket(false, ka.packetID, ka.packetSize, QColor(150, 200, 200), "Keep alive");
+        }
     case 1: //Encryption request
         if(!encrypted)
         {
@@ -113,7 +121,7 @@ void Client::handlePacket(int packetID, int packetSize, QByteArray &data)
         {
             if(!compressionSet) //Set compression
             {
-                //compressionSet = true; //ID 3 sets compression in the login phase
+                compressionSet = true; //ID 3 sets compression in the login phase
                 ui->displayPacket(true, packetID, packetSize, QColor(100,125,255), "Set compression!");
             }
             else //Keep alive

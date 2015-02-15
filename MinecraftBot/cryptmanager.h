@@ -29,13 +29,13 @@ public:
     QByteArray getHash(QByteArray key);
 
     QByteArray encodeAES(QByteArray input);
-    QByteArray decodeAES(std::string input);
+    QByteArray decodeAES(QByteArray input);
 private:
     //VARS
     RSA::PublicKey publicKey;
     RSAES<PKCS1v15>::Encryptor encryptor;
-    CFB_Mode<AES>::Decryption AESDecryptor;
-    CFB_Mode<AES>::Encryption AESEncryptor;
+    CFB_Mode<AES>::Decryption * AESDecryptor;
+    CFB_Mode<AES>::Encryption * AESEncryptor;
     //Functions
     std::string javaHexDigest(std::string input);
 

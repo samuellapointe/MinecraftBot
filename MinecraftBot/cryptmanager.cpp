@@ -4,27 +4,12 @@
 
 CryptManager::CryptManager()
 {
-    /*sharedSecret = "0123456789abcdef"; //A very complex private key
+    sharedSecret = "0123456789abcdef";
     byte IV[AES::BLOCKSIZE];
     memcpy(IV,sharedSecret.c_str(),16);
-    AESEncryptor;
-    AESEncryptor.SetKeyWithIV((byte*)sharedSecret.c_str(), sharedSecret.size(), IV);
-    AESDecryptor = CFB_Mode<AES>::Decryption((byte*)sharedSecret.c_str(),(unsigned int)16,IV,1);*/
-    //AutoSeededRandomPool prng;
 
-    //sharedSecret = SecByteBlock(16);
-    //prng.GenerateBlock( sharedSecret, sharedSecret.size() );
-
-    sharedSecret = "0123456789abcdef";;
-
-    byte iv[ AES::BLOCKSIZE ];
-    memcpy(iv,sharedSecret.c_str(),16);
-
-    //AESDecryptor.SetKeyWithIV( sharedSecret, sharedSecret.size(), iv);
-    //AESDecryptor = CFB_Mode<AES>::Decryption((byte*)sharedSecret.c_str(), 16, iv, 8);
-    AESDecryptor.SetKeyWithIV( (byte*)sharedSecret.data(), sharedSecret.size(), iv);
-
-
+    AESDecryptor = new CFB_Mode<AES>::Decryption((byte*)sharedSecret.c_str(),(unsigned int)16,IV,1);
+    AESEncryptor = new CFB_Mode<AES>::Encryption((byte*)sharedSecret.c_str(),(unsigned int)16,IV,1);
 
 }
 
@@ -119,59 +104,36 @@ std::string CryptManager::javaHexDigest(std::string input)
     return input;
 }
 
-QByteArray CryptManager::decodeAES(std::string input)//Code taken from http://pastebin.com/MjvR0T98
+QByteArray CryptManager::decodeAES(QByteArray inputBytes)//Code taken from http://pastebin.com/MjvR0T98
 {
-
-    /*std::string output;
+    /* Decrypt Data */
+    std::string input = inputBytes.toStdString();
+    std::string output("");
     try
     {
-        // CFB mode must not use padding. Specifying
-        //  a scheme will result in an exception
-        StringSource ss1( input, true,
-            new StreamTransformationFilter( AESDecryptor,
-                new StringSink( output )
-            ) // StreamTransformationFilter
-        ); // StringSource
-    }
-    catch (CryptoPP::Exception)
-    {
-        //Woops
-    }
-    return output.c_str();*/
-    byte IV[AES::BLOCKSIZE];
-    memcpy(IV,sharedSecret.c_str(),16);
-
-    /* De/Encryptor */
-    CFB_Mode<AES>::Decryption d((byte*)sharedSecret.c_str(),(unsigned int)16,IV,1);
-
-    /* Encrypt Data */
-    std::string sTarget("");
-    try {
-    StringSource(input, true,
-                 new StreamTransformationFilter(d,
-                                               new StringSink(sTarget)
-                                               )
-                );
+        StringSource(input, true, new StreamTransformationFilter(*AESDecryptor, new StringSink(output)));
     }
     catch(CryptoPP::Exception)
     {
 
-
     }
-    return sTarget.c_str();
+    return output.c_str();
 }
 
-QByteArray CryptManager::encodeAES(QByteArray input) //Code taken from http://pastebin.com/MjvR0T98
+QByteArray CryptManager::encodeAES(QByteArray inputBytes) //Code taken from http://pastebin.com/MjvR0T98
 {
+    /* Encrypt Data */
+    std::string input = inputBytes.toStdString();
     std::string output("");
-    std::string inputString = input.toStdString();
-    try {
-    StringSource(inputString, true, new StreamTransformationFilter(AESEncryptor, new StringSink(output)));
-    } catch (CryptoPP::Exception)
+    try
     {
-        //Woops
+        StringSource(input, true, new StreamTransformationFilter(*AESEncryptor, new StringSink(output)));
     }
-    return QString::fromStdString(output).toUtf8();
+    catch(CryptoPP::Exception)
+    {
+
+    }
+    return output.c_str();
 }
 
 const char* CryptManager::hex_char_to_bin(char c) //Function taken on http://stackoverflow.com/questions/18310952/convert-strings-between-hex-format-and-binary-format

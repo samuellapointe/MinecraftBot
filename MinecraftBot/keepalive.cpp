@@ -3,7 +3,7 @@
 KeepAlive::KeepAlive(QByteArray &d)
 {
     data = d;
-    packetID = 3;
+    packetID = 0;
 }
 
 KeepAlive::~KeepAlive()
@@ -25,7 +25,7 @@ QByteArray KeepAlive::packPacket()
     Packet::appendVarint(tmp, decodedKeepAlive);
 
     //Call parent function to finish packing
-    return(Packet::packPacket(tmp, true));
+    return(Packet::packPacket(tmp, false));
 
 }
 
