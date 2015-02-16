@@ -103,6 +103,10 @@ void MainWindow::displayPacket(const bool received, const int id, const int size
         ui->PacketList->addItem("Sent: ID: " + QString::number(id) + "   Size: " + QString::number(size) + "   Info: " + info);
     }
     ui->PacketList->item(ui->PacketList->count()-1)->setBackgroundColor(color);
+    if(color.lightness() < 128)
+    {
+        ui->PacketList->item(ui->PacketList->count()-1)->setTextColor(QColor(255, 255, 255));
+    }
     if(ui->PacketList->count() > 100) //Vider la liste
     {
         delete ui->PacketList->item(0);

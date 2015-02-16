@@ -72,3 +72,4 @@ void MyTcpSocket::write(QByteArray data)
     socket->write(data);
     socket->waitForBytesWritten(5000);
 }
+

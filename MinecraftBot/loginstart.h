@@ -6,9 +6,9 @@
 class LoginStart : public Packet
 {
 public:
-    LoginStart(const std::string &login);
+    LoginStart(MyTcpSocket * socket, MainWindow * ui, const std::string &login);
     ~LoginStart();
-    QByteArray packPacket();
+    void sendPacket();
 private:
     std::string login;
 };

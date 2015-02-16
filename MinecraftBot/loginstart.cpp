@@ -1,9 +1,12 @@
 #include "loginstart.h"
 
-LoginStart::LoginStart(const std::string &l)
+LoginStart::LoginStart(MyTcpSocket * s, MainWindow * i_ui, const std::string &l)
 {
     login = l;
     packetID = 0;
+    socket = s;
+    ui = i_ui;
+    displayColor = QColor(150, 0 ,0);
 }
 
 LoginStart::~LoginStart()
@@ -11,7 +14,7 @@ LoginStart::~LoginStart()
 
 }
 
-QByteArray LoginStart::packPacket()
+void LoginStart::sendPacket()
 {
     //The data buffer
     QByteArray tmp;
@@ -21,7 +24,8 @@ QByteArray LoginStart::packPacket()
     tmp.append(vectorLogin);
 
     //Call parent function to finish packing
-    return(Packet::packPacket(tmp));
+    int length = Packet::sendPacket(Packet::packPacket(tmp));
+    ui->displayPacket(false, packetID, length, displayColor, "Login Start");
 
 }
 

@@ -33,13 +33,11 @@ void Client::startConnect()
 
     if(socket.connectedBool)
     {
-        Handshake hs = Handshake(47, ip.toStdString(), port, 2);
-        QByteArray packetTmp = hs.packPacket();
-        socket.write(packetTmp);
-        ui->displayPacket(false, hs.packetID, hs.packetSize, QColor(255, 200, 200), "Handshake");
-        LoginStart ls = LoginStart(username);
-        socket.write(ls.packPacket());
-        ui->displayPacket(false, ls.packetID, ls.packetSize, QColor(200, 255, 200), "Login Start");
+        //Send the two first packets necessary to connect
+        Handshake hs = Handshake(&socket, ui, 47, ip.toStdString(), port, 2);
+        hs.sendPacket();
+        LoginStart ls = LoginStart(&socket, ui, username);
+        ls.sendPacket();
     }
 
 

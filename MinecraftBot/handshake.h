@@ -6,9 +6,9 @@
 class Handshake : public Packet
 {
 public:
-    Handshake(const uint8_t protocolVersion, const std::string &serverAdress, const uint16_t serverPort, const uint8_t nextState);
+    Handshake(MyTcpSocket * socket, MainWindow * ui, const uint8_t protocolVersion, const std::string &serverAdress, const uint16_t serverPort, const uint8_t nextState);
     ~Handshake();
-    QByteArray packPacket();
+    void sendPacket();
 private:
     uint8_t protocolVersion;
     std::string serverAdress;

@@ -35,6 +35,12 @@ QByteArray Packet::packPacket(const QByteArray &d, bool compress)
     return packetFront;
 }
 
+int Packet::sendPacket(const QByteArray &data)
+{
+    socket->write(data);
+    return data.length();
+}
+
 /* String format:
  * First, the length in bytes of the string as a varint
  * Then, the string itself */
@@ -61,8 +67,3 @@ void Packet::appendVarint(QByteArray &input, int value)
     }
 }
 
-/*
-//DECODING
-int nbBytesDecoded;
-int decodedValue = Varint::decode_unsigned_varint(fillerBuffer, nbBytesDecoded);
-*/
