@@ -4,6 +4,7 @@
 #include "filters.h"
 #include "misc.h"
 
+#pragma warning(push, 0)
 NAMESPACE_BEGIN(CryptoPP)
 
 //! _
@@ -117,5 +118,5 @@ protected:
 };
 
 NAMESPACE_END
-
+#pragma warning(pop)
 #endif

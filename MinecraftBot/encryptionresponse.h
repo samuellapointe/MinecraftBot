@@ -6,9 +6,9 @@
 class EncryptionResponse : public Packet
 {
 public:
-    EncryptionResponse(const QByteArray &sharedSecret, const QByteArray &token);
+    EncryptionResponse(MyTcpSocket * socket, MainWindow * ui, const QByteArray &sharedSecret, const QByteArray &token);
     ~EncryptionResponse();
-    QByteArray packPacket();
+    void sendPacket();
 private:
     QByteArray sharedSecret;
     QByteArray token;

@@ -8,9 +8,13 @@
 #include "cryptmanager.h"
 #include "authentificator.h"
 
+
 using std::string;
 
+enum State {HANDSHAKING, LOGIN, PLAY}; //Game state
+
 class MainWindow; //MainWindow includes this header file, so I have to use this to avoid a circular dependency
+class Packet;
 class Client
 {
 public:
@@ -18,7 +22,7 @@ public:
     ~Client();
     void startConnect();
     void decodePacket(QByteArray &data);
-    void handlePacket(int packetID, int packetSize, QByteArray &data);
+    void handlePacket(Packet &packet);
 private:
     //Vars
     CryptManager * crypt;
@@ -30,8 +34,10 @@ private:
     MyTcpSocket socket;
     bool compressionSet; //Pour savoir si la compression à été activée
     bool encrypted;
+    State currentState;
     //Functions
     void authentificate();
+    void enableEncryption(QByteArray &data);
 
 };
 

@@ -1,10 +1,13 @@
 #include "encryptionresponse.h"
 
-EncryptionResponse::EncryptionResponse(const QByteArray &ss, const QByteArray &t)
+EncryptionResponse::EncryptionResponse(MyTcpSocket * s, MainWindow * i_ui, const QByteArray &ss, const QByteArray &t)
 {
     sharedSecret = ss;
     token = t;
     packetID = 1;
+    socket = s;
+    ui = i_ui;
+    displayColor = QColor(100, 0, 0);
 }
 
 EncryptionResponse::~EncryptionResponse()
@@ -12,7 +15,7 @@ EncryptionResponse::~EncryptionResponse()
 
 }
 
-QByteArray EncryptionResponse::packPacket()
+void EncryptionResponse::sendPacket()
 {
     //The data buffer
     QByteArray tmp;
@@ -30,5 +33,6 @@ QByteArray EncryptionResponse::packPacket()
     tmp.append(token);
 
     //Call parent
-    return (Packet::packPacket(tmp));
+    int length = Packet::sendPacket(Packet::packPacket(tmp));
+    ui->displayPacket(false, packetID, length, displayColor, "Encryption Response");
 }

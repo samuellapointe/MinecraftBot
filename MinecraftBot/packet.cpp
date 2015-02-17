@@ -3,6 +3,41 @@
  * */
 #include "packet.h"
 
+Packet::Packet()
+{
+
+}
+
+Packet::Packet(const QByteArray &d, bool compressed)
+{
+    //Some vars
+    data = d;
+    uint8_t * buffer = (uint8_t*)data.data();
+    int nbBytesDecoded;
+
+    //Data length
+    packetSize = Varint::decode_unsigned_varint(buffer, nbBytesDecoded);
+    data = data.right(data.length() - nbBytesDecoded); //Remove the bytes decoded so far
+
+    if(compressed)
+    {
+        //Uncompressed data length, 0 if already uncompressed
+        buffer = (uint8_t*)data.data();
+        uint64_t uncompressedLength = Varint::decode_unsigned_varint(buffer, nbBytesDecoded);
+        data = data.right(data.length() - nbBytesDecoded); //Remove the bytes decoded so far
+        if(uncompressedLength != 0) //Uncompress
+        {
+            data = uncompress(data);
+            data = data.right(uncompressedLength);
+        }
+
+    }
+    //Next value is packet ID
+    buffer = (uint8_t*)data.data();
+    packetID = Varint::decode_unsigned_varint(buffer, nbBytesDecoded);
+    data = data.right(data.length() - nbBytesDecoded); //Remove the bytes decoded so far
+}
+
 /* Packet format:
  * First, the size of the packet as a varint
  * then, the ID of the packet as a varint
@@ -67,3 +102,33 @@ void Packet::appendVarint(QByteArray &input, int value)
     }
 }
 
+QByteArray Packet::uncompress(QByteArray compressed) //Taken from http://wiki.vg/Chunk_data_decompressing_%28Zlib%29
+{
+    //Output memory is at most 16*16*128*2.5 bytes
+    char *out = new char[100000];
+
+    int ret;
+    z_stream strm;
+
+    strm.zalloc = Z_NULL;
+    strm.zfree = Z_NULL;
+    strm.opaque = Z_NULL;
+    strm.avail_in = 0;
+    strm.next_in = Z_NULL;
+    ret = inflateInit(&strm);
+
+    if (ret != Z_OK){
+       //ui->writeToConsole("Something went wrong while uncompressing");
+    }
+
+    strm.avail_in = compressed.length();
+    strm.next_in = (Bytef*)(compressed.data());
+    strm.avail_out = 100000;
+    strm.next_out = (Bytef*)out;
+
+    ret = inflate(&strm, Z_NO_FLUSH);
+
+    inflateEnd(&strm);
+    //Data is now in "out" buffer
+    return out;
+}

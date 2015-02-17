@@ -11,19 +11,24 @@
 #include "mytcpsocket.h"
 #include <QColor>
 #include "mainwindow.h"
+#include <QtZlib/zlib.h>
 
 class Packet
 {
 public:
+    Packet();
+    Packet(const QByteArray &data, bool compressed);
     //Functions
     QByteArray packPacket(const QByteArray &data, bool compress=false);
     QByteArray packString(const std::string &text);
     int sendPacket(const QByteArray &data);
     void appendVarint(QByteArray &input, int value);
+    QByteArray uncompress(QByteArray compressed);
 
     //Vars
     int packetID;
     int packetSize;
+    QByteArray data;
     MyTcpSocket * socket;
     MainWindow * ui;
     QColor displayColor;
