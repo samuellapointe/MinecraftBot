@@ -1,7 +1,17 @@
 #include "encryptionrequest.h"
 
-EncryptionRequest::EncryptionRequest(QByteArray &data)
+EncryptionRequest::EncryptionRequest(QByteArray d, MainWindow * i_ui)
 {
+    //Some vars for this packet
+    packetID = 1;
+    packetSize = data.length();
+    ui = i_ui;
+    data = d;
+    displayColor = QColor(255, 75, 75);
+
+    //Display the packet
+    ui->displayPacket(true, packetID, packetSize, displayColor, "Encryption request");
+
     //The first byte, which would be the server ID, is always empty so we cut it off
     data = data.right(data.length() - 1);
 

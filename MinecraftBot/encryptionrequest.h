@@ -6,7 +6,7 @@
 class EncryptionRequest : public Packet
 {
 public:
-    EncryptionRequest(QByteArray &data);
+    EncryptionRequest(QByteArray data, MainWindow * ui);
     ~EncryptionRequest();
 
     //Vars from the packet

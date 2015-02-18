@@ -69,8 +69,7 @@ void Client::handlePacket(Packet &packet) //The big switch case of doom, to hand
             ui->displayPacket(true, packet.packetID, packet.packetSize, QColor(0,0,0), "Disconnect");
             break;
         case 1: //Encryption request
-            ui->displayPacket(true, packet.packetID, packet.packetSize, QColor(255, 75, 75), "Encryption request");
-            enableEncryption(packet.data);
+            enableEncryption(packet);
             break;
         case 2: //Login Success
             ui->writeToConsole("Login successful");
@@ -152,10 +151,9 @@ void Client::handlePacket(Packet &packet) //The big switch case of doom, to hand
         break;
     }*/
 }
-void Client::enableEncryption(QByteArray &data)
+void Client::enableEncryption(Packet packet)
 {
-
-    EncryptionRequest er = EncryptionRequest(data); //Decypher the data into an encryption request packet
+    EncryptionRequest er = EncryptionRequest(packet.data, ui); //Decypher the data into an encryption request packet
     crypt->loadKey(er.publicKey); //Load the RSA public key into the cryptography manager
     QByteArray hash = crypt->getHash(er.publicKey); //Get the hash necessary for the encryption response
     EncryptionResponse er2 = EncryptionResponse(

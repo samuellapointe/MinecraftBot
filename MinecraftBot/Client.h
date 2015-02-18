@@ -37,7 +37,7 @@ private:
     State currentState;
     //Functions
     void authentificate();
-    void enableEncryption(QByteArray &data);
+    void enableEncryption(Packet packet);
 
 };
 
