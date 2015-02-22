@@ -21,7 +21,7 @@ public:
     Client(MainWindow * i_ui, const string &i_username, const string &i_password, const QString &i_ip, const int i_port);
     ~Client();
     void startConnect();
-    void decodePacket(QByteArray &data);
+    void decodePacket(QByteArray data);
     void handlePacket(Packet &packet);
 private:
     //Vars

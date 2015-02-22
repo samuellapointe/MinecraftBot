@@ -8,29 +8,34 @@ Packet::Packet()
 
 }
 
-Packet::Packet(const QByteArray &d, bool compressed)
+Packet::Packet(MainWindow * i_ui, const QByteArray &d, bool compressed)
 {
     //Some vars
     data = d;
-    uint8_t * buffer = (uint8_t*)data.data();
     int nbBytesDecoded;
+    uint8_t * buffer;
+    ui = i_ui;
 
     //Data length
+    buffer = (uint8_t*)data.data();
     packetSize = Varint::decode_unsigned_varint(buffer, nbBytesDecoded);
     data = data.right(data.length() - nbBytesDecoded); //Remove the bytes decoded so far
-
     if(compressed)
     {
-        //Uncompressed data length, 0 if already uncompressed
         buffer = (uint8_t*)data.data();
-        uint64_t uncompressedLength = Varint::decode_unsigned_varint(buffer, nbBytesDecoded);
+        int uncompressedLength = Varint::decode_unsigned_varint(buffer, nbBytesDecoded);
         data = data.right(data.length() - nbBytesDecoded); //Remove the bytes decoded so far
-        if(uncompressedLength != 0) //Uncompress
+        if(uncompressedLength != 0)
         {
-            data = uncompress(data);
-            data = data.right(uncompressedLength);
+            QByteArray tmp;
+            tmp.append(static_cast<quint32>(uncompressedLength));
+            tmp.append(data);
+            data = qUncompress(tmp);
         }
-
+        else
+        {
+            //ui->writeToConsole(data);
+        }
     }
     //Next value is packet ID
     buffer = (uint8_t*)data.data();
@@ -107,6 +112,7 @@ QByteArray Packet::uncompress(QByteArray compressed) //Taken from http://wiki.vg
     //Output memory is at most 16*16*128*2.5 bytes
     char *out = new char[100000];
 
+
     int ret;
     z_stream strm;
 
@@ -127,6 +133,7 @@ QByteArray Packet::uncompress(QByteArray compressed) //Taken from http://wiki.vg
     strm.next_out = (Bytef*)out;
 
     ret = inflate(&strm, Z_NO_FLUSH);
+
 
     inflateEnd(&strm);
     //Data is now in "out" buffer

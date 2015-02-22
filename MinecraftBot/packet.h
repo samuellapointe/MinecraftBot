@@ -17,7 +17,7 @@ class Packet
 {
 public:
     Packet();
-    Packet(const QByteArray &data, bool compressed);
+    Packet(MainWindow * ui, const QByteArray &data, bool compressed);
     //Functions
     QByteArray packPacket(const QByteArray &data, bool compress=false);
     QByteArray packString(const std::string &text);
@@ -26,8 +26,8 @@ public:
     QByteArray uncompress(QByteArray compressed);
 
     //Vars
-    int packetID;
-    int packetSize;
+    uint64_t packetID;
+    uint64_t packetSize;
     QByteArray data;
     MyTcpSocket * socket;
     MainWindow * ui;

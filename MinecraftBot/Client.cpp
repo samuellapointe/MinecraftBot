@@ -45,13 +45,15 @@ void Client::startConnect()
     }
 }
 
-void Client::decodePacket(QByteArray &data)
+void Client::decodePacket(QByteArray data)
 {
     if(encrypted)
     {
-        data = crypt->decodeAES(data);
+        std::string test = crypt->decodeAES(data);
+        QString uncryptedData = QString::fromStdString(test);
+        data = uncryptedData.toUtf8();
     }
-    Packet p = Packet(data, compressionSet);
+    Packet p = Packet(ui, data, compressionSet);
     handlePacket(p);
 }
 
@@ -80,7 +82,6 @@ void Client::handlePacket(Packet &packet) //The big switch case of doom, to hand
             ui->writeToConsole("Server enabled compression");
             ui->displayPacket(true, packet.packetID, packet.packetSize, QColor(255,165,0), "Set Compression");
             compressionSet = true;
-            currentState = PLAY;
             break;
         default:
             ui->writeToConsole("Unknown packet during LOGIN phase, ID " + QString::number(packet.packetID));
@@ -90,66 +91,19 @@ void Client::handlePacket(Packet &packet) //The big switch case of doom, to hand
     case PLAY:
         switch(packet.packetID)
         {
+        case 3:
+            {
+                ui->displayPacket(true, packet.packetID, packet.packetSize, QColor(100,255,100), "Keep Alive");
+                KeepAlive ka = KeepAlive(&socket, ui, packet.data);
+                ka.sendPacket();
+            }
+            break;
         default:
-            ui->displayPacket(true, packet.packetID, packet.packetSize, QColor(0,255,0), "Keep Alive");
+            //ui->displayPacket(true, packet.packetID, packet.packetSize, QColor(0,255,0), "Keep Alive");
             break;
         }
     }
 
-    /*switch(packet.packetID)
-    {
-    case 0:
-        if(compressionSet)
-        {
-            ui->displayPacket(true, packet.packetID, packet.packetSize, QColor(150,150,255), "Keep alive");
-            KeepAlive ka = KeepAlive(packet.data);
-            socket.write(crypt->encodeAES(ka.packPacket()));
-            ui->displayPacket(false, ka.packetID, ka.packetSize, QColor(150, 200, 200), "Keep alive");
-        }
-    case 1: //Encryption request
-        if(!encrypted)
-        {
-            ui->displayPacket(true, packetID, packetSize, QColor(255, 100, 100), "Encryption request");
-            EncryptionRequest er = EncryptionRequest(data);
-            crypt->loadKey(er.publicKey);
-            QByteArray hash = crypt->getHash(er.publicKey);
-            EncryptionResponse er2 = EncryptionResponse(crypt->encodeRSA(crypt->sharedSecret.data()), crypt->encodeRSA(er.verifyToken));
-            //Auth
-            Authentificator auth = Authentificator();
-            auth.ui = this->ui;
-            auth.authentificate(username, password, hash);
-            //Session
-
-            //Finish
-            socket.write(er2.packPacket());
-            ui->displayPacket(false, packetID, packetSize, QColor(255, 100, 200), "Encryption response");
-            encrypted = true;
-
-        }
-        break;
-    case 3:
-        {
-            if(!compressionSet) //Set compression
-            {
-                compressionSet = true; //ID 3 sets compression in the login phase
-                ui->displayPacket(true, packetID, packetSize, QColor(100,125,255), "Set compression!");
-            }
-            else //Keep alive
-            {
-                ui->displayPacket(true, packetID, packetSize, QColor(150,150,255), "Keep alive");
-                KeepAlive ka = KeepAlive(data);
-                socket.write(ka.packPacket());
-                ui->displayPacket(false, ka.packetID, ka.packetSize, QColor(150, 200, 200), "Keep alive");
-            }
-        }
-        break;
-    default:
-        if(ui->showUnknownPackets())
-        {
-            ui->displayPacket(true, packetID, packetSize);
-        }
-        break;
-    }*/
 }
 void Client::enableEncryption(Packet packet)
 {

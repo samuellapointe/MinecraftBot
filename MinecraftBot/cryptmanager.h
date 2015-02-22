@@ -29,7 +29,7 @@ public:
     QByteArray getHash(QByteArray key);
 
     QByteArray encodeAES(QByteArray input);
-    QByteArray decodeAES(QByteArray input);
+    std::string decodeAES(QByteArray input);
 private:
     //VARS
     RSA::PublicKey publicKey;

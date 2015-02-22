@@ -6,9 +6,9 @@
 class KeepAlive : public Packet
 {
 public:
-    KeepAlive(QByteArray &data);
+    KeepAlive(MyTcpSocket * socket, MainWindow * ui, QByteArray &data);
     ~KeepAlive();
-    QByteArray packPacket();
+    void sendPacket();
 private:
     QByteArray data;
 };

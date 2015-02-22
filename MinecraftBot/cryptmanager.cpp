@@ -104,7 +104,7 @@ std::string CryptManager::javaHexDigest(std::string input)
     return input;
 }
 
-QByteArray CryptManager::decodeAES(QByteArray inputBytes)//Code taken from http://pastebin.com/MjvR0T98
+std::string CryptManager::decodeAES(QByteArray inputBytes)//Code taken from http://pastebin.com/MjvR0T98
 {
     /* Decrypt Data */
     std::string input = inputBytes.toStdString();
@@ -117,7 +117,12 @@ QByteArray CryptManager::decodeAES(QByteArray inputBytes)//Code taken from http:
     {
 
     }
-    return output.c_str();
+    if(output.length() <= 2)
+    {
+        int a = 2;
+    }
+
+    return output;
 }
 
 QByteArray CryptManager::encodeAES(QByteArray inputBytes) //Code taken from http://pastebin.com/MjvR0T98

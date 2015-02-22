@@ -1,9 +1,12 @@
 #include "keepalive.h"
 
-KeepAlive::KeepAlive(QByteArray &d)
+KeepAlive::KeepAlive(MyTcpSocket * s, MainWindow * i_ui, QByteArray &d)
 {
     data = d;
     packetID = 0;
+    socket = s;
+    ui = i_ui;
+    displayColor = QColor(0, 200 ,0);
 }
 
 KeepAlive::~KeepAlive()
@@ -11,7 +14,7 @@ KeepAlive::~KeepAlive()
 
 }
 
-QByteArray KeepAlive::packPacket()
+void KeepAlive::sendPacket()
 {
     //The data buffer
     QByteArray tmp;
@@ -24,8 +27,9 @@ QByteArray KeepAlive::packPacket()
     //Packet::appendVarint(tmp, 0); //Tell the server it's not compressed
     Packet::appendVarint(tmp, decodedKeepAlive);
 
-    //Call parent function to finish packing
-    return(Packet::packPacket(tmp, false));
+    //Call parent
+    int length = Packet::sendPacket(Packet::packPacket(tmp));
+    ui->displayPacket(false, packetID, length, displayColor, "Keep Alive");
 
 }
 
