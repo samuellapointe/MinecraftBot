@@ -98,6 +98,7 @@ void Client::handlePacket(Packet &packet) //The big switch case of doom, to hand
                     ui->displayPacket(true, packet.packetID, packet.packetSize, QColor(100,255,100), "Keep Alive");
                     KeepAlive ka = KeepAlive(&socket, ui, packet.data);
                     ka.sendPacket(compressionSet);
+                    //ui->writeToChat(packet.data);
                 }
                 break;
             case 2:

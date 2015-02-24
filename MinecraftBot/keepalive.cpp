@@ -19,16 +19,7 @@ void KeepAlive::sendPacket(bool compressed)
     //The data buffer
     QByteArray tmp;
 
-    //The content of the keep alive
-    uint8_t * buffer = (uint8_t*)data.data();
-    int nbBytesDecoded;
-    uint64_t decodedKeepAlive = Varint::decode_unsigned_varint(buffer, nbBytesDecoded);
-
-    //Append the varint decoded
-    Packet::appendVarint(tmp, decodedKeepAlive);
-
-    //Cut off the extra bytes (int64)
-    tmp = tmp.left(nbBytesDecoded);
+    tmp.append("0");
 
     //Call parent
     int length = Packet::sendPacket(Packet::packPacket(tmp, compressed));
