@@ -23,9 +23,11 @@ public:
     void startConnect();
     void decodePacket(QByteArray data);
     void handlePacket(Packet &packet);
-private:
     //Vars
     CryptManager * crypt;
+    bool encrypted;
+private:
+    //Vars
     string username;
     string password;
     QString ip;
@@ -33,7 +35,6 @@ private:
     MainWindow * ui;
     MyTcpSocket socket;
     bool compressionSet; //Pour savoir si la compression à été activée
-    bool encrypted;
     State currentState;
     //Functions
     void authentificate();

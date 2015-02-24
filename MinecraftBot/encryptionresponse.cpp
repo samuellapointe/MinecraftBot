@@ -15,7 +15,7 @@ EncryptionResponse::~EncryptionResponse()
 
 }
 
-void EncryptionResponse::sendPacket()
+void EncryptionResponse::sendPacket(bool compressed)
 {
     //The data buffer
     QByteArray tmp;
@@ -33,6 +33,6 @@ void EncryptionResponse::sendPacket()
     tmp.append(token);
 
     //Call parent
-    int length = Packet::sendPacket(Packet::packPacket(tmp));
+    int length = Packet::sendPacket(Packet::packPacket(tmp, compressed));
     ui->displayPacket(false, packetID, length, displayColor, "Encryption Response");
 }

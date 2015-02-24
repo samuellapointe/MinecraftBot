@@ -69,6 +69,10 @@ void MyTcpSocket::readyRead()
 
 void MyTcpSocket::write(QByteArray data)
 {
+    if(client->encrypted)
+    {
+        data = client->crypt->encodeAES(data);
+    }
     socket->write(data);
     socket->waitForBytesWritten(5000);
 }

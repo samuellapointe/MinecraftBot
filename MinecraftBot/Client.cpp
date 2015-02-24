@@ -36,9 +36,9 @@ void Client::startConnect()
     {
         //Send the two first packets necessary to connect
         Handshake hs = Handshake(&socket, ui, 47, ip.toStdString(), port, 2);
-        hs.sendPacket();
+        hs.sendPacket(compressionSet);
         LoginStart ls = LoginStart(&socket, ui, username);
-        ls.sendPacket();
+        ls.sendPacket(compressionSet);
 
         //Switch to login phase
         currentState = LOGIN;
@@ -49,8 +49,8 @@ void Client::decodePacket(QByteArray data)
 {
     if(encrypted)
     {
-        std::string test = crypt->decodeAES(data);
-        QString uncryptedData = QString::fromStdString(test);
+        std::string decryptedString = crypt->decodeAES(data);
+        QString uncryptedData = QString::fromStdString(decryptedString);
         data = uncryptedData.toUtf8();
     }
     Packet p = Packet(ui, data, compressionSet);
@@ -59,48 +59,57 @@ void Client::decodePacket(QByteArray data)
 
 void Client::handlePacket(Packet &packet) //The big switch case of doom, to handle every packet
 {
-    switch(currentState) //Packet ID means different things depending on game state
+    if(packet.packetSize > 0)
     {
-    case HANDSHAKING: //Always empty for the client as of Minecraft version 1.8.1, the client sends packets then switches to login
-        break;
-    case LOGIN:
-        switch(packet.packetID)
+        switch(currentState) //Packet ID means different things depending on game state
         {
-        case 0: //Disconnect
-            //ui->writeToConsole("The server is kicking us out!");
-            ui->displayPacket(true, packet.packetID, packet.packetSize, QColor(0,0,0), "Disconnect");
+        case HANDSHAKING: //Always empty for the client as of Minecraft version 1.8.1, the client sends packets then switches to login
             break;
-        case 1: //Encryption request
-            enableEncryption(packet);
-            break;
-        case 2: //Login Success
-            ui->writeToConsole("Login successful");
-            ui->displayPacket(true, packet.packetID, packet.packetSize, QColor(255,150,150), "Login Success");
-            currentState = PLAY;
-            break;
-        case 3: //Set compression
-            ui->writeToConsole("Server enabled compression");
-            ui->displayPacket(true, packet.packetID, packet.packetSize, QColor(255,165,0), "Set Compression");
-            compressionSet = true;
-            break;
-        default:
-            ui->writeToConsole("Unknown packet during LOGIN phase, ID " + QString::number(packet.packetID));
-            break;
-        }
-        break;
-    case PLAY:
-        switch(packet.packetID)
-        {
-        case 3:
+        case LOGIN:
+            switch(packet.packetID)
             {
-                ui->displayPacket(true, packet.packetID, packet.packetSize, QColor(100,255,100), "Keep Alive");
-                KeepAlive ka = KeepAlive(&socket, ui, packet.data);
-                ka.sendPacket();
+            case 0: //Disconnect
+                //ui->writeToConsole("The server is kicking us out!");
+                ui->displayPacket(true, packet.packetID, packet.packetSize, QColor(0,0,0), "Disconnect");
+                break;
+            case 1: //Encryption request
+                enableEncryption(packet);
+                break;
+            case 2: //Login Success
+                ui->writeToConsole("Login successful");
+                ui->displayPacket(true, packet.packetID, packet.packetSize, QColor(255,150,150), "Login Success");
+                currentState = PLAY;
+                break;
+            case 3: //Set compression
+                ui->writeToConsole("Server enabled compression");
+                ui->displayPacket(true, packet.packetID, packet.packetSize, QColor(255,165,0), "Set Compression");
+                compressionSet = true;
+                break;
+            default:
+                ui->writeToConsole("Unknown packet during LOGIN phase, ID " + QString::number(packet.packetID));
+                break;
             }
             break;
-        default:
-            //ui->displayPacket(true, packet.packetID, packet.packetSize, QColor(0,255,0), "Keep Alive");
-            break;
+        case PLAY:
+            switch(packet.packetID)
+            {
+            case 0: //Keep alive
+                {
+                    ui->displayPacket(true, packet.packetID, packet.packetSize, QColor(100,255,100), "Keep Alive");
+                    KeepAlive ka = KeepAlive(&socket, ui, packet.data);
+                    ka.sendPacket(compressionSet);
+                }
+                break;
+            case 2:
+                ui->writeToChat(packet.data);
+                break;
+            default:
+                if(ui->showUnknownPackets())
+                {
+                    ui->displayPacket(true, packet.packetID, packet.packetSize, QColor(255,255,255), "Unknown");
+                }
+                break;
+            }
         }
     }
 
@@ -122,6 +131,6 @@ void Client::enableEncryption(Packet packet)
     //Session
 
     //Finish
-    er2.sendPacket();
+    er2.sendPacket(compressionSet);
     encrypted = true;
 }

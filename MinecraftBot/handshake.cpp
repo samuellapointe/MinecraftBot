@@ -17,7 +17,7 @@ Handshake::~Handshake()
 
 }
 
-void Handshake::sendPacket()
+void Handshake::sendPacket(bool compressed)
 {
     //The data buffer
     QByteArray tmp;
@@ -36,7 +36,7 @@ void Handshake::sendPacket()
     appendVarint(tmp, nextState);
 
     //Call parent function to finish packing
-    int length = Packet::sendPacket(Packet::packPacket(tmp));
+    int length = Packet::sendPacket(Packet::packPacket(tmp, compressed));
     ui->displayPacket(false, packetID, length, displayColor, "Handshake");
 }
 

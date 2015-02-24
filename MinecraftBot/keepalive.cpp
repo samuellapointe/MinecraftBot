@@ -14,7 +14,7 @@ KeepAlive::~KeepAlive()
 
 }
 
-void KeepAlive::sendPacket()
+void KeepAlive::sendPacket(bool compressed)
 {
     //The data buffer
     QByteArray tmp;
@@ -24,11 +24,14 @@ void KeepAlive::sendPacket()
     int nbBytesDecoded;
     uint64_t decodedKeepAlive = Varint::decode_unsigned_varint(buffer, nbBytesDecoded);
 
-    //Packet::appendVarint(tmp, 0); //Tell the server it's not compressed
+    //Append the varint decoded
     Packet::appendVarint(tmp, decodedKeepAlive);
 
+    //Cut off the extra bytes (int64)
+    tmp = tmp.left(nbBytesDecoded);
+
     //Call parent
-    int length = Packet::sendPacket(Packet::packPacket(tmp));
+    int length = Packet::sendPacket(Packet::packPacket(tmp, compressed));
     ui->displayPacket(false, packetID, length, displayColor, "Keep Alive");
 
 }

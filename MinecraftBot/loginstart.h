@@ -8,7 +8,7 @@ class LoginStart : public Packet
 public:
     LoginStart(MyTcpSocket * socket, MainWindow * ui, const std::string &login);
     ~LoginStart();
-    void sendPacket();
+    void sendPacket(bool compressed);
 private:
     std::string login;
 };

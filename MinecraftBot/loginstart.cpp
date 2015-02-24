@@ -14,7 +14,7 @@ LoginStart::~LoginStart()
 
 }
 
-void LoginStart::sendPacket()
+void LoginStart::sendPacket(bool compressed)
 {
     //The data buffer
     QByteArray tmp;
@@ -24,7 +24,7 @@ void LoginStart::sendPacket()
     tmp.append(vectorLogin);
 
     //Call parent function to finish packing
-    int length = Packet::sendPacket(Packet::packPacket(tmp));
+    int length = Packet::sendPacket(Packet::packPacket(tmp, compressed));
     ui->displayPacket(false, packetID, length, displayColor, "Login Start");
 
 }

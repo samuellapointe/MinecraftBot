@@ -47,11 +47,11 @@ Packet::Packet(MainWindow * i_ui, const QByteArray &d, bool compressed)
  * First, the size of the packet as a varint
  * then, the ID of the packet as a varint
  * finally, the data itself. */
-QByteArray Packet::packPacket(const QByteArray &d, bool compress)
+QByteArray Packet::packPacket(const QByteArray &d, bool compressed)
 {
     QByteArray packet;
 
-    if(compress)
+    if(compressed)
     {
         //No compression
         appendVarint(packet, 0);
@@ -63,7 +63,7 @@ QByteArray Packet::packPacket(const QByteArray &d, bool compress)
     //Data
     packet.append(d);
 
-    packetSize = packet.size();
+    packetSize = packet.length();
 
     QByteArray packetFront;
 
@@ -107,35 +107,3 @@ void Packet::appendVarint(QByteArray &input, int value)
     }
 }
 
-QByteArray Packet::uncompress(QByteArray compressed) //Taken from http://wiki.vg/Chunk_data_decompressing_%28Zlib%29
-{
-    //Output memory is at most 16*16*128*2.5 bytes
-    char *out = new char[100000];
-
-
-    int ret;
-    z_stream strm;
-
-    strm.zalloc = Z_NULL;
-    strm.zfree = Z_NULL;
-    strm.opaque = Z_NULL;
-    strm.avail_in = 0;
-    strm.next_in = Z_NULL;
-    ret = inflateInit(&strm);
-
-    if (ret != Z_OK){
-       //ui->writeToConsole("Something went wrong while uncompressing");
-    }
-
-    strm.avail_in = compressed.length();
-    strm.next_in = (Bytef*)(compressed.data());
-    strm.avail_out = 100000;
-    strm.next_out = (Bytef*)out;
-
-    ret = inflate(&strm, Z_NO_FLUSH);
-
-
-    inflateEnd(&strm);
-    //Data is now in "out" buffer
-    return out;
-}

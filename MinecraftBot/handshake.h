@@ -8,7 +8,7 @@ class Handshake : public Packet
 public:
     Handshake(MyTcpSocket * socket, MainWindow * ui, const uint8_t protocolVersion, const std::string &serverAdress, const uint16_t serverPort, const uint8_t nextState);
     ~Handshake();
-    void sendPacket();
+    void sendPacket(bool compressed);
 private:
     uint8_t protocolVersion;
     std::string serverAdress;
