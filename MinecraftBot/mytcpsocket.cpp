@@ -61,8 +61,7 @@ void MyTcpSocket::readyRead()
     //ui->writeToConsole("reading...");
 
     // read the data from the socket
-    QByteArray received = socket->readAll();
-    //ui->writeToConsole(received);
+    QByteArray received = socket->readAll();    //ui->writeToConsole(received);
     //Interpret it
     client->decodePacket(received);
 }
@@ -74,6 +73,6 @@ void MyTcpSocket::write(QByteArray data)
         data = client->crypt->encodeAES(data);
     }
     socket->write(data);
-    socket->waitForBytesWritten(5000);
+    //socket->waitForBytesWritten(5000);
 }
 

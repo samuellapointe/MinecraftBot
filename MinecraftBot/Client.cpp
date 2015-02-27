@@ -49,9 +49,10 @@ void Client::decodePacket(QByteArray data)
 {
     if(encrypted)
     {
-        std::string decryptedString = crypt->decodeAES(data);
-        QString uncryptedData = QString::fromStdString(decryptedString);
-        data = uncryptedData.toUtf8();
+        //std::string decryptedString = crypt->decodeAES(data);
+        //QString uncryptedData = QString::fromStdString(decryptedString);
+        //data = uncryptedData.toUtf8();
+        data = QByteArray::fromStdString(crypt->decodeAES(data));
     }
     Packet p = Packet(ui, data, compressionSet);
     handlePacket(p);
