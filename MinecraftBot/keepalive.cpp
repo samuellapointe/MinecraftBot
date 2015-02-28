@@ -19,7 +19,7 @@ void KeepAlive::sendPacket(bool compressed)
     //The data buffer
     QByteArray tmp;
 
-    tmp.append("0");
+    tmp.append(data);
 
     //Call parent
     int length = Packet::sendPacket(Packet::packPacket(tmp, compressed));

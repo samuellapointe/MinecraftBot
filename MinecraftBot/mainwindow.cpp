@@ -111,7 +111,7 @@ void MainWindow::displayPacket(const bool received, const int id, const int size
     {
         delete ui->PacketList->item(0);
     }
-    //ui->PacketList->scrollToBottom();
+    ui->PacketList->scrollToBottom();
 }
 
 bool MainWindow::showUnknownPackets()

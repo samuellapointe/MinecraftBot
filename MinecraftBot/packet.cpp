@@ -19,45 +19,35 @@ Packet::Packet(MainWindow * i_ui, const QByteArray &d, bool compressed)
     //Data length
     buffer = (uint8_t*)data.data();
     packetSize = Varint::decode_unsigned_varint(buffer, nbBytesDecoded);
-    data.remove(0, nbBytesDecoded);
-    if(compressed)
+    data.remove(0, nbBytesDecoded); //Remove the data length
+
+    if(compressed) //If the data is compressed,
     {
         buffer = (uint8_t*)data.data();
-        int uncompressedLength = Varint::decode_unsigned_varint(buffer, nbBytesDecoded);
-        QByteArray data2 = data;
-        data.remove(0, nbBytesDecoded);
-        if(uncompressedLength != 0)
+        int uncompressedLength = Varint::decode_unsigned_varint(buffer, nbBytesDecoded); //The length of the uncompressed data
+        data.remove(0, nbBytesDecoded); //Remove the uncompressed data
+
+        if(uncompressedLength != 0) //If the length of uncompressed data = 0, then it's not compressed
         {
             data = uncompress(data);
-            if(data.length() < 10000)
-            {
-                ui->writeToChat(data);
-            }
-        }
-        else
-        {
-            //ui->writeToChat(data);
         }
     }
+
     //Next value is packet ID
     buffer = (uint8_t*)data.data();
     packetID = Varint::decode_unsigned_varint(buffer, nbBytesDecoded);
-    data.remove(0, nbBytesDecoded);
+    data.remove(0, nbBytesDecoded); //What's left in data is the data value of the packet
 }
 
-/* Packet format:
- * First, the size of the packet as a varint
- * then, the ID of the packet as a varint
- * finally, the data itself. */
 QByteArray Packet::packPacket(const QByteArray &d, bool compressed)
 {
     QByteArray packet;
 
+    //TODO: Compress outgoing packets when needed
     if(compressed)
     {
         //No compression
         appendVarint(packet, 0);
-
     }
 
     //ID
@@ -65,7 +55,6 @@ QByteArray Packet::packPacket(const QByteArray &d, bool compressed)
 
     //Data
     packet.append(d);
-
     packetSize = packet.length();
 
     QByteArray packetFront;
@@ -73,7 +62,7 @@ QByteArray Packet::packPacket(const QByteArray &d, bool compressed)
     //Packet size
     appendVarint(packetFront, packetSize);
 
-    packetFront.push_back(packet);
+    packetFront.append(packet);
 
     return packetFront;
 }

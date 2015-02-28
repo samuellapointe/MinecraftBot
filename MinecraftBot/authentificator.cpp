@@ -25,7 +25,9 @@ void Authentificator::authentificate(std::string username, std::string password,
 
     if(sendRequest("https://authserver.mojang.com/authenticate", data, response))
     {
+
         //From this point, we have the access token in the response, gotta get it
+        //QByteArray accessToken = getJsonParameter(response, "accessToken");
         QByteArray accessToken = getJsonParameter(response, "accessToken");
         QByteArray selectedProfile = getJsonParameter(response, "selectedProfile");
 

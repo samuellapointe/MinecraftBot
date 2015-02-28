@@ -117,10 +117,6 @@ std::string CryptManager::decodeAES(QByteArray inputBytes)//Code taken from http
     {
 
     }
-    if(output.length() <= 2)
-    {
-        int a = 2;
-    }
 
     return output;
 }
@@ -138,7 +134,7 @@ QByteArray CryptManager::encodeAES(QByteArray inputBytes) //Code taken from http
     {
 
     }
-    return output.c_str();
+    return output.data();
 }
 
 const char* CryptManager::hex_char_to_bin(char c) //Function taken on http://stackoverflow.com/questions/18310952/convert-strings-between-hex-format-and-binary-format

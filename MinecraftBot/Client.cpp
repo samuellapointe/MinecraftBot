@@ -8,6 +8,8 @@
 #include "encryptionrequest.h"
 #include "encryptionresponse.h"
 
+#define PROTOCOLVERSION 47 //Version of the minecraft protocol (1.8)
+
 Client::Client(MainWindow * i_ui, const string &i_username, const string &i_password, const QString &i_ip, const int i_port)
 {
     username = i_username;
@@ -17,6 +19,8 @@ Client::Client(MainWindow * i_ui, const string &i_username, const string &i_pass
     ui = i_ui;
     crypt = new CryptManager();
     currentState = HANDSHAKING;
+
+    packetsSinceLastKA = 0;
 }
 
 Client::~Client()
@@ -35,7 +39,7 @@ void Client::startConnect()
     if(socket.connectedBool)
     {
         //Send the two first packets necessary to connect
-        Handshake hs = Handshake(&socket, ui, 47, ip.toStdString(), port, 2);
+        Handshake hs = Handshake(&socket, ui, PROTOCOLVERSION, ip.toStdString(), port, 2);
         hs.sendPacket(compressionSet);
         LoginStart ls = LoginStart(&socket, ui, username);
         ls.sendPacket(compressionSet);
@@ -49,9 +53,6 @@ void Client::decodePacket(QByteArray data)
 {
     if(encrypted)
     {
-        //std::string decryptedString = crypt->decodeAES(data);
-        //QString uncryptedData = QString::fromStdString(decryptedString);
-        //data = uncryptedData.toUtf8();
         data = QByteArray::fromStdString(crypt->decodeAES(data));
     }
     Packet p = Packet(ui, data, compressionSet);
@@ -92,6 +93,7 @@ void Client::handlePacket(Packet &packet) //The big switch case of doom, to hand
             }
             break;
         case PLAY:
+            packetsSinceLastKA++;
             switch(packet.packetID)
             {
             case 0: //Keep alive
@@ -99,10 +101,11 @@ void Client::handlePacket(Packet &packet) //The big switch case of doom, to hand
                     ui->displayPacket(true, packet.packetID, packet.packetSize, QColor(100,255,100), "Keep Alive");
                     KeepAlive ka = KeepAlive(&socket, ui, packet.data);
                     ka.sendPacket(compressionSet);
-                    //ui->writeToChat(packet.data);
+                    packetsSinceLastKA = 0;
                 }
                 break;
-            case 2:
+            case 2: //Chat message
+                ui->displayPacket(true, packet.packetID, packet.packetSize, QColor(100,100,255), "Chat Message");
                 ui->writeToChat(packet.data);
                 break;
             default:
@@ -111,6 +114,12 @@ void Client::handlePacket(Packet &packet) //The big switch case of doom, to hand
                     ui->displayPacket(true, packet.packetID, packet.packetSize, QColor(255,255,255), "Unknown");
                 }
                 break;
+            }
+            if(packetsSinceLastKA > 150) //arbitrary value, timeout protection
+            {
+                packetsSinceLastKA = 0;
+                KeepAlive ka = KeepAlive(&socket, ui, QByteArray::number(0));
+                ka.sendPacket(compressionSet);
             }
         }
     }
