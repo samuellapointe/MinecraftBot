@@ -23,7 +23,7 @@ void KeepAlive::sendPacket(bool compressed)
     uint8_t * buffer = (uint8_t*)data.data();
     int value = Varint::decode_unsigned_varint(buffer, nbDecodedBytes);
 
-    ui->writeToConsole(QString::number(value));
+    //ui->writeToConsole(QString::number(value));
 
     appendVarint(tmp, value);
 

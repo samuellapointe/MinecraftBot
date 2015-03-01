@@ -7,6 +7,7 @@
 #include "keepalive.h"
 #include "encryptionrequest.h"
 #include "encryptionresponse.h"
+#include "chatmessage.h"
 
 #define PROTOCOLVERSION 47 //Version of the minecraft protocol (1.8)
 
@@ -105,8 +106,9 @@ void Client::handlePacket(Packet &packet) //The big switch case of doom, to hand
                 }
                 break;
             case 2: //Chat message
-                ui->displayPacket(true, packet.packetID, packet.packetSize, QColor(100,100,255), "Chat Message");
-                ui->writeToChat(packet.data);
+                {
+                    ChatMessage cm = ChatMessage(&socket, ui, packet.data);
+                }
                 break;
             default:
                 if(ui->showUnknownPackets())
