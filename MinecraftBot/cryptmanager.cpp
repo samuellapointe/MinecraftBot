@@ -134,7 +134,7 @@ QByteArray CryptManager::encodeAES(QByteArray inputBytes) //Code taken from http
     {
 
     }
-    return output.data();
+    return QByteArray::fromStdString(output);
 }
 
 const char* CryptManager::hex_char_to_bin(char c) //Function taken on http://stackoverflow.com/questions/18310952/convert-strings-between-hex-format-and-binary-format

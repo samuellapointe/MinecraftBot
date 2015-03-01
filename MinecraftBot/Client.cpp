@@ -61,7 +61,7 @@ void Client::decodePacket(QByteArray data)
 
 void Client::handlePacket(Packet &packet) //The big switch case of doom, to handle every packet
 {
-    if(packet.packetSize > 0)
+    if(packet.data.length() > 0)
     {
         switch(currentState) //Packet ID means different things depending on game state
         {

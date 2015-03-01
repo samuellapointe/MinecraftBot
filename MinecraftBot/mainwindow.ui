@@ -423,22 +423,6 @@ p, li { white-space: pre-wrap; }
      <string>127.0.0.1</string>
     </property>
    </widget>
-   <widget class="QCheckBox" name="AuthentificationCheckbox">
-    <property name="geometry">
-     <rect>
-      <x>510</x>
-      <y>390</y>
-      <width>161</width>
-      <height>17</height>
-     </rect>
-    </property>
-    <property name="text">
-     <string>Enable Authentification</string>
-    </property>
-    <property name="checked">
-     <bool>true</bool>
-    </property>
-   </widget>
    <widget class="QPushButton" name="ConnectButton">
     <property name="geometry">
      <rect>
@@ -498,7 +482,6 @@ p, li { white-space: pre-wrap; }
   <tabstop>PasswordInput</tabstop>
   <tabstop>IPInput</tabstop>
   <tabstop>PortInput</tabstop>
-  <tabstop>AuthentificationCheckbox</tabstop>
   <tabstop>ConnectButton</tabstop>
   <tabstop>ChatInput</tabstop>
   <tabstop>ChatSend</tabstop>

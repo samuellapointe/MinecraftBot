@@ -19,7 +19,13 @@ void KeepAlive::sendPacket(bool compressed)
     //The data buffer
     QByteArray tmp;
 
-    tmp.append(data);
+    int nbDecodedBytes;
+    uint8_t * buffer = (uint8_t*)data.data();
+    int value = Varint::decode_unsigned_varint(buffer, nbDecodedBytes);
+
+    ui->writeToConsole(QString::number(value));
+
+    appendVarint(tmp, value);
 
     //Call parent
     int length = Packet::sendPacket(Packet::packPacket(tmp, compressed));
