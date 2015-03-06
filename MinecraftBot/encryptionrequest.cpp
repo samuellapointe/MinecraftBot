@@ -12,8 +12,21 @@ EncryptionRequest::EncryptionRequest(QByteArray d, MainWindow * i_ui)
     //Display the packet
     ui->displayPacket(true, packetID, packetSize, displayColor, "Encryption request");
 
-    //The first byte, which would be the server ID, is always empty so we cut it off
-    data = data.right(data.length() - 1);
+    //The first byte, which would be the server ID, might be empty so we cut it off
+    if(data.at(0) == 0)
+    {
+        data = data.right(data.length() - 1);
+        serverID = "";
+    }
+    else //Server id not empty?
+    {
+        int nbBytesDecoded;
+        uint8_t * buffer = (uint8_t*)data.data();
+        int serverIDLength = Varint::decode_unsigned_varint(buffer, nbBytesDecoded);
+        data = data.right(data.length() - nbBytesDecoded);
+        serverID = data.left(serverIDLength);
+        data = data.right(data.length() - serverIDLength);
+    }
 
     //Next is the public key's length as a varint
     int nbBytesDecoded;

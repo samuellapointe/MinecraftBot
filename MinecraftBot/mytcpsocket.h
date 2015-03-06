@@ -35,6 +35,8 @@ public slots:
 
 private:
     QTcpSocket *socket;
+    QByteArray bufferStream; //Where we store data until we know it's ready to be read
+
     
 };
 

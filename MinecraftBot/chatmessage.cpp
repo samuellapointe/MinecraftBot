@@ -25,7 +25,7 @@ ChatMessage::ChatMessage(MyTcpSocket * s, MainWindow * i_ui, QByteArray &d)
         QJsonArray messageContent = messageObj.value("with").toArray();
 
         QJsonObject someContainer = messageContent.at(0).toObject();
-        QString username = someContainer.value("text").toString();
+        QString username = someContainer.value("insertion").toString();
         QString text = messageContent.at(1).toString();
 
         ui->writeToChat(username + ": " + text);
@@ -45,6 +45,25 @@ ChatMessage::ChatMessage(MyTcpSocket * s, MainWindow * i_ui, QByteArray &d)
         QString username = someContainer.value("text").toString();
 
         ui->writeToChat(username + " left");
+    }
+    else if(translate.compare("chat.type.announcement") == 0)
+    //Exemple: "{"translate":"chat.type.announcement","with":["Server",{"extra":["Welcome"," ","back,"," ","Knuk"],"text":""}]}"
+    {
+        QJsonArray messageContent = messageObj.value("with").toArray();
+        QJsonObject someContainer = messageContent.at(1).toObject();
+        QJsonArray extra = someContainer.value("extra").toArray();
+        QString tmp = "";
+        for(int i = 0; i < extra.count(); i++)
+        {
+            tmp += extra.at(i).toString() + " ";
+        }
+
+        ui->writeToChat(tmp);
+
+    }
+    else
+    {
+        ui->writeToChat(message);
     }
 
 }

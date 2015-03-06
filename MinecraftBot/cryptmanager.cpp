@@ -17,7 +17,6 @@ void CryptManager::loadKey(QByteArray &key)
 {
     //Transform QByteArray into ByteQueue
     ByteQueue keyQueue;
-    QByteArray test = key.toBase64();
     for(int i = 0; i < key.size(); i++)
     {
         keyQueue.Put((byte)key.at(i));
@@ -47,10 +46,10 @@ QByteArray CryptManager::encodeRSA(QByteArray data)
     return output;
 }
 
-QByteArray CryptManager::getHash(QByteArray key)
+QByteArray CryptManager::getHash(QByteArray key, QByteArray serverID)
 {
     SHA1 sha1;
-    std::string source = sharedSecret + key.toStdString();
+    std::string source = serverID.toStdString() + sharedSecret + key.toStdString();
     //std::string source = "simon";
     std::string hash;
     StringSource(source, true, new HashFilter(sha1, new HexEncoder(new StringSink(hash))));
@@ -109,14 +108,7 @@ std::string CryptManager::decodeAES(QByteArray inputBytes)//Code taken from http
     /* Decrypt Data */
     std::string input = inputBytes.toStdString();
     std::string output("");
-    try
-    {
-        StringSource(input, true, new StreamTransformationFilter(*AESDecryptor, new StringSink(output)));
-    }
-    catch(CryptoPP::Exception)
-    {
-
-    }
+    StringSource(input, true, new StreamTransformationFilter(*AESDecryptor, new StringSink(output)));
 
     return output;
 }
@@ -126,14 +118,8 @@ QByteArray CryptManager::encodeAES(QByteArray inputBytes) //Code taken from http
     /* Encrypt Data */
     std::string input = inputBytes.toStdString();
     std::string output("");
-    try
-    {
-        StringSource(input, true, new StreamTransformationFilter(*AESEncryptor, new StringSink(output)));
-    }
-    catch(CryptoPP::Exception)
-    {
 
-    }
+    StringSource(input, true, new StreamTransformationFilter(*AESEncryptor, new StringSink(output)));
     return QByteArray::fromStdString(output);
 }
 

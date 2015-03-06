@@ -12,9 +12,9 @@
 class Varint
 {
 public:
-    static uint32_t decode_unsigned_varint( const uint8_t *const data, int &decoded_bytes );
+    static uint64_t decode_unsigned_varint( const uint8_t *const data, int &decoded_bytes );
     static int64_t decode_signed_varint( const uint8_t *const data, int &decoded_bytes );
-    static int encode_unsigned_varint(uint8_t *const buffer, uint32_t value);
+    static int encode_unsigned_varint(uint8_t *const buffer, uint64_t value);
     static int encode_signed_varint(uint8_t *const buffer, int64_t value);
 };
 

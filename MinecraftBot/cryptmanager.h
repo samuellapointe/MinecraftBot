@@ -26,7 +26,7 @@ public:
     ~CryptManager();
     void loadKey(QByteArray &key);
     QByteArray encodeRSA(QByteArray data);
-    QByteArray getHash(QByteArray key);
+    QByteArray getHash(QByteArray key, QByteArray serverID);
 
     QByteArray encodeAES(QByteArray input);
     std::string decodeAES(QByteArray input);

@@ -58,12 +58,36 @@ void MyTcpSocket::bytesWritten(qint64 bytes)
 
 void MyTcpSocket::readyRead()
 {
-    //ui->writeToConsole("reading...");
-
     // read the data from the socket
-    QByteArray received = socket->readAll();    //ui->writeToConsole(received);
-    //Interpret it
-    client->decodePacket(received);
+    QByteArray data = socket->readAll();    //ui->writeToConsole(received);
+
+    if(client->encrypted)//Decrypt
+    {
+        data = QByteArray::fromStdString(client->crypt->decodeAES(data));
+    }
+
+    while(data.length() > 0)
+    {
+        int nbDecodedBytes;
+        uint8_t * buffer = (uint8_t*)data.data();
+        int packetLength = Varint::decode_unsigned_varint(buffer, nbDecodedBytes);
+        int totalLength = packetLength + nbDecodedBytes;
+
+        //while(totalLength > data.length())
+        //{
+        //    data.append(socket->readAll());
+        //}
+        if(totalLength < 0 || totalLength > 1000000)
+        {
+            data.clear();
+        }
+        else
+        {
+            client->decodePacket(data.left(totalLength));
+            data.remove(0, totalLength);
+        }
+    }
+    //client->decodePacket(data);
 }
 
 void MyTcpSocket::write(QByteArray data)
@@ -74,6 +98,6 @@ void MyTcpSocket::write(QByteArray data)
         encryptedData = client->crypt->encodeAES(data);
     }
     socket->write(encryptedData);
-    //socket->waitForBytesWritten(5000);
+    socket->waitForBytesWritten(5000);
 }
 

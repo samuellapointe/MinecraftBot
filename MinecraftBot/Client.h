@@ -26,6 +26,7 @@ public:
     //Vars
     CryptManager * crypt;
     bool encrypted;
+    State currentState;
 private:
     //Vars
     string username;
@@ -35,11 +36,12 @@ private:
     MainWindow * ui;
     MyTcpSocket socket;
     bool compressionSet; //Pour savoir si la compression à été activée
-    State currentState;
+    //State currentState;
     int packetsSinceLastKA; //Packets received since the last keep alive, because it seems the server doesn't send enough to keep me alive!
     //Functions
     void authentificate();
     void enableEncryption(Packet packet);
+
 
 };
 

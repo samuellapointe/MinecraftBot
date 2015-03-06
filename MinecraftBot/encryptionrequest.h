@@ -14,6 +14,7 @@ public:
     QByteArray publicKey;
     int verifyTokenLength;
     QByteArray verifyToken;
+    QByteArray serverID;
 };
 
 #endif // ENCRYPTIONREQUEST_H
