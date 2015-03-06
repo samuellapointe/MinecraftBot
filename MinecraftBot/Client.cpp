@@ -8,6 +8,7 @@
 #include "encryptionrequest.h"
 #include "encryptionresponse.h"
 #include "chatmessage.h"
+#include "sendchatmessage.h"
 
 #define PROTOCOLVERSION 47 //Version of the minecraft protocol (1.8)
 
@@ -158,7 +159,7 @@ void Client::handlePacket(Packet &packet) //The big switch case of doom, to hand
             case 68: //World border
                 ui->displayPacket(true, packet.packetID, packet.packetSize, QColor(74,192,236), "World border");
                 break;
-            case 70:
+            case 70: //Compression
                 ui->writeToConsole("Server enabled compression");
                 ui->displayPacket(true, packet.packetID, packet.packetSize, QColor(255,165,0), "Set Compression");
                 compressionSet = true;
@@ -204,4 +205,15 @@ void Client::enableEncryption(Packet packet)
     //Finish
     er2.sendPacket(compressionSet);
     encrypted = true;
+}
+
+void Client::sendMessage(QString message)
+{
+    //Cut the message in 100 bytes parts
+    while(message.length() > 0)
+    {
+        SendChatMessage scm = SendChatMessage(&socket, ui, message.left(100));
+        scm.sendPacket(compressionSet);
+        message.remove(0, 100);
+    }
 }

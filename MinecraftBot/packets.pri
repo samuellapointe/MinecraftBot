@@ -4,7 +4,8 @@ SOURCES +=  packet.cpp \
             loginstart.cpp \
             keepalive.cpp \
             encryptionresponse.cpp \
-    $$PWD/chatmessage.cpp
+    $$PWD/chatmessage.cpp \
+    $$PWD/sendchatmessage.cpp
 
 HEADERS += packet.h \
            encryptionrequest.h \
@@ -12,4 +13,5 @@ HEADERS += packet.h \
             loginstart.h \
             keepalive.h \
             encryptionresponse.h \
-    $$PWD/chatmessage.h
+    $$PWD/chatmessage.h \
+    $$PWD/sendchatmessage.h

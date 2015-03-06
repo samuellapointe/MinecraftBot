@@ -23,6 +23,7 @@ public:
     void startConnect();
     void decodePacket(QByteArray data);
     void handlePacket(Packet &packet);
+    void sendMessage(QString message);
     //Vars
     CryptManager * crypt;
     bool encrypted;
