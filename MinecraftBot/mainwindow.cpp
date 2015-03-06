@@ -14,6 +14,8 @@ MainWindow::MainWindow(QWidget *parent) :QMainWindow(parent), ui(new Ui::MainWin
     connect(ui->actionExit, SIGNAL(triggered()), this, SLOT(menuExit()));
     //Connect button
     connect(ui->ConnectButton, SIGNAL(released()), this, SLOT(connectClient()));
+    //Send message
+    connect(ui->ChatSend, SIGNAL(released()), this, SLOT(sendMessage()));
 }
 
 MainWindow::~MainWindow()
@@ -117,4 +119,14 @@ void MainWindow::displayPacket(const bool received, const int id, const int size
 bool MainWindow::showUnknownPackets()
 {
     return ui->ShowUnknownPacketsCheckbox->checkState();
+}
+
+void MainWindow::sendMessage()
+{
+    if(ui->ChatInput->text().length() > 0 && client != 0 && client->currentState == PLAY)
+    {
+        client->sendMessage(ui->ChatInput->text());
+        ui->ChatInput->clear();
+    }
+    //Client.sendMessage();
 }

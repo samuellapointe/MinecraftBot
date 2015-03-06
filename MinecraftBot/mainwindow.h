@@ -33,6 +33,7 @@ private:
 private slots:
     void menuExit();
     void connectClient();
+    void sendMessage();
 };
 
 #endif // MAINWINDOW_H
