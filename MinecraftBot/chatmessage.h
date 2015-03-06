@@ -10,7 +10,7 @@
 class ChatMessage : public Packet
 {
 public:
-    ChatMessage(MyTcpSocket * socket, MainWindow * ui, QByteArray &data);
+    ChatMessage(MyTcpSocket * socket, MainWindow * ui, QByteArray &data, CommandManager * commandManager);
     ~ChatMessage();
 };
 

@@ -23,6 +23,7 @@ public:
     void writeToChat(const QString &text); //Append to the right console
     void displayPacket(const bool received, const int id, const int size, const QColor &color = QColor(255,255,255), const QString &info = "none");
     bool showUnknownPackets();
+    bool autoReconnect();
     Ui::MainWindow *ui;
 
 
@@ -32,8 +33,9 @@ private:
 //Functions called by the interface (slots)
 private slots:
     void menuExit();
-    void connectClient();
     void sendMessage();
+public slots:
+    void connectClient();
 };
 
 #endif // MAINWINDOW_H

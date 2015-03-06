@@ -9,6 +9,7 @@
 #include "encryptionresponse.h"
 #include "chatmessage.h"
 #include "sendchatmessage.h"
+#include "playerpositionandlook.h"
 
 #define PROTOCOLVERSION 47 //Version of the minecraft protocol (1.8)
 
@@ -20,6 +21,7 @@ Client::Client(MainWindow * i_ui, const string &i_username, const string &i_pass
     port = i_port;
     ui = i_ui;
     crypt = new CryptManager();
+    commandManager = new CommandManager(this, ui);
     currentState = HANDSHAKING;
 
     packetsSinceLastKA = 0;
@@ -108,14 +110,20 @@ void Client::handlePacket(Packet &packet) //The big switch case of doom, to hand
                 break;
             case 2: //Chat message
                 {
-                    ChatMessage cm = ChatMessage(&socket, ui, packet.data);
+                    ChatMessage cm = ChatMessage(&socket, ui, packet.data, commandManager);
                 }
                 break;
             case 3: //Time update
                 ui->displayPacket(true, packet.packetID, packet.packetSize, QColor(152,142,179), "Time Update");
                 break;
             case 8: //Player position and look
-                ui->displayPacket(true, packet.packetID, packet.packetSize, QColor(239,8,77), "Player position and look");
+                {
+                    PlayerPositionAndLook ppal = PlayerPositionAndLook(&socket, ui, packet.data);
+                    if(commandManager->waitingForCoords)
+                    {
+                        commandManager->setHome(ppal.x, ppal.y, ppal.z); //For the !sethome command
+                    }
+                }
                 break;
             case 9: //Held item change
                 ui->displayPacket(true, packet.packetID, packet.packetSize, QColor(2,132,57), "Held item change");

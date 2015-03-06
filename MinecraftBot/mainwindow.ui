@@ -452,6 +452,22 @@ p, li { white-space: pre-wrap; }
      <bool>false</bool>
     </property>
    </widget>
+   <widget class="QCheckBox" name="AutoReconCheckBox">
+    <property name="geometry">
+     <rect>
+      <x>650</x>
+      <y>420</y>
+      <width>131</width>
+      <height>20</height>
+     </rect>
+    </property>
+    <property name="text">
+     <string>Auto-reconnect</string>
+    </property>
+    <property name="checked">
+     <bool>true</bool>
+    </property>
+   </widget>
   </widget>
   <widget class="QMenuBar" name="menuBar">
    <property name="geometry">

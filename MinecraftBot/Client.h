@@ -7,7 +7,7 @@
 #include "mytcpsocket.h"
 #include "cryptmanager.h"
 #include "authentificator.h"
-
+#include "commandmanager.h"
 
 using std::string;
 
@@ -25,14 +25,15 @@ public:
     void handlePacket(Packet &packet);
     void sendMessage(QString message);
     //Vars
+    QString ip;
     CryptManager * crypt;
+    CommandManager * commandManager;
     bool encrypted;
     State currentState;
 private:
     //Vars
     string username;
     string password;
-    QString ip;
     int port;
     MainWindow * ui;
     MyTcpSocket socket;

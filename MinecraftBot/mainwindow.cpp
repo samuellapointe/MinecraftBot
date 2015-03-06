@@ -121,6 +121,11 @@ bool MainWindow::showUnknownPackets()
     return ui->ShowUnknownPacketsCheckbox->checkState();
 }
 
+bool MainWindow::autoReconnect()
+{
+    return ui->AutoReconCheckBox->checkState();
+}
+
 void MainWindow::sendMessage()
 {
     if(ui->ChatInput->text().length() > 0 && client != 0 && client->currentState == PLAY)

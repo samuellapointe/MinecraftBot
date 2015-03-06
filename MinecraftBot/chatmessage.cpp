@@ -1,6 +1,6 @@
 #include "chatmessage.h"
 
-ChatMessage::ChatMessage(MyTcpSocket * s, MainWindow * i_ui, QByteArray &d)
+ChatMessage::ChatMessage(MyTcpSocket * s, MainWindow * i_ui, QByteArray &d, CommandManager * commandManager)
 {
     data = d;
     packetID = 0;
@@ -29,6 +29,10 @@ ChatMessage::ChatMessage(MyTcpSocket * s, MainWindow * i_ui, QByteArray &d)
         QString text = messageContent.at(1).toString();
 
         ui->writeToChat(username + ": " + text);
+        if(text.at(0) == '!')
+        {
+            commandManager->readCommand(text, username);
+        }
     }
     else if(translate.compare("multiplayer.player.joined") == 0) //Player joined
     {

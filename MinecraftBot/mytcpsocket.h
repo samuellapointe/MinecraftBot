@@ -23,8 +23,11 @@ public:
     MainWindow * ui; //For writing in the console
     Client * client; //To send the client the packets
     void write(QByteArray data);
-    bool connectedBool;
 
+    //vars
+    bool connectedBool;
+    QString ip;
+    int port;
 signals:
 
 public slots:
