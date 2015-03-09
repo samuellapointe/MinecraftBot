@@ -14,7 +14,8 @@ public:
     ~CommandManager();
     void readCommand(QString command, QString username);
     void setHome(double x, double y, double z);
-    void home();
+    void home(QString username);
+    void spawn(QString username);
     //Vars
     QString lastUsername;
     Client * client;

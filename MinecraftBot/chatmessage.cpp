@@ -67,7 +67,7 @@ ChatMessage::ChatMessage(MyTcpSocket * s, MainWindow * i_ui, QByteArray &d, Comm
     }
     else
     {
-        ui->writeToChat(message);
+        //ui->writeToChat(message);
     }
 
 }

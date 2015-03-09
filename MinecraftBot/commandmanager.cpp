@@ -25,8 +25,11 @@ void CommandManager::readCommand(QString command, QString username)
     }
     else if(args[0].toLower().compare("!home") == 0)
     {
-        lastUsername = username;
-        home();
+        home(username);
+    }
+    else if(args[0].toLower().compare("!spawn") == 0)
+    {
+        spawn(username);
     }
     else
     {
@@ -37,7 +40,7 @@ void CommandManager::readCommand(QString command, QString username)
 void CommandManager::setHome(double x, double y, double z)
 {
     waitingForCoords = false;
-    client->sendMessage("Setting home for " + lastUsername + " at coords " + QString::number(x) + "," + QString::number(y) + "," + QString::number(z));
+    //client->sendMessage("Setting home for " + lastUsername + " at coords " + QString::number(x) + "," + QString::number(y) + "," + QString::number(z));
 
     std::fstream homeFile;
     std::vector<QString> homes;
@@ -75,7 +78,7 @@ void CommandManager::setHome(double x, double y, double z)
     homeFile.close();
 }
 
-void CommandManager::home()
+void CommandManager::home(QString username)
 {
     std::fstream homeFile;
     homeFile.open("homes_" + client->ip.toStdString() + ".txt", std::ios::in);
@@ -86,16 +89,33 @@ void CommandManager::home()
     {
         QString qline = QString::fromStdString(line).simplified();
         QStringList qlines = qline.split(' ');
-        if(qlines.at(0).compare(lastUsername) == 0)
+        if(qlines.at(0).compare(username) == 0)
         {//Update home for the player
             playerFound = true;
             client->sendMessage("/tp "+qline);
-            client->sendMessage("Done!");
+            //client->sendMessage("Done!");
         }
     }
     if(!playerFound)
     {
-        client->sendMessage("No home found for user "+lastUsername);
+        client->sendMessage("No home found for user "+username);
     }
     homeFile.close();
+}
+
+void CommandManager::spawn(QString username)
+{
+    std::fstream spawnFile;
+    spawnFile.open("spawn_" + client->ip.toStdString() + ".txt", std::ios::in);
+    string line;
+    getline(spawnFile, line);
+    QString qline = QString::fromStdString(line).simplified();
+    if(line == "")
+    {
+        client->sendMessage("No spawn found!");
+    }
+    else
+    {
+        client->sendMessage("/tp "+username + " " +qline);
+    }
 }
