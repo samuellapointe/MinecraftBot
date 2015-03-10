@@ -8,7 +8,6 @@ SendChatMessage::SendChatMessage(MyTcpSocket * s, MainWindow * i_ui, QString m)
     packetID = 1;
     socket = s;
     ui = i_ui;
-    displayColor = QColor(0, 0, 150);
 }
 
 SendChatMessage::~SendChatMessage()
@@ -27,8 +26,7 @@ void SendChatMessage::sendPacket(bool compressed)
     tmp.append(message);
 
     //Call parent
-    int length = Packet::sendPacket(Packet::packPacket(tmp, compressed));
-    ui->displayPacket(false, packetID, length, displayColor, "Chat Message");
+    Packet::sendPacket(Packet::packPacket(tmp, compressed));
 
 }
 

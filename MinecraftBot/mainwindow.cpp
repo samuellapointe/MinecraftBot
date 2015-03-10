@@ -94,7 +94,7 @@ void MainWindow::writeToChat(const QString & text)
     ui->ChatDisplay->append(text);
 }
 
-void MainWindow::displayPacket(const bool received, const int id, const int size, const QColor &color, const QString &info)
+/*void MainWindow::displayPacket(const bool received, const int id, const int size, const QColor &color, const QString &info)
 {
     if(received)
     {
@@ -114,12 +114,12 @@ void MainWindow::displayPacket(const bool received, const int id, const int size
         delete ui->PacketList->item(0);
     }
     ui->PacketList->scrollToBottom();
-}
+}*/
 
-bool MainWindow::showUnknownPackets()
+/*bool MainWindow::showUnknownPackets()
 {
     return ui->ShowUnknownPacketsCheckbox->checkState();
-}
+}*/
 
 bool MainWindow::autoReconnect()
 {

@@ -80,10 +80,10 @@ void MyTcpSocket::readyRead()
         int packetLength = Varint::decode_unsigned_varint(buffer, nbDecodedBytes);
         int totalLength = packetLength + nbDecodedBytes;
 
-        //while(totalLength > data.length())
-        //{
-        //    data.append(socket->readAll());
-        //}
+        if(totalLength > data.length())
+        {
+            //data.append(socket->readAll());
+        }
         if(totalLength < 0 || totalLength > 1000000)
         {
             data.clear();

@@ -6,9 +6,7 @@ ChatMessage::ChatMessage(MyTcpSocket * s, MainWindow * i_ui, QByteArray &d, Comm
     packetID = 0;
     socket = s;
     ui = i_ui;
-    displayColor = QColor(100,100,255);
 
-    ui->displayPacket(true, packetID, data.length(), displayColor, "Chat Message");
 
     int decodedBytes;
     uint8_t * buffer = (uint8_t*)data.data();

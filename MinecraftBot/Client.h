@@ -8,6 +8,7 @@
 #include "cryptmanager.h"
 #include "authentificator.h"
 #include "commandmanager.h"
+#include "player.h"
 
 using std::string;
 
@@ -24,22 +25,22 @@ public:
     void decodePacket(QByteArray data);
     void handlePacket(Packet &packet);
     void sendMessage(QString message);
+    void movePlayer(Direction d);
     //Vars
     QString ip;
     CryptManager * crypt;
     CommandManager * commandManager;
     bool encrypted;
+    bool compressionSet; //Pour savoir si la compression à été activée
     State currentState;
+    Player * player;    //State currentState;
 private:
     //Vars
     string username;
     string password;
     int port;
     MainWindow * ui;
-    MyTcpSocket socket;
-    bool compressionSet; //Pour savoir si la compression à été activée
-    //State currentState;
-    int packetsSinceLastKA; //Packets received since the last keep alive, because it seems the server doesn't send enough to keep me alive!
+    MyTcpSocket socket;    int packetsSinceLastKA; //Packets received since the last keep alive, because it seems the server doesn't send enough to keep me alive!
     //Functions
     void authentificate();
     void enableEncryption(Packet packet);

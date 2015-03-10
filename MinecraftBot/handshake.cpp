@@ -9,7 +9,6 @@ Handshake::Handshake(MyTcpSocket * s, MainWindow * i_ui, const uint8_t pV, const
     packetID = 0;
     socket = s;
     ui = i_ui;
-    displayColor = QColor(200, 0, 0);
 }
 
 Handshake::~Handshake()
@@ -36,7 +35,6 @@ void Handshake::sendPacket(bool compressed)
     appendVarint(tmp, nextState);
 
     //Call parent function to finish packing
-    int length = Packet::sendPacket(Packet::packPacket(tmp, compressed));
-    ui->displayPacket(false, packetID, length, displayColor, "Handshake");
+    Packet::sendPacket(Packet::packPacket(tmp, compressed));
 }
 

@@ -93,12 +93,14 @@ std::string CryptManager::javaHexDigest(std::string input)
     //Remove leading 0s
     while(input[0] == '0')
     {
+
         input.erase(0,1);
     }
     //Add minus sing
     if(negative)
     {
         input.insert(0, "-");
+        //input.erase(input.length()-1);
     }
     return input;
 }

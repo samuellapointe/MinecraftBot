@@ -6,7 +6,10 @@ SOURCES +=  packet.cpp \
             encryptionresponse.cpp \
     $$PWD/chatmessage.cpp \
     $$PWD/sendchatmessage.cpp \
-    $$PWD/playerpositionandlook.cpp
+    $$PWD/playerpositionandlook.cpp \
+    $$PWD/playerposition.cpp \
+    $$PWD/clientstatus.cpp \
+    $$PWD/onground.cpp
 
 HEADERS += packet.h \
            encryptionrequest.h \
@@ -16,4 +19,7 @@ HEADERS += packet.h \
             encryptionresponse.h \
     $$PWD/chatmessage.h \
     $$PWD/sendchatmessage.h \
-    $$PWD/playerpositionandlook.h
+    $$PWD/playerpositionandlook.h \
+    $$PWD/playerposition.h \
+    $$PWD/clientstatus.h \
+    $$PWD/onground.h

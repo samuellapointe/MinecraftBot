@@ -7,10 +7,6 @@ EncryptionRequest::EncryptionRequest(QByteArray d, MainWindow * i_ui)
     packetSize = data.length();
     ui = i_ui;
     data = d;
-    displayColor = QColor(255, 75, 75);
-
-    //Display the packet
-    ui->displayPacket(true, packetID, packetSize, displayColor, "Encryption request");
 
     //The first byte, which would be the server ID, might be empty so we cut it off
     if(data.at(0) == 0)

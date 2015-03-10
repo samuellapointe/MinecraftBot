@@ -23,6 +23,7 @@ public:
     QByteArray packString(const std::string &text);
     int sendPacket(const QByteArray &data);
     void appendVarint(QByteArray &input, int value);
+    void appendDouble(QByteArray &input, double value);
     QByteArray uncompress(QByteArray compressed);
 
     //Vars
@@ -31,7 +32,6 @@ public:
     QByteArray data;
     MyTcpSocket * socket;
     MainWindow * ui;
-    QColor displayColor;
 
 };
 

@@ -7,7 +7,6 @@ EncryptionResponse::EncryptionResponse(MyTcpSocket * s, MainWindow * i_ui, const
     packetID = 1;
     socket = s;
     ui = i_ui;
-    displayColor = QColor(100, 0, 0);
 }
 
 EncryptionResponse::~EncryptionResponse()
@@ -33,6 +32,5 @@ void EncryptionResponse::sendPacket(bool compressed)
     tmp.append(token);
 
     //Call parent
-    int length = Packet::sendPacket(Packet::packPacket(tmp, compressed));
-    ui->displayPacket(false, packetID, length, displayColor, "Encryption Response");
+    Packet::sendPacket(Packet::packPacket(tmp, compressed));
 }

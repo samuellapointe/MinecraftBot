@@ -13,6 +13,7 @@ TARGET = MinecraftBot
 TEMPLATE = app
 
 include(packets.pri)
+include(player.pri)
 
 SOURCES += main.cpp\
         mainwindow.cpp \
@@ -21,7 +22,7 @@ SOURCES += main.cpp\
     varint.cpp \
     cryptmanager.cpp \
     authentificator.cpp \
-    commandmanager.cpp
+    commandmanager.cpp \
 
 
 HEADERS  += mainwindow.h \
@@ -30,7 +31,7 @@ HEADERS  += mainwindow.h \
     varint.h \
     cryptmanager.h \
     authentificator.h \
-    commandmanager.h
+    commandmanager.h \
 
 FORMS    += mainwindow.ui
 

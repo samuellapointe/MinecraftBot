@@ -31,6 +31,10 @@ void CommandManager::readCommand(QString command, QString username)
     {
         spawn(username);
     }
+    else if(args[0].toLower().compare("!move") == 0)
+    {
+        client->movePlayer(NORTH);
+    }
     else
     {
         client->sendMessage("Command not recognized! ");
@@ -71,7 +75,7 @@ void CommandManager::setHome(double x, double y, double z)
 
     //Write the file back
     homeFile.open("homes_" + client->ip.toStdString() + ".txt", std::ios::out);
-    for(int i = 0; i < homes.size(); i++)
+    for(size_t i = 0; i < homes.size(); i++)
     {
         homeFile << homes[i].toStdString() << std::endl;
     }

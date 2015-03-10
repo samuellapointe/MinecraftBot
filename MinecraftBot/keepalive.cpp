@@ -6,7 +6,6 @@ KeepAlive::KeepAlive(MyTcpSocket * s, MainWindow * i_ui, QByteArray &d)
     packetID = 0;
     socket = s;
     ui = i_ui;
-    displayColor = QColor(0, 200 ,0);
 }
 
 KeepAlive::~KeepAlive()
@@ -28,8 +27,7 @@ void KeepAlive::sendPacket(bool compressed)
     appendVarint(tmp, value);
 
     //Call parent
-    int length = Packet::sendPacket(Packet::packPacket(tmp, compressed));
-    ui->displayPacket(false, packetID, length, displayColor, "Keep Alive");
+    Packet::sendPacket(Packet::packPacket(tmp, compressed));
 
 }
 

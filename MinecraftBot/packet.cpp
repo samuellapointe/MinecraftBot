@@ -99,6 +99,12 @@ void Packet::appendVarint(QByteArray &input, int value)
     }
 }
 
+void Packet::appendDouble(QByteArray &input, double value)
+{
+    input.append(reinterpret_cast<const char*>(&value), sizeof(value));
+    return;
+}
+
 QByteArray Packet::uncompress(QByteArray compressed) //Taken from http://wiki.vg/Chunk_data_decompressing_%28Zlib%29
 {
     const int buffer_size = 100000;

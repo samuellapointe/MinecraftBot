@@ -10,6 +10,9 @@
 #include "chatmessage.h"
 #include "sendchatmessage.h"
 #include "playerpositionandlook.h"
+#include "playerposition.h"
+#include "clientstatus.h"
+#include "onground.h"
 
 #define PROTOCOLVERSION 47 //Version of the minecraft protocol (1.8)
 
@@ -21,9 +24,9 @@ Client::Client(MainWindow * i_ui, const string &i_username, const string &i_pass
     port = i_port;
     ui = i_ui;
     crypt = new CryptManager();
-    commandManager = new CommandManager(this, ui);
     currentState = HANDSHAKING;
-
+    player = new Player(this);
+    commandManager = new CommandManager(this, ui);
     packetsSinceLastKA = 0;
 }
 
@@ -73,19 +76,16 @@ void Client::handlePacket(Packet &packet) //The big switch case of doom, to hand
             case 0: //Disconnect
                 //ui->writeToConsole("The server is kicking us out!");
                 ui->writeToConsole(packet.data);
-                ui->displayPacket(true, packet.packetID, packet.packetSize, QColor(0,0,0), "Disconnect");
                 break;
             case 1: //Encryption request
                 enableEncryption(packet);
                 break;
             case 2: //Login Success
                 ui->writeToConsole("Login successful");
-                ui->displayPacket(true, packet.packetID, packet.packetSize, QColor(255,150,150), "Login Success");
                 currentState = PLAY;
                 break;
             case 3: //Set compression
                 ui->writeToConsole("Server enabled compression");
-                ui->displayPacket(true, packet.packetID, packet.packetSize, QColor(255,165,0), "Set Compression");
                 compressionSet = true;
                 break;
             default:
@@ -99,14 +99,17 @@ void Client::handlePacket(Packet &packet) //The big switch case of doom, to hand
             {
             case 0: //Keep alive
                 {
-                    ui->displayPacket(true, packet.packetID, packet.packetSize, QColor(100,255,100), "Keep Alive");
                     KeepAlive ka = KeepAlive(&socket, ui, packet.data);
                     ka.sendPacket(compressionSet);
                     packetsSinceLastKA = 0;
                 }
                 break;
             case 1: //Join game
-                ui->displayPacket(true, packet.packetID, packet.packetSize, QColor(223,205,247), "Join game");
+                {
+                    ClientStatus cs = ClientStatus(&socket, ui, 0);
+                    cs.sendPacket(compressionSet);
+                    player->updateGround(&socket);
+                }
                 break;
             case 2: //Chat message
                 {
@@ -114,11 +117,11 @@ void Client::handlePacket(Packet &packet) //The big switch case of doom, to hand
                 }
                 break;
             case 3: //Time update
-                ui->displayPacket(true, packet.packetID, packet.packetSize, QColor(152,142,179), "Time Update");
                 break;
             case 8: //Player position and look
                 {
                     PlayerPositionAndLook ppal = PlayerPositionAndLook(&socket, ui, packet.data);
+                    player->setPositionAndLook(ppal.x, ppal.y, ppal.z, ppal.yaw, ppal.pitch, ppal.flags);
                     if(commandManager->waitingForCoords)
                     {
                         commandManager->setHome(ppal.x, ppal.y, ppal.z); //For the !sethome command
@@ -126,57 +129,38 @@ void Client::handlePacket(Packet &packet) //The big switch case of doom, to hand
                 }
                 break;
             case 9: //Held item change
-                ui->displayPacket(true, packet.packetID, packet.packetSize, QColor(2,132,57), "Held item change");
                 break;
             case 10: //Spawn position
-                ui->displayPacket(true, packet.packetID, packet.packetSize, QColor(87,171,30), "Spawn position");
                 break;
             case 11: //Player abilities
-                ui->displayPacket(true, packet.packetID, packet.packetSize, QColor(55,142,62), "Player abilities");
                 break;
             case 43: //Change game state
-                ui->displayPacket(true, packet.packetID, packet.packetSize, QColor(189,19,43), "Change game state");
                 break;
             case 47: //Set slot
-                ui->displayPacket(true, packet.packetID, packet.packetSize, QColor(50,34,158), "Set slot");
                 break;
             case 48: //Window items
-                ui->displayPacket(true, packet.packetID, packet.packetSize, QColor(123,34,216), "Window Items");
                 break;
             case 55: //Statistics
-                ui->displayPacket(true, packet.packetID, packet.packetSize, QColor(18,239,159), "Statistics");
                 break;
             case 59: //Scoreboard objective
-                ui->displayPacket(true, packet.packetID, packet.packetSize, QColor(180,40,208), "Scoreboard objective");
                 break;
             case 60: //update score
-                ui->displayPacket(true, packet.packetID, packet.packetSize, QColor(156,142,68), "Update Score");
                 break;
             case 61: //Scoreboard display
-                ui->displayPacket(true, packet.packetID, packet.packetSize, QColor(188,221,158), "Scoreboard display");
                 break;
             case 62: //Teams
-                ui->displayPacket(true, packet.packetID, packet.packetSize, QColor(76,12,203), "Teams");
                 break;
             case 63: //plugin message
-                ui->displayPacket(true, packet.packetID, packet.packetSize, QColor(95,188,145), "Plugin message");
                 break;
             case 65: //Server difficulty
-                ui->displayPacket(true, packet.packetID, packet.packetSize, QColor(240,136,133), "Server difficulty");
                 break;
             case 68: //World border
-                ui->displayPacket(true, packet.packetID, packet.packetSize, QColor(74,192,236), "World border");
                 break;
             case 70: //Compression
                 ui->writeToConsole("Server enabled compression");
-                ui->displayPacket(true, packet.packetID, packet.packetSize, QColor(255,165,0), "Set Compression");
                 compressionSet = true;
                 break;
             default:
-                if(ui->showUnknownPackets())
-                {
-                    ui->displayPacket(true, packet.packetID, packet.packetSize, QColor(255,255,255), "Unknown");
-                }
                 break;
             }
             if(packetsSinceLastKA > 15000) //arbitrary value, timeout protection
@@ -224,4 +208,9 @@ void Client::sendMessage(QString message)
         scm.sendPacket(compressionSet);
         message.remove(0, 100);
     }
+}
+
+void Client::movePlayer(Direction d)
+{
+    player->move(d, &socket);
 }
