@@ -101,7 +101,21 @@ void Packet::appendVarint(QByteArray &input, int value)
 
 void Packet::appendDouble(QByteArray &input, double value)
 {
-    input.append(reinterpret_cast<const char*>(&value), sizeof(value));
+    QByteArray tmp;
+    QDataStream stream(&tmp, QIODevice::ReadWrite);
+    stream.setFloatingPointPrecision(QDataStream::DoublePrecision);
+    stream << value;
+    input.append(tmp);
+    return;
+}
+
+void Packet::appendFloat(QByteArray &input, float value)
+{
+    QByteArray tmp;
+    QDataStream stream(&tmp, QIODevice::ReadWrite);
+    stream.setFloatingPointPrecision(QDataStream::SinglePrecision);
+    stream << value;
+    input.append(tmp);
     return;
 }
 

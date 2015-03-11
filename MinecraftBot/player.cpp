@@ -79,43 +79,44 @@ void Player::setPositionAndLook(double posx, double posy, double posz, float y, 
 
 void Player::move(Direction d, MyTcpSocket * socket)
 {
+    float speed = 0.1;
     if(positionSet)
     {
         switch(d)
         {
         case NORTH:
-            position_z-=1;
+            position_z-=speed;
             break;
         case SOUTH:
-            position_z+=1;
+            position_z+=speed;
             break;
         case EAST:
-            position_x+=1;
+            position_x+=speed;
             break;
         case WEST:
-            position_x-=1;
+            position_x-=speed;
             break;
         case NORTHEAST:
-            position_z-=1;
-            position_x+=1;
+            position_z-=speed;
+            position_x+=speed;
             break;
         case NORTHWEST:
-            position_z-=1;
-            position_x-=1;
+            position_z-=speed;
+            position_x-=speed;
             break;
         case SOUTHEAST:
-            position_z+=1;
-            position_x+=1;
+            position_z+=speed;
+            position_x+=speed;
             break;
         case SOUTHWEST:
-            position_z+=1;
-            position_x-=1;
+            position_z+=speed;
+            position_x-=speed;
             break;
         case UP:
-            position_y+=1;
+            position_y+=speed;
             break;
         case DOWN:
-            position_y-=1;
+            position_y-=speed;
             break;
         }
         //Update the position to the server

@@ -2,7 +2,7 @@
 
 PlayerPosition::PlayerPosition(MyTcpSocket * s, double x, double y, double z, bool og)
 {
-    packetID = 4;
+    packetID = 6;
     socket = s;
     position_x = x;
     position_y = y;
@@ -23,6 +23,8 @@ void PlayerPosition::sendPacket(bool compressed)
     appendDouble(tmp, position_x);
     appendDouble(tmp, position_y);
     appendDouble(tmp, position_z);
+    appendFloat(tmp, 0);
+    appendFloat(tmp, 0);
     tmp.append(onGround);
 
     //Call parent

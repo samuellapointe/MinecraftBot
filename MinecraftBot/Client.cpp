@@ -106,9 +106,9 @@ void Client::handlePacket(Packet &packet) //The big switch case of doom, to hand
                 break;
             case 1: //Join game
                 {
-                    ClientStatus cs = ClientStatus(&socket, ui, 0);
-                    cs.sendPacket(compressionSet);
-                    player->updateGround(&socket);
+                    //ClientStatus cs = ClientStatus(&socket, ui, 0);
+                    //cs.sendPacket(compressionSet);
+                    //player->updateGround(&socket);
                 }
                 break;
             case 2: //Chat message
@@ -122,6 +122,7 @@ void Client::handlePacket(Packet &packet) //The big switch case of doom, to hand
                 {
                     PlayerPositionAndLook ppal = PlayerPositionAndLook(&socket, ui, packet.data);
                     player->setPositionAndLook(ppal.x, ppal.y, ppal.z, ppal.yaw, ppal.pitch, ppal.flags);
+                    ui->writeToConsole("WHAT");
                     if(commandManager->waitingForCoords)
                     {
                         commandManager->setHome(ppal.x, ppal.y, ppal.z); //For the !sethome command

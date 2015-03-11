@@ -24,6 +24,7 @@ public:
     int sendPacket(const QByteArray &data);
     void appendVarint(QByteArray &input, int value);
     void appendDouble(QByteArray &input, double value);
+    void appendFloat(QByteArray &input, float value);
     QByteArray uncompress(QByteArray compressed);
 
     //Vars
