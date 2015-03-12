@@ -25,7 +25,7 @@ public:
     void decodePacket(QByteArray data);
     void handlePacket(Packet &packet);
     void sendMessage(QString message);
-    void movePlayer(Direction d);
+    void movePlayer(Direction d, double distance);
     //Vars
     QString ip;
     CryptManager * crypt;

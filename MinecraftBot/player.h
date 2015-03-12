@@ -4,18 +4,19 @@
 #define PLAYER_H
 
 #include "mytcpsocket.h"
-//#include "playerposition.h"
+#include "direction.h"
+#include "movementthread.h"
 
-enum Direction{NORTH, SOUTH, EAST, WEST, NORTHEAST, NORTHWEST, SOUTHEAST, SOUTHWEST, UP, DOWN};
 class Client;
 class Player
 {
+    friend class MovementThread; //Because I'd put them in the same class
 public:
     Player(Client * client);
     ~Player();
     //Set position
     void setPositionAndLook(double x, double y, double z, float yaw, float pitch, char flags);
-    void move(Direction d, MyTcpSocket * socket);
+    void move(Direction d, double distance, MyTcpSocket * socket);
     void updateGround(MyTcpSocket * socket);
 private:
     Client * client;
@@ -28,6 +29,7 @@ private:
     //Vars related to look
     float yaw;
     float pitch;
+
 };
 
 #endif // PLAYER_H

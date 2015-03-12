@@ -33,7 +33,50 @@ void CommandManager::readCommand(QString command, QString username)
     }
     else if(args[0].toLower().compare("!move") == 0)
     {
-        client->movePlayer(NORTH);
+        if(args.length() == 3)
+        {
+            bool validDistance;
+            double distance = args[2].toDouble(&validDistance);
+            if(validDistance)
+            {
+                if(args[1].toLower().compare("north") == 0)
+                {
+                    client->movePlayer(NORTH, distance);
+                }
+                else if(args[1].toLower().compare("south") == 0)
+                {
+                    client->movePlayer(SOUTH, distance);
+                }
+                else if(args[1].toLower().compare("east") == 0)
+                {
+                    client->movePlayer(EAST, distance);
+                }
+                else if(args[1].toLower().compare("west") == 0)
+                {
+                    client->movePlayer(WEST, distance);
+                }
+                else if(args[1].toLower().compare("up") == 0)
+                {
+                    client->movePlayer(UP, distance);
+                }
+                else if(args[1].toLower().compare("down") == 0)
+                {
+                    client->movePlayer(DOWN, distance);
+                }
+                else
+                {
+                    client->sendMessage("Direction not recognized.");
+                }
+            }
+            else
+            {
+                client->sendMessage("Incorrect distance");
+            }
+        }
+        else
+        {
+            client->sendMessage("Command usage: !move north/south/east/west distance");
+        }
     }
     else
     {
