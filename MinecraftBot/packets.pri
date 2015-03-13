@@ -9,7 +9,8 @@ SOURCES +=  packet.cpp \
     $$PWD/playerpositionandlook.cpp \
     $$PWD/playerposition.cpp \
     $$PWD/clientstatus.cpp \
-    $$PWD/onground.cpp
+    $$PWD/onground.cpp \
+    $$PWD/mapchunkbulk.cpp
 
 HEADERS += packet.h \
            encryptionrequest.h \
@@ -22,4 +23,5 @@ HEADERS += packet.h \
     $$PWD/playerpositionandlook.h \
     $$PWD/playerposition.h \
     $$PWD/clientstatus.h \
-    $$PWD/onground.h
+    $$PWD/onground.h \
+    $$PWD/mapchunkbulk.h

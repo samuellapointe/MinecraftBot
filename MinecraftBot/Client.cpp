@@ -13,6 +13,7 @@
 #include "playerposition.h"
 #include "clientstatus.h"
 #include "onground.h"
+#include "mapchunkbulk.h"
 
 #define PROTOCOLVERSION 47 //Version of the minecraft protocol (1.8)
 
@@ -66,6 +67,7 @@ void Client::handlePacket(Packet &packet) //The big switch case of doom, to hand
 {
     if(packet.data.length() > 0)
     {
+        //ui->writeToConsole(QString::number(packet.packetID));
         switch(currentState) //Packet ID means different things depending on game state
         {
         case HANDSHAKING: //Always empty for the client as of Minecraft version 1.8.1, the client sends packets then switches to login
@@ -106,8 +108,8 @@ void Client::handlePacket(Packet &packet) //The big switch case of doom, to hand
                 break;
             case 1: //Join game
                 {
-                    //ClientStatus cs = ClientStatus(&socket, ui, 0);
-                    //cs.sendPacket(compressionSet);
+                    ClientStatus cs = ClientStatus(&socket, ui, 0);
+                    cs.sendPacket(compressionSet);
                     //player->updateGround(&socket);
                 }
                 break;
@@ -134,6 +136,13 @@ void Client::handlePacket(Packet &packet) //The big switch case of doom, to hand
             case 10: //Spawn position
                 break;
             case 11: //Player abilities
+                break;
+            case 33: //Map Chunk
+                break;
+            case 38: //Map Chunk Bulk
+                {
+                    MapChunkBulk mcb = MapChunkBulk(&socket, packet.data);
+                }
                 break;
             case 43: //Change game state
                 break;
