@@ -9,6 +9,7 @@
 #include "authentificator.h"
 #include "commandmanager.h"
 #include "player.h"
+#include "world.h"
 
 using std::string;
 
@@ -33,7 +34,8 @@ public:
     bool encrypted;
     bool compressionSet; //Pour savoir si la compression à été activée
     State currentState;
-    Player * player;    //State currentState;
+    Player * player;
+    World * world;
 private:
     //Vars
     string username;

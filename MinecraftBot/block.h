@@ -5,6 +5,7 @@
 class Block
 {
 public:
+    Block();
     Block(unsigned short type, unsigned short light);
     ~Block();
 

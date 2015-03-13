@@ -6,7 +6,7 @@
 class MapChunkBulk : Packet
 {
 public:
-    MapChunkBulk(MyTcpSocket * socket, QByteArray &data);
+    MapChunkBulk(MyTcpSocket * socket, QByteArray &data, World * world);
     ~MapChunkBulk();
 };
 

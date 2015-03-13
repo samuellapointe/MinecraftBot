@@ -29,6 +29,7 @@ Client::Client(MainWindow * i_ui, const string &i_username, const string &i_pass
     player = new Player(this);
     commandManager = new CommandManager(this, ui);
     packetsSinceLastKA = 0;
+    world = new World();
 }
 
 Client::~Client()
@@ -141,7 +142,7 @@ void Client::handlePacket(Packet &packet) //The big switch case of doom, to hand
                 break;
             case 38: //Map Chunk Bulk
                 {
-                    MapChunkBulk mcb = MapChunkBulk(&socket, packet.data);
+                    MapChunkBulk mcb = MapChunkBulk(&socket, packet.data, world);
                 }
                 break;
             case 43: //Change game state
