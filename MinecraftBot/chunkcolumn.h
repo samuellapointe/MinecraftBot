@@ -7,11 +7,14 @@ class ChunkColumn
 {
 public:
     ChunkColumn();
+    ChunkColumn(int position_x, int position_z, unsigned short bitmask);
     ~ChunkColumn();
-private:
     int position_x;
     int position_z;
+    unsigned short bitmask;
     Chunk chunks[16];
+private:
+
 };
 
 #endif // CHUNKCOLUMN_H

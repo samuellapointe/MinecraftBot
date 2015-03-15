@@ -8,6 +8,9 @@ class Chunk
 public:
     Chunk();
     ~Chunk();
+    Block blocks[16][16][16];
+private:
+
 
 };
 

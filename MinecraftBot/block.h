@@ -6,12 +6,14 @@ class Block
 {
 public:
     Block();
-    Block(unsigned short type, unsigned short light);
     ~Block();
+    short type;
+    unsigned char light;
+    unsigned short getType();
+    unsigned short getMetadata();
 
 private:
-    unsigned short type;
-    unsigned char light;
+
 };
 
 #endif // BLOCK_H

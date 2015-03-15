@@ -6,14 +6,17 @@ Block::Block()
     light = 0;
 }
 
-Block::Block(unsigned short t, unsigned short l)
-{
-    type = t;
-    light = l;
-}
-
 Block::~Block()
 {
 
 }
 
+unsigned short Block::getType()
+{
+    return (type >> 4);
+}
+
+unsigned short Block::getMetadata()
+{
+    return (type & 15);
+}

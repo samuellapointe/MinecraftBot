@@ -23,6 +23,8 @@ void World::addChunks(QByteArray data)
     QDataStream stream(data);
     int chunkX, chunkZ;
 
+    std::vector<ChunkColumn> chunkColumnsVector;
+
     for(int i = 0; i < chunkColumnCount; i++)
     {
         stream >> chunkX;
@@ -32,30 +34,44 @@ void World::addChunks(QByteArray data)
         unsigned short bitmask;
         stream >> bitmask;
 
+        data.remove(0, 2); //bitmask
+        chunkColumnsVector.push_back(ChunkColumn(chunkX, chunkZ, bitmask));
+    }
+
+    for(int i = 0; i < chunkColumnCount; i++)
+    {
+        ChunkColumn actualColumn = chunkColumnsVector.at(i);
         for (int j=0; j<16; j++) //The chunks inside a column
         {
-            if (bitmask & (1 << j))
+            if (actualColumn.bitmask & (1 << j))
             {
-                Block blocks[16][16][16];
+                Chunk chunk = Chunk();
 
-                for(int z = 0; z < 16; z++)
+                //Blocks
+                stream.setByteOrder(stream.LittleEndian); //Blocks are read in little-endian order
+                for(int y = 0; y < 16; y++)
                 {
-                    for(int x = 0; x < 16; x++)
+                    for(int z = 0; z < 16; z++)
                     {
-                        for(int y = 0; y < 16; y++)
+                        for(int x = 0; x < 16; x++)
                         {
                             unsigned short type;
-                            unsigned char light;
                             stream >> type;
-                            stream >> light;
-                            data.remove(0, 24);
-                            blocks[x][y][z] = Block(type, light);
+                            chunk.blocks[x][y][z].type = type;
+
+                            unsigned short test = chunk.blocks[x][y][z].getType();
+                            data.remove(0, 2);
                         }
                     }
                 }
+                actualColumn.chunks[j] = chunk; //Set chunk
+
             }
         }
-
+        chunkColumns.insert(std::make_pair(std::make_pair(actualColumn.position_x, actualColumn.position_z), actualColumn));
+        //chunkColumns[std::make_pair(0,0)];
+        int wadwa = 1;
+        //chunkColumns.insert(std::make_pair(actualColumn.position_x, actualColumn.position_z), actualColumn); //Insert the column into the world object
     }
 
 }

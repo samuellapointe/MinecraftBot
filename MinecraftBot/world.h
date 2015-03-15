@@ -15,7 +15,7 @@ public:
     ~World();
     void addChunks(QByteArray data);
 private:
-    std::map<std::pair<int, int>, ChunkColumn> chunks;
+    std::map<std::pair<int, int>, ChunkColumn> chunkColumns;
 };
 
 #endif // WORLD_H
