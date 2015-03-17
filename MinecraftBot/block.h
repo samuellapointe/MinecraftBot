@@ -9,6 +9,7 @@ public:
     ~Block();
     short type;
     unsigned char light;
+    unsigned char skylight;
     unsigned short getType();
     unsigned short getMetadata();
 

@@ -29,18 +29,17 @@ void World::addChunks(QByteArray data)
     {
         stream >> chunkX;
         stream >> chunkZ;
-        data.remove(0, 8); //Remove the two ints
 
         unsigned short bitmask;
         stream >> bitmask;
 
-        data.remove(0, 2); //bitmask
         chunkColumnsVector.push_back(ChunkColumn(chunkX, chunkZ, bitmask));
     }
 
     for(int i = 0; i < chunkColumnCount; i++)
     {
         ChunkColumn actualColumn = chunkColumnsVector.at(i);
+        //Blocks
         for (int j=0; j<16; j++) //The chunks inside a column
         {
             if (actualColumn.bitmask & (1 << j))
@@ -60,7 +59,6 @@ void World::addChunks(QByteArray data)
                             chunk.blocks[x][y][z].type = type;
 
                             unsigned short test = chunk.blocks[x][y][z].getType();
-                            data.remove(0, 2);
                         }
                     }
                 }
@@ -68,10 +66,79 @@ void World::addChunks(QByteArray data)
 
             }
         }
+        //Lights
+        stream.setByteOrder(stream.BigEndian);
+        for (int j=0; j<16; j++) //The chunks inside a column
+        {
+            if (actualColumn.bitmask & (1 << j))
+            {
+                for(int y = 0; y < 16; y++)
+                {
+                    for(int z = 0; z < 16; z++)
+                    {
+                        for(int x = 0; x < 16; x+=2)
+                        {
+                            unsigned char light;
+                            stream >> light;
+                            actualColumn.chunks[j].blocks[x][y][z].light = (light >> 4); //Even index = high bits
+                            actualColumn.chunks[j].blocks[x][y][z].light = (light & 15); //Odd index = low bits
+                        }
+                    }
+                }
+            }
+        }
+        //Skylight
+        if(skyLightSent)
+        {
+            for (int j=0; j<16; j++) //The chunks inside a column
+            {
+                if (actualColumn.bitmask & (1 << j))
+                {
+                    for(int y = 0; y < 16; y++)
+                    {
+                        for(int z = 0; z < 16; z++)
+                        {
+                            for(int x = 0; x < 16; x+=2)
+                            {
+                                unsigned char light;
+                                stream >> light;
+                                actualColumn.chunks[j].blocks[x][y][z].skylight = (light >> 4); //Even index = high bits
+                                actualColumn.chunks[j].blocks[x][y][z].skylight = (light & 15); //Odd index = low bits
+                            }
+                        }
+                    }
+                }
+            }
+        }
         chunkColumns.insert(std::make_pair(std::make_pair(actualColumn.position_x, actualColumn.position_z), actualColumn));
-        //chunkColumns[std::make_pair(0,0)];
-        int wadwa = 1;
-        //chunkColumns.insert(std::make_pair(actualColumn.position_x, actualColumn.position_z), actualColumn); //Insert the column into the world object
     }
+
+}
+
+Block World::getBlock(double x, double y, double z)
+{
+    //First, get the chunk column
+    int chunkX = floor(x/16);
+    int chunkY = floor(y/16);
+    int chunkZ = floor(z/16);
+
+    if(chunkColumns.find(std::make_pair(chunkX, chunkZ)) != chunkColumns.end())
+    {
+        ChunkColumn cc = chunkColumns.at(std::make_pair(chunkX, chunkZ));
+        Chunk c = cc.chunks[chunkY];
+        int blockX = abs(chunkX*16 - x);
+        int blockY = abs(chunkY*16 - y);
+        int blockZ = abs(chunkZ*16 - z);
+        Block b = c.blocks[blockX][blockY][blockZ];
+        return b;
+    }
+    else
+    {
+        Block b = Block();
+        return b;
+    }
+
+
+
 
 }

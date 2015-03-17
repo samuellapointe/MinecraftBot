@@ -78,6 +78,14 @@ void CommandManager::readCommand(QString command, QString username)
             client->sendMessage("Command usage: !move north/south/east/west distance");
         }
     }
+    else if(args[0].toLower().compare("!getblock") == 0)
+    {
+        if(args.length() == 4)
+        {
+            Block block = client->world->getBlock(args[1].toDouble(), args[2].toDouble(), args[3].toDouble());
+            client->sendMessage(QString::number(block.getType()));
+        }
+    }
     else
     {
         client->sendMessage("Command not recognized! ");
