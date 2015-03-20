@@ -22,6 +22,7 @@ void World::addChunks(QByteArray data)
 
     QDataStream stream(data);
     int chunkX, chunkZ;
+    int bytesRead = 0;
 
     std::vector<ChunkColumn> chunkColumnsVector;
 
@@ -34,6 +35,8 @@ void World::addChunks(QByteArray data)
         stream >> bitmask;
 
         chunkColumnsVector.push_back(ChunkColumn(chunkX, chunkZ, bitmask));
+
+        bytesRead += 10;
     }
 
     for(int i = 0; i < chunkColumnCount; i++)
@@ -57,8 +60,7 @@ void World::addChunks(QByteArray data)
                             unsigned short type;
                             stream >> type;
                             chunk.blocks[x][y][z].type = type;
-
-                            unsigned short test = chunk.blocks[x][y][z].getType();
+                            bytesRead += 2;
                         }
                     }
                 }
@@ -81,7 +83,8 @@ void World::addChunks(QByteArray data)
                             unsigned char light;
                             stream >> light;
                             actualColumn.chunks[j].blocks[x][y][z].light = (light >> 4); //Even index = high bits
-                            actualColumn.chunks[j].blocks[x][y][z].light = (light & 15); //Odd index = low bits
+                            actualColumn.chunks[j].blocks[x+1][y][z].light = (light & 15); //Odd index = low bits
+                            bytesRead += 1;
                         }
                     }
                 }
@@ -103,13 +106,15 @@ void World::addChunks(QByteArray data)
                                 unsigned char light;
                                 stream >> light;
                                 actualColumn.chunks[j].blocks[x][y][z].skylight = (light >> 4); //Even index = high bits
-                                actualColumn.chunks[j].blocks[x][y][z].skylight = (light & 15); //Odd index = low bits
+                                actualColumn.chunks[j].blocks[x+1][y][z].skylight = (light & 15); //Odd index = low bits
+                                bytesRead += 1;
                             }
                         }
                     }
                 }
             }
         }
+        stream.skipRawData(256); //Skip biomes
         chunkColumns.insert(std::make_pair(std::make_pair(actualColumn.position_x, actualColumn.position_z), actualColumn));
     }
 
@@ -126,9 +131,9 @@ Block World::getBlock(double x, double y, double z)
     {
         ChunkColumn cc = chunkColumns.at(std::make_pair(chunkX, chunkZ));
         Chunk c = cc.chunks[chunkY];
-        int blockX = abs(chunkX*16 - x);
-        int blockY = abs(chunkY*16 - y);
-        int blockZ = abs(chunkZ*16 - z);
+        int blockX = mod((int)floor(x), 16);
+        int blockY = mod((int)floor(y), 16);
+        int blockZ = mod((int)floor(z), 16);
         Block b = c.blocks[blockX][blockY][blockZ];
         return b;
     }
@@ -137,8 +142,9 @@ Block World::getBlock(double x, double y, double z)
         Block b = Block();
         return b;
     }
+}
 
-
-
-
+int World::mod(int k, int n) //Taken from http://stackoverflow.com/questions/12276675/modulus-with-negative-numbers-in-c
+{
+    return ((k %= n) < 0) ? k+n : k;
 }

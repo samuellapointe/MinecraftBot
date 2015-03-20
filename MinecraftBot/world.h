@@ -18,6 +18,7 @@ public:
     Block getBlock(double x, double y, double z);
     std::map<std::pair<int, int>, ChunkColumn> chunkColumns;
 private:
+    int mod(int k, int n);
 
 };
 
