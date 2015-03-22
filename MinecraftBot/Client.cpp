@@ -14,6 +14,9 @@
 #include "clientstatus.h"
 #include "onground.h"
 #include "mapchunkbulk.h"
+#include "mapchunk.h"
+#include "multiblockchange.h"
+#include "blockchange.h"
 
 #define PROTOCOLVERSION 47 //Version of the minecraft protocol (1.8)
 
@@ -139,6 +142,19 @@ void Client::handlePacket(Packet &packet) //The big switch case of doom, to hand
             case 11: //Player abilities
                 break;
             case 33: //Map Chunk
+                {
+                    MapChunk mc = MapChunk(&socket, packet.data, world);
+                }
+                break;
+            case 34: //Multi block change
+                {
+                    MultiBlockChange mbc = MultiBlockChange(&socket, packet.data, world);
+                }
+                break;
+            case 35: //Block change
+                {
+                    BlockChange bc = BlockChange(&socket, packet.data, world);
+                }
                 break;
             case 38: //Map Chunk Bulk
                 {
@@ -174,7 +190,7 @@ void Client::handlePacket(Packet &packet) //The big switch case of doom, to hand
             default:
                 break;
             }
-            if(packetsSinceLastKA > 15000) //arbitrary value, timeout protection
+            if(packetsSinceLastKA > 10000) //arbitrary value, timeout protection
             {
                 packetsSinceLastKA = 0;
                 KeepAlive ka = KeepAlive(&socket, ui, QByteArray::number(0));
