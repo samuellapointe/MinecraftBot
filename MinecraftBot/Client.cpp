@@ -128,8 +128,7 @@ void Client::handlePacket(Packet &packet) //The big switch case of doom, to hand
                 {
                     PlayerPositionAndLook ppal = PlayerPositionAndLook(&socket, ui, packet.data);
                     player->setPositionAndLook(ppal.x, ppal.y, ppal.z, ppal.yaw, ppal.pitch, ppal.flags);
-                    player->updateGround(&socket);
-                    //ui->writeToConsole("WHAT");
+                    ui->writeToConsole("WHAT");
                     if(commandManager->waitingForCoords)
                     {
                         commandManager->setHome(ppal.x, ppal.y, ppal.z); //For the !sethome command
