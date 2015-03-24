@@ -1,6 +1,7 @@
 #include "player.h"
 #include "Client.h"
 #include "onground.h"
+#include "playerposition.h"
 
 /* Directions:
  * North: z--
@@ -78,14 +79,26 @@ void Player::setPositionAndLook(double posx, double posy, double posz, float y, 
 
 void Player::move(Direction d, double distance, MyTcpSocket * socket)
 {
-    if(positionSet)
-    {
-        MovementThread * mt = new MovementThread(0.1, distance, d, socket, this);
-        mt->deleteLater(); //Delete when finished
-    }
+
 }
 
 void Player::updateGround(MyTcpSocket * socket)
 {
+    if(client->world->getBlock(position_x, position_y-2, position_z).getType() == 0) //Block below player is air
+    {
+        onGround = false;
+        //client->sendMessage("I am floating");
+        //move(DOWN, 1, socket);
+    }
+    else
+    {
+        onGround = true;
+    }
     OnGround og = OnGround(socket, onGround);
+}
+
+void Player::updateCoords(MyTcpSocket *socket)
+{
+    PlayerPosition pp = PlayerPosition(socket, position_x, position_y, position_z, onGround);
+    pp.sendPacket(client->compressionSet);
 }
