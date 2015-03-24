@@ -70,6 +70,11 @@ void MovementThread::run()
         pp.sendPacket(player->client->compressionSet);
         distanceWalked += speed;
 
+        if(direction != DOWN)
+        {
+            player->updateGround(socket);
+        }
+
         //Wait a bit
         std::clock_t startTime;
         startTime = std::clock();

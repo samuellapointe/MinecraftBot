@@ -133,6 +133,7 @@ void Client::handlePacket(Packet &packet) //The big switch case of doom, to hand
                     {
                         commandManager->setHome(ppal.x, ppal.y, ppal.z); //For the !sethome command
                     }
+                    //player->updateGround(&socket);
                 }
                 break;
             case 9: //Held item change

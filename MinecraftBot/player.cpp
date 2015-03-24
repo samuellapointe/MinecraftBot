@@ -74,6 +74,7 @@ void Player::setPositionAndLook(double posx, double posy, double posz, float y, 
     }
 
     positionSet = true;
+
 }
 
 void Player::move(Direction d, double distance, MyTcpSocket * socket)
@@ -87,5 +88,18 @@ void Player::move(Direction d, double distance, MyTcpSocket * socket)
 
 void Player::updateGround(MyTcpSocket * socket)
 {
+    if(client->world->getBlock(floor(position_x), position_y, floor(position_z)).getType() == 0 &&
+       client->world->getBlock(ceil(position_x), position_y, floor(position_z)).getType() == 0 &&
+       client->world->getBlock(floor(position_x), position_y, ceil(position_z)).getType() == 0 &&
+       client->world->getBlock(ceil(position_x), position_y, ceil(position_z)).getType() == 0) //Block below player is air
+    {
+        onGround = false;
+        MovementThread * mt2 = new MovementThread(0.1, 0.1, DOWN, socket, this);
+        mt2->deleteLater(); //Delete when finished
+    }
+    else
+    {
+        onGround = true;
+    }
     OnGround og = OnGround(socket, onGround);
 }
