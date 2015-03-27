@@ -1,6 +1,5 @@
 #include "movementthread.h"
 #include "player.h"
-#include "playerposition.h"
 #include <ctime>
 
 MovementThread::MovementThread(double sp, double dis, Direction dir, MyTcpSocket * so, Player * p)
@@ -11,7 +10,6 @@ MovementThread::MovementThread(double sp, double dis, Direction dir, MyTcpSocket
     socket = so;
     player = p;
     maxSpeed = 4.3; //4.3 meters per second max
-    run();
 }
 
 MovementThread::~MovementThread()
@@ -66,14 +64,9 @@ void MovementThread::run()
             break;
         }
         //Update the position to the server
-        PlayerPosition pp = PlayerPosition(socket, player->position_x, player->position_y, player->position_z, player->onGround);
-        pp.sendPacket(player->client->compressionSet);
-        distanceWalked += speed;
+        emit(sendMovement());
 
-        if(direction != DOWN)
-        {
-            player->updateGround(socket);
-        }
+        distanceWalked += speed;
 
         //Wait a bit
         std::clock_t startTime;

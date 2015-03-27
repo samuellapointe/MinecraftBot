@@ -105,5 +105,7 @@ void MyTcpSocket::write(QByteArray data)
         encryptedData = client->crypt->encodeAES(data);
     }
     socket->write(encryptedData);
-    socket->waitForBytesWritten(5000);
+    socket->waitForBytesWritten(30000);
 }
+
+

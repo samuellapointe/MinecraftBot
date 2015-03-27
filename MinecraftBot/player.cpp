@@ -1,6 +1,7 @@
 #include "player.h"
 #include "Client.h"
 #include "onground.h"
+#include "playerposition.h"
 
 /* Directions:
  * North: z--
@@ -9,7 +10,7 @@
  * West: x--
  */
 
-Player::Player(Client * c)
+Player::Player(Client * c, MyTcpSocket * s)
 {
     client = c;
     position_x = 0;
@@ -19,6 +20,7 @@ Player::Player(Client * c)
     pitch = 0;
     onGround = true;
     positionSet = false;
+    socket = s;
 }
 
 Player::~Player()
@@ -81,8 +83,15 @@ void Player::move(Direction d, double distance, MyTcpSocket * socket)
 {
     if(positionSet)
     {
+        QThread * thread = new QThread();
         MovementThread * mt = new MovementThread(0.1, distance, d, socket, this);
-        mt->deleteLater(); //Delete when finished
+        mt->moveToThread(thread);
+        connect(thread, SIGNAL(started()), mt, SLOT(run()));
+        connect(mt, SIGNAL(finished()), thread, SLOT(quit()));
+        connect(mt, SIGNAL(sendMovement()), this, SLOT(updateLocation()));
+        connect(mt, SIGNAL(finished()), mt, SLOT(deleteLater()));
+        connect(thread, SIGNAL(finished()), mt, SLOT(deleteLater()));
+        thread->start();
     }
 }
 
@@ -94,12 +103,16 @@ void Player::updateGround(MyTcpSocket * socket)
        client->world->getBlock(ceil(position_x), position_y, ceil(position_z)).getType() == 0) //Block below player is air
     {
         onGround = false;
-        MovementThread * mt2 = new MovementThread(0.1, 0.1, DOWN, socket, this);
-        mt2->deleteLater(); //Delete when finished
     }
     else
     {
         onGround = true;
     }
     OnGround og = OnGround(socket, onGround);
+}
+
+void Player::updateLocation()
+{
+    PlayerPosition pp = PlayerPosition(socket, position_x, position_y, position_z, onGround);
+    pp.sendPacket(client->compressionSet);
 }

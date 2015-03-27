@@ -4,12 +4,14 @@
 
 CryptManager::CryptManager()
 {
-    sharedSecret = "0123456789abcdef";
+    sharedSecret = randomKey(16);
     byte IV[AES::BLOCKSIZE];
     memcpy(IV,sharedSecret.c_str(),16);
 
     AESDecryptor = new CFB_Mode<AES>::Decryption((byte*)sharedSecret.c_str(),(unsigned int)16,IV,1);
     AESEncryptor = new CFB_Mode<AES>::Encryption((byte*)sharedSecret.c_str(),(unsigned int)16,IV,1);
+
+    srand(time(0));
 
 }
 
@@ -69,8 +71,14 @@ std::string CryptManager::javaHexDigest(std::string input)
         //First, invert 1 and 0
         for(size_t i = 0; i < binaryInput.length(); i++)
         {
-            if(binaryInput[i] == '1') binaryInput[i] = '0';
-            else binaryInput[i] = '1';
+            if(binaryInput[i] == '1')
+            {
+                binaryInput[i] = '0';
+            }
+            else
+            {
+                binaryInput[i] = '1';
+            }
         }
         //Now add 1
         bool finished = false;
@@ -102,6 +110,7 @@ std::string CryptManager::javaHexDigest(std::string input)
         input.insert(0, "-");
         //input.erase(input.length()-1);
     }
+
     return input;
 }
 
@@ -152,7 +161,6 @@ const char* CryptManager::hex_char_to_bin(char c) //Function taken on http://sta
 
 std::string CryptManager::hex_str_to_bin_str(const std::string& hex) //Function taken on http://stackoverflow.com/questions/18310952/convert-strings-between-hex-format-and-binary-format
 {
-    // TODO use a loop from <algorithm> or smth
     std::string bin;
     for(unsigned i = 0; i != hex.length(); ++i)
        bin += hex_char_to_bin(hex[i]);
@@ -186,4 +194,15 @@ std::string CryptManager::bin_str_to_hex_str(const std::string &bin)
     for(unsigned i = 0; i != bin.length(); i+=4)
        hex += bin_to_hex_char(bin.substr(i, 4));
     return hex;
+}
+
+std::string CryptManager::randomKey(int size)
+{
+    std::string output = "";
+    std::string chars = "abcdefghijklmnopqrstuvwxyz0123456789";
+    while(output.length() < size)
+    {
+        output.push_back(chars[rand() % (chars.length() - 1)]);
+    }
+    return output;
 }

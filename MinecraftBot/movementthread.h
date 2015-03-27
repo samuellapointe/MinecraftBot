@@ -5,6 +5,7 @@
 #include "mytcpsocket.h"
 #include "direction.h"
 
+
 class Player;
 class MovementThread : public QThread
 {
@@ -12,8 +13,10 @@ class MovementThread : public QThread
 public:
     MovementThread(double speed, double distance, Direction direction, MyTcpSocket * socket, Player * player);
     ~MovementThread();
-protected:
+public slots:
     void run();
+signals:
+    void sendMovement();
 private:
     double speed;
     double distance;

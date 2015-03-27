@@ -29,7 +29,7 @@ Client::Client(MainWindow * i_ui, const string &i_username, const string &i_pass
     ui = i_ui;
     crypt = new CryptManager();
     currentState = HANDSHAKING;
-    player = new Player(this);
+    player = new Player(this, &socket);
     commandManager = new CommandManager(this, ui);
     packetsSinceLastKA = 0;
     world = new World();
@@ -211,6 +211,8 @@ void Client::enableEncryption(Packet packet)
     EncryptionRequest er = EncryptionRequest(packet.data, ui); //Decypher the data into an encryption request packet
     crypt->loadKey(er.publicKey); //Load the RSA public key into the cryptography manager
     QByteArray hash = crypt->getHash(er.publicKey, er.serverID); //Get the hash necessary for the encryption response
+    ui->writeToConsole(hash);
+
     EncryptionResponse er2 = EncryptionResponse(
                 &socket,
                 ui,

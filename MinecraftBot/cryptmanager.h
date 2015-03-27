@@ -12,6 +12,7 @@
 #include <QByteArray>
 #include <aes.h>
 #include <modes.h>
+#include <ctime>
 using namespace CryptoPP;
 
 class CryptManager
@@ -46,6 +47,9 @@ private:
     //Convert binary string to hex string
     const char bin_to_hex_char(std::string bin);
     std::string bin_str_to_hex_str(const std::string& bin);
+
+    //Make a key
+    std::string randomKey(int size);
 
 
 };

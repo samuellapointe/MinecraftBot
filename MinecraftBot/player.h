@@ -8,18 +8,22 @@
 #include "movementthread.h"
 
 class Client;
-class Player
+class Player : public QObject
 {
+    Q_OBJECT
     friend class MovementThread; //Because I'd put them in the same class
 public:
-    Player(Client * client);
+    Player(Client * client, MyTcpSocket * socket);
     ~Player();
     //Set position
     void setPositionAndLook(double x, double y, double z, float yaw, float pitch, char flags);
     void move(Direction d, double distance, MyTcpSocket * socket);
     void updateGround(MyTcpSocket * socket);
+public slots:
+    void updateLocation();
 private:
     Client * client;
+    MyTcpSocket * socket;
     //Vars related to position
     double position_x;
     double position_y;
@@ -29,6 +33,7 @@ private:
     //Vars related to look
     float yaw;
     float pitch;
+
 
 };
 

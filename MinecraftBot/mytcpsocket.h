@@ -8,8 +8,8 @@
 #include <QObject>
 #include <QTcpSocket>
 #include <QAbstractSocket>
-#include <QDebug>
-#include <vector>
+#include <queue>
+#include <QMutex>
 
 class MainWindow;
 class Client;
@@ -39,6 +39,7 @@ public slots:
 private:
     QTcpSocket *socket;
     QByteArray bufferStream; //Where we store data until we know it's ready to be read
+    QMutex mutex;
 
     
 };
