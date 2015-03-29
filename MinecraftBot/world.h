@@ -8,6 +8,8 @@
 #include <stdint.h>
 #include "varint.h"
 #include <cmath>
+#include "direction.h"
+#include "position.h"
 
 class World
 {
@@ -19,8 +21,8 @@ public:
     void updateBlock(QByteArray data);
     void updateBlocks(QByteArray data);
     void unloadChunk(int x, int z);
-    Block getBlock(double x, double y, double z);
-    void setBlock(int x, int y, int z, int i);
+    Block getBlock(Position pos);
+    void setBlock(Position pos, int i);
     std::map<std::pair<int, int>, ChunkColumn> chunkColumns;
 private:
     int mod(int k, int n);

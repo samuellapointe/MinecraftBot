@@ -15,6 +15,7 @@ TEMPLATE = app
 include(packets.pri)
 include(player.pri)
 include(world.pri)
+include(AI.pri)
 
 SOURCES += main.cpp\
         mainwindow.cpp \

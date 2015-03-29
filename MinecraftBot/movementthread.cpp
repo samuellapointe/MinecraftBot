@@ -26,41 +26,45 @@ void MovementThread::run()
     //to get that number of seconds in ticks, I multiply it by CLOCKS_PER_SEC
     while(distanceWalked < distance)
     {
+        if(!player->canWalk(direction))
+        {
+            //player->sendMessage("LOL");
+        }
         switch(direction)
         {
         case NORTH:
-            player->position_z-=speed;
+            player->position.z-=speed;
             break;
         case SOUTH:
-            player->position_z+=speed;
+            player->position.z+=speed;
             break;
         case EAST:
-            player->position_x+=speed;
+            player->position.x+=speed;
             break;
         case WEST:
-            player->position_x-=speed;
+            player->position.x-=speed;
             break;
         case NORTHEAST:
-            player->position_z-=speed;
-            player->position_x+=speed;
+            player->position.z-=speed;
+            player->position.x+=speed;
             break;
         case NORTHWEST:
-            player->position_z-=speed;
-            player->position_x-=speed;
+            player->position.z-=speed;
+            player->position.x-=speed;
             break;
         case SOUTHEAST:
-            player->position_z+=speed;
-            player->position_x+=speed;
+            player->position.z+=speed;
+            player->position.x+=speed;
             break;
         case SOUTHWEST:
-            player->position_z+=speed;
-            player->position_x-=speed;
+            player->position.z+=speed;
+            player->position.x-=speed;
             break;
         case UP:
-            player->position_y+=speed;
+            player->position.y+=speed;
             break;
         case DOWN:
-            player->position_y-=speed;
+            player->position.y-=speed;
             break;
         }
         //Update the position to the server

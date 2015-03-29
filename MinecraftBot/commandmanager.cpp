@@ -82,7 +82,7 @@ void CommandManager::readCommand(QString command, QString username)
     {
         if(args.length() == 4)
         {
-            Block block = client->world->getBlock(args[1].toDouble(), args[2].toDouble(), args[3].toDouble());
+            Block block = client->world->getBlock(Position(args[1].toDouble(), args[2].toDouble(), args[3].toDouble()));
             client->sendMessage(QString::number(block.getType()));
         }
     }

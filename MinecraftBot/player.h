@@ -6,6 +6,9 @@
 #include "mytcpsocket.h"
 #include "direction.h"
 #include "movementthread.h"
+#include "graph.h"
+#include "position.h"
+#include <math.h>
 
 class Client;
 class Player : public QObject
@@ -19,15 +22,15 @@ public:
     void setPositionAndLook(double x, double y, double z, float yaw, float pitch, char flags);
     void move(Direction d, double distance, MyTcpSocket * socket);
     void updateGround(MyTcpSocket * socket);
+    bool canWalk(Direction d);
+    void sendMessage(QString message);
 public slots:
     void updateLocation();
 private:
     Client * client;
     MyTcpSocket * socket;
     //Vars related to position
-    double position_x;
-    double position_y;
-    double position_z;
+    Position position;
     bool onGround;
     bool positionSet;
     //Vars related to look

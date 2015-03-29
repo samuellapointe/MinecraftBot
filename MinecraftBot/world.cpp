@@ -205,10 +205,10 @@ void World::updateBlock(QByteArray data) //Packet 0x23 (35)
     stream >> xyz;
 
     //Taken on http://wiki.vg/Protocol#Position
-    int x, y, z;
-    x = xyz >> 38;
-    y = (xyz >> 26) & 0xFFF;
-    z = xyz << 38 >> 38;
+    Position pos;
+    pos.x = xyz >> 38;
+    pos.y = (xyz >> 26) & 0xFFF;
+    pos.z = xyz << 38 >> 38;
 
     data.remove(0, 8); //Remove the 3 "ints"
 
@@ -217,7 +217,7 @@ void World::updateBlock(QByteArray data) //Packet 0x23 (35)
     uint8_t * buffer = (uint8_t*)data.data();
     int id = Varint::decode_unsigned_varint(buffer, nbBytesDecoded);
 
-    setBlock(x, y, z, id);
+    setBlock(pos, id);
 
 }
 
@@ -254,26 +254,28 @@ void World::updateBlocks(QByteArray data) //Packet 0x22 (34)
         data.remove(0, nbBytesDecoded);
         stream.skipRawData(nbBytesDecoded);
 
-        setBlock((chunkX * 16) + blockX, blockY, (chunkZ * 16) + blockZ, id);
+        Position pos = Position((chunkX * 16) + blockX, blockY, (chunkZ * 16));
+
+        setBlock(pos, id);
 
     }
 
 }
 
-Block World::getBlock(double x, double y, double z)
+Block World::getBlock(Position pos)
 {
     //First, get the chunk column
-    int chunkX = floor(x/16);
-    int chunkY = floor(y/16);
-    int chunkZ = floor(z/16);
+    int chunkX = floor(pos.x/16);
+    int chunkY = floor(pos.y/16);
+    int chunkZ = floor(pos.z/16);
 
-    if(chunkColumns.find(std::make_pair(chunkX, chunkZ)) != chunkColumns.end())
+    if(chunkColumns.find(std::make_pair(chunkX, chunkZ)) != chunkColumns.end() && chunkY >= 0 && chunkY < 16)
     {
         ChunkColumn cc = chunkColumns.at(std::make_pair(chunkX, chunkZ));
         Chunk c = cc.chunks[chunkY];
-        int blockX = mod((int)floor(x), 16);
-        int blockY = mod((int)floor(y), 16);
-        int blockZ = mod((int)floor(z), 16);
+        int blockX = mod((int)floor(pos.x), 16);
+        int blockY = mod((int)floor(pos.y), 16);
+        int blockZ = mod((int)floor(pos.z), 16);
         Block b = c.blocks[blockX][blockY][blockZ];
         return b;
     }
@@ -284,20 +286,20 @@ Block World::getBlock(double x, double y, double z)
     }
 }
 
-void World::setBlock(int x, int y, int z, int i)
+void World::setBlock(Position pos, int i)
 {
     //First, get the chunk column
-    int chunkX = floor((double)x/16);
-    int chunkY = floor((double)y/16);
-    int chunkZ = floor((double)z/16);
+    int chunkX = floor((double)pos.x/16);
+    int chunkY = floor((double)pos.y/16);
+    int chunkZ = floor((double)pos.z/16);
 
     if(chunkColumns.find(std::make_pair(chunkX, chunkZ)) != chunkColumns.end())
     {
         ChunkColumn * cc = &chunkColumns.at(std::make_pair(chunkX, chunkZ));
         Chunk * c = &cc->chunks[chunkY];
-        int blockX = mod(x, 16);
-        int blockY = mod(y, 16);
-        int blockZ = mod(z, 16);
+        int blockX = mod(pos.x, 16);
+        int blockY = mod(pos.y, 16);
+        int blockZ = mod(pos.z, 16);
         c->blocks[blockX][blockY][blockZ].type = i;
     }
 }
