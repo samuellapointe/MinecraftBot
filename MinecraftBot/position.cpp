@@ -93,3 +93,21 @@ Position Position::getFloored()
 {
     return Position(floor(x), floor(y), floor(z));
 }
+
+bool Position::operator ==(const Position& p)
+{
+    return (x == p.x && y == p.y && z == p.z);
+}
+
+bool Position::operator !=(const Position& p)
+{
+    return !(x == p.x && y == p.y && z == p.z);
+}
+
+double Position::distance(Position other)
+{
+    double dX = abs(floor(x - other.x));
+    double dY = abs(floor(y - other.y));
+    double dZ = abs(floor(z - other.z));
+    return dX + dY + dZ;
+}

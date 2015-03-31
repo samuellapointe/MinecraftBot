@@ -44,22 +44,6 @@ void MovementThread::run()
         case WEST:
             player->position.x-=speed;
             break;
-        case NORTHEAST:
-            player->position.z-=speed;
-            player->position.x+=speed;
-            break;
-        case NORTHWEST:
-            player->position.z-=speed;
-            player->position.x-=speed;
-            break;
-        case SOUTHEAST:
-            player->position.z+=speed;
-            player->position.x+=speed;
-            break;
-        case SOUTHWEST:
-            player->position.z+=speed;
-            player->position.x-=speed;
-            break;
         case UP:
             player->position.y+=speed;
             break;

@@ -23,8 +23,12 @@ public:
     Position operator+(const Direction& d);
     Position operator-(const Direction& d);
 
+    bool operator==(const Position& d);
+    bool operator!=(const Position& d);
+
     //Functions
     Position getFloored();
+    double distance(Position other);
 
     //Directions
     /*static const Position north = Position(0, 0, -1);

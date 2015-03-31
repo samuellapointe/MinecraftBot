@@ -2,6 +2,7 @@
 #include "Client.h"
 #include "onground.h"
 #include "playerposition.h"
+#include <ctime>
 
 /* Directions:
  * North: z--
@@ -105,52 +106,22 @@ void Player::updateLocation()
 
 bool Player::canWalk(Direction d)
 {
-    int destination_x = floor(position.x), destination_z = floor(position.z);
-    Position destination = position.getFloored();
-    bool canWalk;
-    destination = destination + d;
-
-    if(client->world->getBlock(destination).getType() == 0)
-    {
-        if(client->world->getBlock(destination).getType() != 0)
-        {
-            /*Situation, X = ground:
-             *  X
-             *
-             * X?
-             * ->
-             */
-            return false;
-        }
-    }
-    else
-    {
-        if(client->world->getBlock(destination).getType() != 0 ||
-           client->world->getBlock(destination).getType() != 0)
-        {
-            /*Situation, X = ground:
-             *  X
-             *            X
-             *  X   or    X
-             * X?        X?
-             * ->        ->
-             */
-            return false;
-        }
-    }
-    int i = 0;
-    while(i <= 3)
-    {
-        if(client->world->getBlock(destination).getType() != 0) //If there is a ground at y 0 to -3 where the player is headed
-        {
-            return true;
-        }
-        i++;
-    }
-    return false;
+    return client->world->canGo(position, d);
 }
 
 void Player::sendMessage(QString message)
 {
     client->sendMessage(message);
+}
+
+void Player::goTo(Position destination)
+{
+    QTime myTimer;
+    myTimer.start();
+
+    Graph graph = Graph();
+    std::list<Position> path;
+    path = graph.findPath(client->world, position.getFloored(), destination.getFloored());
+
+    sendMessage(QString::number(myTimer.elapsed()) + "ms, steps:  " + QString::number(path.size()));
 }

@@ -9,6 +9,7 @@
 #include "graph.h"
 #include "position.h"
 #include <math.h>
+#include <QTime>
 
 class Client;
 class Player : public QObject
@@ -24,6 +25,7 @@ public:
     void updateGround(MyTcpSocket * socket);
     bool canWalk(Direction d);
     void sendMessage(QString message);
+    void goTo(Position position);
 public slots:
     void updateLocation();
 private:

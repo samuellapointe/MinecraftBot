@@ -23,6 +23,7 @@ public:
     void unloadChunk(int x, int z);
     Block getBlock(Position pos);
     void setBlock(Position pos, int i);
+    bool canGo(Position pos, Direction d);
     std::map<std::pair<int, int>, ChunkColumn> chunkColumns;
 private:
     int mod(int k, int n);

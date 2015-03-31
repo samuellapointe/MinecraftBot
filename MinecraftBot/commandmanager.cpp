@@ -86,6 +86,13 @@ void CommandManager::readCommand(QString command, QString username)
             client->sendMessage(QString::number(block.getType()));
         }
     }
+    else if(args[0].toLower().compare("!goto") == 0)
+    {
+        if(args.length() == 4)
+        {
+            client->player->goTo(Position(args[1].toDouble(), args[2].toDouble(), args[3].toDouble()));
+        }
+    }
     else
     {
         client->sendMessage("Command not recognized! ");

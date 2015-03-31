@@ -3,16 +3,26 @@
 
 #include "node.h"
 #include "world.h"
+#include <list>
+#include <vector>
+#include <algorithm>
 
-class graph
+class CompareNode
 {
 public:
-    graph(int x, int y, int z){startingX = x; startingY = y; startingZ = z;}
-    ~graph();
-    Node * startingPoint;
-    int startingX;
-    int startingY;
-    int startingZ;
+    bool operator()(const Node* x, const Node* y) const
+    {
+        return (x->gScore + x->hScore) > (y->gScore + y->hScore);
+    }
+};
+
+class Graph
+{
+public:
+    Graph();
+    ~Graph();
+    std::list<Position> findPath(World * world, Position startPosition, Position endPosition);
+private:
 };
 
 #endif // GRAPH_H

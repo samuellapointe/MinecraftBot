@@ -254,7 +254,7 @@ void World::updateBlocks(QByteArray data) //Packet 0x22 (34)
         data.remove(0, nbBytesDecoded);
         stream.skipRawData(nbBytesDecoded);
 
-        Position pos = Position((chunkX * 16) + blockX, blockY, (chunkZ * 16));
+        Position pos = Position((chunkX * 16) + blockX, blockY, (chunkZ * 16) + blockZ);
 
         setBlock(pos, id);
 
@@ -301,6 +301,26 @@ void World::setBlock(Position pos, int i)
         int blockY = mod(pos.y, 16);
         int blockZ = mod(pos.z, 16);
         c->blocks[blockX][blockY][blockZ].type = i;
+    }
+}
+
+bool World::canGo(Position pos, Direction d)
+{
+    switch(d)
+    {
+    case UP:
+        return (getBlock(pos+DOWN).getType() != 0 && getBlock(pos + UP + UP).getType() == 0);
+        break;
+    case DOWN:
+        return (getBlock(pos+DOWN).getType() == 0);
+        break;
+    case NORTH: case SOUTH: case WEST: case EAST:
+        return (!(getBlock(pos+DOWN).getType() == 0 && getBlock(pos+d+DOWN).getType() == 0) &&
+                getBlock(pos + d).getType() == 0 &&
+                getBlock(pos + d + UP).getType() == 0);
+        break;
+    default:
+        return false;
     }
 }
 
