@@ -52,38 +52,61 @@ std::list<Position> Graph::findPath(World * world, Position startPosition, Posit
         //Check neighbors
         for(int i = 0; i < 6; i++)
         {
-            if(currentNode->neighbors[i] == 0)
+            if(world->canGo(currentNode->coords, (Direction)i))
             {
-                currentNode->neighbors[i] = new Node(currentNode->coords + (Direction)i);
-            }
-            Node * neighbor = currentNode->neighbors[i];
-
-            if(world->canGo(currentNode->coords, (Direction)i) && !neighbor->closed)
-            {
-                int gScore = currentNode->gScore + 1;
-                bool beenVisited = neighbor->visited;
-
-                if(!neighbor->visited || gScore < neighbor->gScore)
+                if(currentNode->neighbors[i] == 0)
                 {
-                    neighbor->visited = true;
-                    neighbor->parent = currentNode;
-                    neighbor->hScore = neighbor->coords.distance(endPosition);
-                    neighbor->gScore = gScore;
-
-                    if(!beenVisited)
+                    Node * tmp = nodeExists(openList, (currentNode->coords + (Direction)i));
+                    if(tmp != 0)
                     {
-                        openList.push_back(neighbor);
-                        std::make_heap(openList.begin(), openList.end(), CompareNode());
+                        currentNode->neighbors[i] = tmp;
                     }
                     else
                     {
-                        //std::make_heap(openList.begin(), openList.end(), CompareNode());
+                        currentNode->neighbors[i] = new Node(currentNode->coords + (Direction)i);
                     }
+                    //if(world->canGo())
                 }
+                Node * neighbor = currentNode->neighbors[i];
 
+                if(!neighbor->closed)
+                {
+                    int gScore = currentNode->gScore + 1;
+                    bool beenVisited = neighbor->visited;
+
+                    if(!neighbor->visited || gScore < neighbor->gScore)
+                    {
+                        neighbor->visited = true;
+                        neighbor->parent = currentNode;
+                        neighbor->hScore = neighbor->coords.distance(endPosition);
+                        neighbor->gScore = gScore;
+
+                        if(!beenVisited)
+                        {
+                            openList.push_back(neighbor);
+                            std::make_heap(openList.begin(), openList.end(), CompareNode());
+                        }
+                        else
+                        {
+                            //std::make_heap(openList.begin(), openList.end(), CompareNode());
+                        }
+                    }
+
+                }
             }
         }
     }
     return std::list<Position>(); //No path found
 }
 
+Node * Graph::nodeExists(std::vector<Node*> list, Position p)
+{
+    for(int i = 0; i < list.size(); i++)
+    {
+        if(list[i]->coords == p)
+        {
+            return list[i];
+        }
+    }
+    return 0;
+}

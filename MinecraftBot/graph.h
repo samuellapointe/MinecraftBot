@@ -22,7 +22,9 @@ public:
     Graph();
     ~Graph();
     std::list<Position> findPath(World * world, Position startPosition, Position endPosition);
+    Node * nodeExists(std::vector<Node*> list, Position p);
 private:
+
 };
 
 #endif // GRAPH_H
