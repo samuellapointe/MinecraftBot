@@ -6,6 +6,7 @@
 class Node
 {
 public:
+    Node();
     Node(Position coords);
     ~Node();
     Node * neighbors[6];

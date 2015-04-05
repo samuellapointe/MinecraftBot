@@ -14,25 +14,21 @@ std::list<Position> Graph::findPath(World * world, Position startPosition, Posit
 {
     //Taken from http://www.briangrinstead.com/blog/astar-search-algorithm-in-javascript/
 
-    std::vector<Node*> openList;
+    std::map<Positionf, Node*> openList;
 
     Node * start = new Node(startPosition);
     start->hScore = start->coords.distance(endPosition);
 
-    openList.push_back(start);
+    openList.emplace(std::make_pair(Positionf(start->coords, start->fScore()), start));
+    //openArray[(int)tmp.x][(int)tmp.y][(int)tmp.z] = start;
+
+    int cpt = 0;
 
     while(!openList.empty())
     {
-        Node * currentNode = openList.front();
+        cpt++;
+        Node * currentNode = openList.begin()->second;
         openList.erase(openList.begin());
-        //std::make_heap(openList.begin(), openList.end(), CompareNode());
-        /*for(int i = 0; i < openList.size(); i++)
-        {
-            if(openList[i]->fScore() < currentNode->fScore())
-            {
-                currentNode = openList[i];
-            }
-        }*/
 
         if(currentNode->coords == endPosition)
         {
@@ -46,7 +42,7 @@ std::list<Position> Graph::findPath(World * world, Position startPosition, Posit
             return path;
         }
 
-        //openList.erase(std::find(openList.begin(), openList.end(), currentNode));
+
         currentNode->closed = true;
 
         //Check neighbors
@@ -56,16 +52,20 @@ std::list<Position> Graph::findPath(World * world, Position startPosition, Posit
             {
                 if(currentNode->neighbors[i] == 0)
                 {
-                    Node * tmp = nodeExists(openList, (currentNode->coords + (Direction)i));
-                    if(tmp != 0)
+                    Positionf ptmp = Positionf((currentNode->coords + (Direction)i),0);
+                    std::map<Positionf, Node*>::iterator iter = openList.find(ptmp);
+                    if(iter != openList.end())
                     {
-                        currentNode->neighbors[i] = tmp;
+                        currentNode->neighbors[i] = iter->second;
                     }
                     else
                     {
-                        currentNode->neighbors[i] = new Node(currentNode->coords + (Direction)i);
+                        Node * tmp = new Node(currentNode->coords + (Direction)i);
+                        currentNode->neighbors[i] = tmp;
+                        tmp->gScore = currentNode->gScore + 1;
+                        tmp->hScore = tmp->coords.distance(endPosition);
+                        openList.emplace(std::make_pair(Positionf(currentNode->coords + (Direction)i, tmp->fScore()),tmp));
                     }
-                    //if(world->canGo())
                 }
                 Node * neighbor = currentNode->neighbors[i];
 
@@ -78,17 +78,10 @@ std::list<Position> Graph::findPath(World * world, Position startPosition, Posit
                     {
                         neighbor->visited = true;
                         neighbor->parent = currentNode;
-                        neighbor->hScore = neighbor->coords.distance(endPosition);
-                        neighbor->gScore = gScore;
 
                         if(!beenVisited)
                         {
-                            openList.push_back(neighbor);
-                            std::make_heap(openList.begin(), openList.end(), CompareNode());
-                        }
-                        else
-                        {
-                            //std::make_heap(openList.begin(), openList.end(), CompareNode());
+                            openList.emplace(std::make_pair(Positionf(neighbor->coords, neighbor->fScore()),neighbor));
                         }
                     }
 
@@ -99,14 +92,3 @@ std::list<Position> Graph::findPath(World * world, Position startPosition, Posit
     return std::list<Position>(); //No path found
 }
 
-Node * Graph::nodeExists(std::vector<Node*> list, Position p)
-{
-    for(int i = 0; i < list.size(); i++)
-    {
-        if(list[i]->coords == p)
-        {
-            return list[i];
-        }
-    }
-    return 0;
-}

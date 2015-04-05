@@ -1,5 +1,11 @@
 #include "node.h"
 
+Node::Node()
+{
+    gScore = 0;
+    hScore = 0;
+}
+
 Node::Node(Position _coords)
 {
     coords = _coords;
