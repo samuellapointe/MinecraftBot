@@ -21,7 +21,7 @@ class Graph
 public:
     Graph();
     ~Graph();
-    std::list<Position> findPath(World * world, Position startPosition, Position endPosition);
+    std::vector<Direction> findPath(World * world, Position startPosition, Position endPosition);
 private:
 
 };

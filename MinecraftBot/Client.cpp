@@ -242,5 +242,5 @@ void Client::sendMessage(QString message)
 
 void Client::movePlayer(Direction d, double distance)
 {
-    player->move(d, distance, &socket);
+    player->move(d, distance);
 }

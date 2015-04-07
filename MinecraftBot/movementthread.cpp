@@ -64,4 +64,7 @@ void MovementThread::run()
             //Wait
         }
     }
+
+    QThread::exit(0);
 }
+

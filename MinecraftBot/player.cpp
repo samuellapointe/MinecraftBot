@@ -77,9 +77,9 @@ void Player::setPositionAndLook(double posx, double posy, double posz, float y, 
 
 }
 
-void Player::move(Direction d, double distance, MyTcpSocket * socket)
+void Player::move(Direction d, double distance)
 {
-    if(positionSet)
+    if(positionSet && d != NONE)
     {
         QThread * thread = new QThread();
         MovementThread * mt = new MovementThread(0.1, distance, d, socket, this);
@@ -90,6 +90,33 @@ void Player::move(Direction d, double distance, MyTcpSocket * socket)
         connect(mt, SIGNAL(finished()), mt, SLOT(deleteLater()));
         connect(thread, SIGNAL(finished()), mt, SLOT(deleteLater()));
         thread->start();
+    }
+}
+
+void Player::movePath(std::vector<Direction> d)
+{
+    if(positionSet && !d.empty())
+    {
+        QThread * thread = new QThread();
+        MovementThread * mt = new MovementThread(0.1, 1, (*d.begin()), socket, this);
+        mt->moveToThread(thread);
+        connect(thread, SIGNAL(started()), mt, SLOT(run()));
+        connect(mt, SIGNAL(finished()), thread, SLOT(quit()));
+        connect(mt, SIGNAL(sendMovement()), this, SLOT(updateLocation()));
+        connect(mt, SIGNAL(finished()), mt, SLOT(deleteLater()));
+        connect(thread, SIGNAL(quit()), this, SLOT(removePathAction(d)));
+        connect(thread, SIGNAL(finished()), mt, SLOT(deleteLater()));
+        connect(mt, SIGNAL(movementFinished()), this, SLOT(removePathAction(d)));
+        thread->start();
+    }
+}
+
+void Player::removePathAction(std::vector<Direction> d)
+{
+    d.erase(d.begin());
+    if(!d.empty())
+    {
+        movePath(d);
     }
 }
 
@@ -120,8 +147,9 @@ void Player::goTo(Position destination)
     myTimer.start();
 
     Graph graph = Graph();
-    std::list<Position> path;
+    std::vector<Direction> path;
     path = graph.findPath(client->world, position.getFloored(), destination.getFloored());
 
     sendMessage(QString::number(myTimer.elapsed()) + "ms, steps:  " + QString::number(path.size()));
+    movePath(path);
 }

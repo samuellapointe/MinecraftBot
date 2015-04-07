@@ -21,13 +21,15 @@ public:
     ~Player();
     //Set position
     void setPositionAndLook(double x, double y, double z, float yaw, float pitch, char flags);
-    void move(Direction d, double distance, MyTcpSocket * socket);
+    void move(Direction d, double distance);
+    void movePath(std::vector<Direction> d);
     void updateGround(MyTcpSocket * socket);
     bool canWalk(Direction d);
     void sendMessage(QString message);
     void goTo(Position position);
 public slots:
     void updateLocation();
+    void removePathAction(std::vector<Direction> d);
 private:
     Client * client;
     MyTcpSocket * socket;

@@ -12,7 +12,6 @@ public:
     int position_x;
     int position_z;
     unsigned short bitmask;
-    Chunk chunks[16];
 private:
 
 };

@@ -6,6 +6,7 @@ class Block
 {
 public:
     Block();
+    Block(short type);
     ~Block();
     short type;
     unsigned char light;

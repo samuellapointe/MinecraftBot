@@ -43,7 +43,6 @@ void World::addChunk(QByteArray data) //Packet 0x21 (33)
         {
             if (actualColumn.bitmask & (1 << j))
             {
-                Chunk chunk = Chunk();
 
                 //Blocks
                 stream.setByteOrder(stream.LittleEndian); //Blocks are read in little-endian order
@@ -55,11 +54,11 @@ void World::addChunk(QByteArray data) //Packet 0x21 (33)
                         {
                             unsigned short type;
                             stream >> type;
-                            chunk.blocks[x][y][z].type = type;
+                            Position pos = Position(actualColumn.position_x*16 + x, j*16 + y, actualColumn.position_z * 16 + z);
+                            allBlocks.insert(pos, Block(type));
                         }
                     }
                 }
-                actualColumn.chunks[j] = chunk; //Set chunk
 
             }
         }
@@ -77,8 +76,8 @@ void World::addChunk(QByteArray data) //Packet 0x21 (33)
                         {
                             unsigned char light;
                             stream >> light;
-                            actualColumn.chunks[j].blocks[x][y][z].light = (light >> 4); //Even index = high bits
-                            actualColumn.chunks[j].blocks[x+1][y][z].light = (light & 15); //Odd index = low bits
+                            allBlocks[Position(chunkX*16 + x, j*16 + y, chunkZ * 16 + z)].light = (light >> 4); //Even index = high bits
+                            allBlocks[Position(chunkX*16 + x+1, j*16 + y, chunkZ * 16 + z)].light = (light & 15); //Odd index = low bits
                         }
                     }
                 }
@@ -100,7 +99,6 @@ void World::addChunks(QByteArray data) //Packet 0x26 (38)
 
     QDataStream stream(data);
     int chunkX, chunkZ;
-    int bytesRead = 0;
 
     std::vector<ChunkColumn> chunkColumnsVector;
 
@@ -114,7 +112,6 @@ void World::addChunks(QByteArray data) //Packet 0x26 (38)
 
         chunkColumnsVector.push_back(ChunkColumn(chunkX, chunkZ, bitmask));
 
-        bytesRead += 10;
     }
 
     for(int i = 0; i < chunkColumnCount; i++)
@@ -138,11 +135,11 @@ void World::addChunks(QByteArray data) //Packet 0x26 (38)
                             unsigned short type;
                             stream >> type;
                             chunk.blocks[x][y][z].type = type;
-                            bytesRead += 2;
+                            Position pos = Position(actualColumn.position_x*16 + x, j*16 + y, actualColumn.position_z * 16 + z);
+                            allBlocks.insert(pos, Block(type));
                         }
                     }
                 }
-                actualColumn.chunks[j] = chunk; //Set chunk
 
             }
         }
@@ -160,9 +157,8 @@ void World::addChunks(QByteArray data) //Packet 0x26 (38)
                         {
                             unsigned char light;
                             stream >> light;
-                            actualColumn.chunks[j].blocks[x][y][z].light = (light >> 4); //Even index = high bits
-                            actualColumn.chunks[j].blocks[x+1][y][z].light = (light & 15); //Odd index = low bits
-                            bytesRead += 1;
+                            allBlocks[Position(chunkX*16 + x, j*16 + y, chunkZ * 16 + z)].light = (light >> 4); //Even index = high bits
+                            allBlocks[Position(chunkX*16 + x+1, j*16 + y, chunkZ * 16 + z)].light = (light & 15); //Odd index = low bits
                         }
                     }
                 }
@@ -183,9 +179,8 @@ void World::addChunks(QByteArray data) //Packet 0x26 (38)
                             {
                                 unsigned char light;
                                 stream >> light;
-                                actualColumn.chunks[j].blocks[x][y][z].skylight = (light >> 4); //Even index = high bits
-                                actualColumn.chunks[j].blocks[x+1][y][z].skylight = (light & 15); //Odd index = low bits
-                                bytesRead += 1;
+                                allBlocks[Position(chunkX*16 + x, j*16 + y, chunkZ * 16 + z)].light = (light >> 4); //Even index = high bits
+                                allBlocks[Position(chunkX*16 + x+1, j*16 + y, chunkZ * 16 + z)].light = (light & 15); //Odd index = low bits
                             }
                         }
                     }
@@ -264,20 +259,9 @@ void World::updateBlocks(QByteArray data) //Packet 0x22 (34)
 
 Block World::getBlock(Position pos)
 {
-    //First, get the chunk column
-    int chunkX = floor(pos.x/16);
-    int chunkY = floor(pos.y/16);
-    int chunkZ = floor(pos.z/16);
-
-    if(chunkColumns.find(std::make_pair(chunkX, chunkZ)) != chunkColumns.end() && chunkY >= 0 && chunkY < 16)
+    if(allBlocks.contains(pos.getFloored()))
     {
-        ChunkColumn cc = chunkColumns.at(std::make_pair(chunkX, chunkZ));
-        Chunk c = cc.chunks[chunkY];
-        int blockX = mod((int)floor(pos.x), 16);
-        int blockY = mod((int)floor(pos.y), 16);
-        int blockZ = mod((int)floor(pos.z), 16);
-        Block b = c.blocks[blockX][blockY][blockZ];
-        return b;
+        return allBlocks[pos.getFloored()];
     }
     else
     {
@@ -288,19 +272,9 @@ Block World::getBlock(Position pos)
 
 void World::setBlock(Position pos, int i)
 {
-    //First, get the chunk column
-    int chunkX = floor((double)pos.x/16);
-    int chunkY = floor((double)pos.y/16);
-    int chunkZ = floor((double)pos.z/16);
-
-    if(chunkColumns.find(std::make_pair(chunkX, chunkZ)) != chunkColumns.end())
+    if(allBlocks.contains(pos.getFloored()))
     {
-        ChunkColumn * cc = &chunkColumns.at(std::make_pair(chunkX, chunkZ));
-        Chunk * c = &cc->chunks[chunkY];
-        int blockX = mod(pos.x, 16);
-        int blockY = mod(pos.y, 16);
-        int blockZ = mod(pos.z, 16);
-        c->blocks[blockX][blockY][blockZ].type = i;
+        allBlocks[pos.getFloored()].type = i;
     }
 }
 
@@ -324,10 +298,10 @@ bool World::canGo(Position pos, Direction d)
     }
 }
 
-int World::mod(int k, int n) //Taken from http://stackoverflow.com/questions/12276675/modulus-with-negative-numbers-in-c
+/*int World::mod(int k, int n) //Taken from http://stackoverflow.com/questions/12276675/modulus-with-negative-numbers-in-c
 {
     return ((k %= n) < 0) ? k+n : k;
-}
+}*/
 
 void World::unloadChunk(int x, int z) //To remove a chunk, the server tells us what to unload
 {

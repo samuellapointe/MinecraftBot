@@ -3,6 +3,7 @@
 
 #include "direction.h"
 #include "math.h"
+#include <QHash>
 
 class Position
 {
@@ -23,20 +24,28 @@ public:
     Position operator+(const Direction& d);
     Position operator-(const Direction& d);
 
-    bool operator==(const Position& d);
-    bool operator!=(const Position& d);
+    bool operator==(const Position& d) const;
+    bool operator!=(const Position& d) const;
 
     //Functions
     Position getFloored();
     double distance(Position other);
 
-    //Directions
-    /*static const Position north = Position(0, 0, -1);
-    static const Position south = Position(0, 0, 1);
-    static const Position east = Position(1, 0, 0);
-    static const Position west = Position(-1, 0, 0);
-    static const Position up = Position(0, 1, 0);
-    static const Position down = Position(0, -1, 0);*/
+    static Position getPositionFromDirection(Direction d);
+    static Direction getDirectionFromPosition(Position p);
+    static Position normalize(Position p); //ex: (-2, 0, 3.5) becomes (-1, 0, 1)
+
 };
+
+inline uint qHash(const Position & pos) //Taken from http://stackoverflow.com/questions/29461703/how-can-i-store-a-3d-map-allowing-o1-random-access-c
+{
+    uint h = 0;
+    uchar * p = (uchar*)&pos;
+    for (uint i = 0; i < sizeof(Position); ++i)
+    {
+        h = 31 * h + p[i];
+    }
+    return h;
+}
 
 #endif // POSITION_H

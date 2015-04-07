@@ -10,6 +10,7 @@
 #include <cmath>
 #include "direction.h"
 #include "positionf.h"
+#include <QHash>
 
 class World
 {
@@ -25,6 +26,7 @@ public:
     void setBlock(Position pos, int i);
     bool canGo(Position pos, Direction d);
     std::map<std::pair<int, int>, ChunkColumn> chunkColumns;
+    QHash<Position, Block> allBlocks;
 private:
     int mod(int k, int n);
 

@@ -10,7 +10,7 @@ Graph::~Graph()
 
 }
 
-std::list<Position> Graph::findPath(World * world, Position startPosition, Position endPosition)
+std::vector<Direction> Graph::findPath(World * world, Position startPosition, Position endPosition)
 {
     //Taken from http://www.briangrinstead.com/blog/astar-search-algorithm-in-javascript/
 
@@ -33,13 +33,20 @@ std::list<Position> Graph::findPath(World * world, Position startPosition, Posit
         if(currentNode->coords == endPosition)
         {
             //Path found!
-            std::list<Position> path;
+            std::vector<Position> path;
+            std::vector<Direction> directions;
             while(currentNode->parent != 0)
             {
                 path.push_back(currentNode->coords);
                 currentNode = currentNode->parent;
             }
-            return path;
+            path.push_back(startPosition);
+            std::reverse(path.begin(), path.end());
+            for(int i = 0; i < path.size() - 1; i++)
+            {
+                directions.push_back(Position::getDirectionFromPosition(path[i+1]-path[i]));
+            }
+            return directions;
         }
 
 
@@ -89,6 +96,6 @@ std::list<Position> Graph::findPath(World * world, Position startPosition, Posit
             }
         }
     }
-    return std::list<Position>(); //No path found
+    return std::vector<Direction>(); //No path found
 }
 

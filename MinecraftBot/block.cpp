@@ -6,6 +6,12 @@ Block::Block()
     light = 0;
 }
 
+Block::Block(short _type)
+{
+    type = _type;
+    light = 0;
+}
+
 Block::~Block()
 {
 
