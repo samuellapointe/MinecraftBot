@@ -1,30 +1,28 @@
-#include "movementthread.h"
-#include "player.h"
-#include <ctime>
+#include "actionmove.h"
 
-MovementThread::MovementThread(double sp, double dis, Direction dir, MyTcpSocket * so, Player * p)
+ActionMove::ActionMove(Direction _direction, Player * _player, MyTcpSocket * _socket, int _priority)
 {
-    speed = sp;
-    distance = dis;
-    direction = dir;
-    socket = so;
-    player = p;
-    maxSpeed = 4.3; //4.3 meters per second max
+    direction = _direction;
+    player = _player;
+    priority = _priority;
+    socket = _socket;
 }
 
-MovementThread::~MovementThread()
+ActionMove::~ActionMove()
 {
 
 }
 
-void MovementThread::run()
+void ActionMove::run()
 {
+    float speed = 0.1;
+    float maxSpeed = 4.3;
     double distanceWalked = 0;
     //Speed is in meters per packet sent. I send them in increments of 0.1m per default
     //if I have a max speed of 4m/s, I can send a maximum of 40 packets per second
     //Which means I have to send every packet at an interval of 1sec/40 or 1sec/(maxspeed/speed)
     //to get that number of seconds in ticks, I multiply it by CLOCKS_PER_SEC
-    while(distanceWalked < distance)
+    while(distanceWalked < 1)
     {
         if(!player->canWalk(direction))
         {
@@ -52,7 +50,7 @@ void MovementThread::run()
             break;
         }
         //Update the position to the server
-        emit(sendMovement());
+        emit(sendPacket(PlayerPosition(socket, player->position.x, player->position.y, player->position.z, player->onGround).getPacket(socket->compressionSet)));
 
         distanceWalked += speed;
 
@@ -64,7 +62,5 @@ void MovementThread::run()
             //Wait
         }
     }
-
-    QThread::exit(0);
+    emit actionFinished();
 }
-

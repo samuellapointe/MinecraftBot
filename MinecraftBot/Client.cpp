@@ -42,6 +42,7 @@ Client::~Client()
 void Client::startConnect()
 {
     compressionSet = false;
+    socket.compressionSet = false;
     encrypted = false;
 
     socket.ui = ui; //Give the socket the interface to write to
@@ -93,6 +94,7 @@ void Client::handlePacket(Packet &packet) //The big switch case of doom, to hand
             case 3: //Set compression
                 ui->writeToConsole("Server enabled compression");
                 compressionSet = true;
+                socket.compressionSet = true;
                 break;
             default:
                 ui->writeToConsole("Unknown packet during LOGIN phase, ID " + QString::number(packet.packetID));
@@ -187,6 +189,7 @@ void Client::handlePacket(Packet &packet) //The big switch case of doom, to hand
             case 70: //Compression
                 ui->writeToConsole("Server enabled compression");
                 compressionSet = true;
+                socket.compressionSet = true;
                 break;
             default:
                 break;

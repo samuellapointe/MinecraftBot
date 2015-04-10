@@ -32,4 +32,18 @@ void PlayerPosition::sendPacket(bool compressed)
 
 }
 
+QByteArray PlayerPosition::getPacket(bool compressed)
+{
+    QByteArray tmp;
+
+    appendDouble(tmp, position_x);
+    appendDouble(tmp, position_y);
+    appendDouble(tmp, position_z);
+    appendFloat(tmp, 0);
+    appendFloat(tmp, 0);
+    tmp.append(onGround);
+
+    return Packet::packPacket(tmp, compressed);
+}
+
 

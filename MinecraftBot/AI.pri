@@ -1,3 +1,5 @@
+include(Actions.pri)
+
 SOURCES += node.cpp \
     $$PWD/graph.cpp \
     $$PWD/positionf.cpp

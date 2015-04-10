@@ -26,6 +26,7 @@ public:
 
     //vars
     bool connectedBool;
+    bool compressionSet;
     QString ip;
     int port;
 signals:

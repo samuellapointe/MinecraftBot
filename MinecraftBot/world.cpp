@@ -122,7 +122,6 @@ void World::addChunks(QByteArray data) //Packet 0x26 (38)
         {
             if (actualColumn.bitmask & (1 << j))
             {
-                Chunk chunk = Chunk();
 
                 //Blocks
                 stream.setByteOrder(stream.LittleEndian); //Blocks are read in little-endian order
@@ -134,7 +133,6 @@ void World::addChunks(QByteArray data) //Packet 0x26 (38)
                         {
                             unsigned short type;
                             stream >> type;
-                            chunk.blocks[x][y][z].type = type;
                             Position pos = Position(actualColumn.position_x*16 + x, j*16 + y, actualColumn.position_z * 16 + z);
                             allBlocks.insert(pos, Block(type));
                         }
@@ -310,5 +308,18 @@ void World::unloadChunk(int x, int z) //To remove a chunk, the server tells us w
     if(it != chunkColumns.end())
     {
         chunkColumns.erase(it);
+        for(int xx = 0; xx < 16; xx++)
+        {
+            for(int zz = 0; zz < 16; zz++)
+            {
+                for(int yy = 0; yy < 256; yy++)
+                {
+                    if(allBlocks.find(Position(xx, yy, zz)) != allBlocks.end())
+                    {
+                        allBlocks.remove(Position(xx, yy, zz));
+                    }
+                }
+            }
+        }
     }
 }

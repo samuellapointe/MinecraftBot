@@ -3,6 +3,7 @@
 #include "onground.h"
 #include "playerposition.h"
 #include <ctime>
+#include "actionmove.h"
 
 /* Directions:
  * North: z--
@@ -77,47 +78,59 @@ void Player::setPositionAndLook(double posx, double posy, double posz, float y, 
 
 }
 
-void Player::move(Direction d, double distance)
+void Player::move(Direction d, int distance)
 {
     if(positionSet && d != NONE)
     {
-        QThread * thread = new QThread();
-        MovementThread * mt = new MovementThread(0.1, distance, d, socket, this);
-        mt->moveToThread(thread);
-        connect(thread, SIGNAL(started()), mt, SLOT(run()));
-        connect(mt, SIGNAL(finished()), thread, SLOT(quit()));
-        connect(mt, SIGNAL(sendMovement()), this, SLOT(updateLocation()));
-        connect(mt, SIGNAL(finished()), mt, SLOT(deleteLater()));
-        connect(thread, SIGNAL(finished()), mt, SLOT(deleteLater()));
-        thread->start();
+        bool threadStarted = (actions.size() != 0);
+        for(int i = 0; i < distance; i++)
+        {
+            actions.push_back(new ActionMove(d, this, socket, 0));
+        }
+        if(!threadStarted)
+        {
+            startAction();
+        }
     }
 }
 
 void Player::movePath(std::vector<Direction> d)
 {
-    if(positionSet && !d.empty())
+    bool threadStarted = (actions.size() != 0);
+    for(int i = 0; i < d.size(); i++)
     {
+        actions.push_back(new ActionMove(d[i], this, socket, 100-i));
+    }
+    if(!threadStarted)
+    {
+        startAction();
+    }
+}
+
+void Player::startAction()
+{
+    if(actions.size() > 0)
+    {
+        //std::make_heap(actions.begin(), actions.end()); //Order actions by priority
+
         QThread * thread = new QThread();
-        MovementThread * mt = new MovementThread(0.1, 1, (*d.begin()), socket, this);
-        mt->moveToThread(thread);
-        connect(thread, SIGNAL(started()), mt, SLOT(run()));
-        connect(mt, SIGNAL(finished()), thread, SLOT(quit()));
-        connect(mt, SIGNAL(sendMovement()), this, SLOT(updateLocation()));
-        connect(mt, SIGNAL(finished()), mt, SLOT(deleteLater()));
-        connect(thread, SIGNAL(quit()), this, SLOT(removePathAction(d)));
-        connect(thread, SIGNAL(finished()), mt, SLOT(deleteLater()));
-        connect(mt, SIGNAL(movementFinished()), this, SLOT(removePathAction(d)));
+        Action * myAction = *actions.begin();
+        myAction->moveToThread(thread);
+
+        connect(thread, SIGNAL(started()), myAction, SLOT(run()));
+        connect(myAction, SIGNAL(sendPacket(QByteArray)), this, SLOT(sendPacket(QByteArray)));
+        connect(myAction, SIGNAL(actionFinished()), this, SLOT(actionFinished()));
+        connect(myAction, SIGNAL(actionFinished()), myAction, SLOT(deleteLater()));
+        connect(thread, SIGNAL(actionFinished()), thread, SLOT(deleteLater()));
+
         thread->start();
     }
 }
 
-void Player::removePathAction(std::vector<Direction> d)
+void Player::actionFinished()
 {
-    d.erase(d.begin());
-    if(!d.empty())
-    {
-        movePath(d);
-    }
+    actions.erase(actions.begin());
+    startAction();
 }
 
 void Player::updateGround(MyTcpSocket * socket)
@@ -125,10 +138,11 @@ void Player::updateGround(MyTcpSocket * socket)
     OnGround og = OnGround(socket, onGround);
 }
 
-void Player::updateLocation()
+void Player::sendPacket(QByteArray packet)
 {
-    PlayerPosition pp = PlayerPosition(socket, position.x, position.y, position.z, onGround);
-    pp.sendPacket(client->compressionSet);
+    Packet tmp;
+    tmp.socket = socket;
+    tmp.sendPacket(packet);
 }
 
 bool Player::canWalk(Direction d)

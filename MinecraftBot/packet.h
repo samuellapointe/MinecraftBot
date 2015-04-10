@@ -21,7 +21,7 @@ public:
     //Functions
     QByteArray packPacket(const QByteArray &data, bool compress=false);
     QByteArray packString(const std::string &text);
-    int sendPacket(const QByteArray &data);
+    virtual int sendPacket(const QByteArray &data);
     void appendVarint(QByteArray &input, int value);
     void appendDouble(QByteArray &input, double value);
     void appendFloat(QByteArray &input, float value);
