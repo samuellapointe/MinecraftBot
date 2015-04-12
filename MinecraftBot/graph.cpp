@@ -14,12 +14,15 @@ std::vector<Direction> Graph::findPath(World * world, Position startPosition, Po
 {
     //Taken from http://www.briangrinstead.com/blog/astar-search-algorithm-in-javascript/
 
-    std::map<Positionf, Node*> openList;
+    //std::map<Positionf, Node*> openList;
+    std::vector<Node*> openList;
 
     Node * start = new Node(startPosition);
     start->hScore = start->coords.distance(endPosition);
 
-    openList.emplace(std::make_pair(Positionf(start->coords, start->fScore()), start));
+    //openList.emplace(std::make_pair(Positionf(start->coords, start->fScore()), start));
+    openList.push_back(start);
+
     //openArray[(int)tmp.x][(int)tmp.y][(int)tmp.z] = start;
 
     int cpt = 0;
@@ -27,8 +30,15 @@ std::vector<Direction> Graph::findPath(World * world, Position startPosition, Po
     while(!openList.empty())
     {
         cpt++;
-        Node * currentNode = openList.begin()->second;
-        openList.erase(openList.begin());
+        Node * currentNode = openList.front();
+        for(int i = 0; i < openList.size(); i++)
+        {
+            if(openList[i]->fScore() < currentNode->fScore() && !openList[i]->closed)
+            {
+                currentNode = openList[i];
+            }
+        }
+        //openList.erase(openList.begin());
 
         if(currentNode->coords == endPosition)
         {
@@ -59,7 +69,12 @@ std::vector<Direction> Graph::findPath(World * world, Position startPosition, Po
             {
                 if(currentNode->neighbors[i] == 0)
                 {
-                    Positionf ptmp = Positionf((currentNode->coords + (Direction)i),0);
+                    currentNode->neighbors[i] = findNode(openList, currentNode->coords + (Direction)i);
+                    if(currentNode->neighbors[i]->gScore == 0)
+                    {
+                        currentNode->neighbors[i]->gScore = currentNode->gScore + 1;
+                    }
+                    /*Positionf ptmp = Positionf((currentNode->coords + (Direction)i),0);
                     std::map<Positionf, Node*>::iterator iter = openList.find(ptmp);
                     if(iter != openList.end())
                     {
@@ -72,13 +87,14 @@ std::vector<Direction> Graph::findPath(World * world, Position startPosition, Po
                         tmp->gScore = currentNode->gScore + 1;
                         tmp->hScore = tmp->coords.distance(endPosition);
                         openList.emplace(std::make_pair(Positionf(currentNode->coords + (Direction)i, tmp->fScore()),tmp));
-                    }
+                    }*/
                 }
                 Node * neighbor = currentNode->neighbors[i];
 
                 if(!neighbor->closed)
                 {
                     int gScore = currentNode->gScore + 1;
+                    neighbor->hScore = neighbor->coords.distance(endPosition);
                     bool beenVisited = neighbor->visited;
 
                     if(!neighbor->visited || gScore < neighbor->gScore)
@@ -88,7 +104,8 @@ std::vector<Direction> Graph::findPath(World * world, Position startPosition, Po
 
                         if(!beenVisited)
                         {
-                            openList.emplace(std::make_pair(Positionf(neighbor->coords, neighbor->fScore()),neighbor));
+                            //openList.emplace(std::make_pair(Positionf(neighbor->coords, neighbor->fScore()),neighbor));
+                            openList.push_back(neighbor);
                         }
                     }
 
@@ -97,5 +114,17 @@ std::vector<Direction> Graph::findPath(World * world, Position startPosition, Po
         }
     }
     return std::vector<Direction>(); //No path found
+}
+
+Node* Graph::findNode(std::vector<Node *> list, Position pos)
+{
+    for(int i = 0; i < list.size(); i++)
+    {
+        if(list[i]->coords == pos)
+        {
+            return list[i];
+        }
+    }
+    return new Node(pos);
 }
 

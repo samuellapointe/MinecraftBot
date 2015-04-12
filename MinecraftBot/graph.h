@@ -23,6 +23,7 @@ public:
     ~Graph();
     std::vector<Direction> findPath(World * world, Position startPosition, Position endPosition);
 private:
+    Node * findNode(std::vector<Node*> list, Position pos);
 
 };
 

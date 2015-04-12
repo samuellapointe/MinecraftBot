@@ -19,10 +19,10 @@ public:
 
     int fScore(){return gScore + hScore;};
 
-    /*bool operator<(const Node& node) const
+    bool operator<(const Node& node) const
     {
         return (gScore + hScore) < (node.gScore + node.hScore);
-    }*/
+    }
 };
 
 #endif // NODE_H
