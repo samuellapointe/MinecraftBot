@@ -1,7 +1,7 @@
 #ifndef DIRECTION
 #define DIRECTION
 
-enum Direction{NONE, NORTH, SOUTH, EAST, WEST, UP, DOWN};
+enum Direction{NORTH, SOUTH, EAST, WEST, UP, DOWN, NONE};
 
 #endif // DIRECTION
 

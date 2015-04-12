@@ -84,7 +84,7 @@ void MyTcpSocket::readyRead()
         {
             //data.append(socket->readAll());
         }
-        if(totalLength < 0 || totalLength > 10000000)
+        if(totalLength < 0)
         {
             data.clear();
         }

@@ -127,7 +127,7 @@ Direction Position::getDirectionFromPosition(Position p)
     }
     else if(p.x == 0 && p.y == -1 && p.z == 0)
     {
-        return SOUTH;
+        return DOWN;
     }
     else
     {

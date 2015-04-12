@@ -108,8 +108,9 @@ void Client::handlePacket(Packet &packet) //The big switch case of doom, to hand
             case 0: //Keep alive
                 {
                     KeepAlive ka = KeepAlive(&socket, ui, packet.data);
-                    ka.sendPacket(compressionSet);
-                    packetsSinceLastKA = 0;
+                    ui->writeToConsole(QString::number(packet.packetSize));
+                    //ka.sendPacket(compressionSet);
+                    //packetsSinceLastKA = 0;
                 }
                 break;
             case 1: //Join game

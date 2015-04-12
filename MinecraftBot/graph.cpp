@@ -24,7 +24,7 @@ std::vector<Direction> Graph::findPath(World * world, Position startPosition, Po
 
     int cpt = 0;
 
-    while(!openList.empty())
+    while(!openList.empty() && openList.size() < 300)
     {
         cpt++;
         Node * currentNode = openList.begin()->second;
