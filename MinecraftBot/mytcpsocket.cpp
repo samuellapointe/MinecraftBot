@@ -65,36 +65,44 @@ void MyTcpSocket::bytesWritten(qint64 bytes)
 
 void MyTcpSocket::readyRead()
 {
+    int nbDecodedBytes, packetLength, bufferLength;
     // read the data from the socket
     QByteArray data = socket->readAll();    //ui->writeToConsole(received);
+
+    //ui->writeToConsole("Downloaded");
 
     if(client->encrypted)//Decrypt
     {
         data = QByteArray::fromStdString(client->crypt->decodeAES(data));
     }
 
-    while(data.length() > 0)
-    {
-        int nbDecodedBytes;
-        uint8_t * buffer = (uint8_t*)data.data();
-        int packetLength = Varint::decode_unsigned_varint(buffer, nbDecodedBytes);
-        int totalLength = packetLength + nbDecodedBytes;
+    bufferStream.append(data);
 
-        if(totalLength > data.length())
+
+    while(bufferStream.size() > 0 && totalLength <= bufferStream.size())
+    {
+        packetLength = Varint::decodeVarint(bufferStream.left(10), nbDecodedBytes);
+        totalLength = packetLength + nbDecodedBytes;
+        bufferLength = bufferStream.size();
+
+        if(totalLength <= bufferStream.size())
         {
-            //data.append(socket->readAll());
-        }
-        if(totalLength < 0)
-        {
-            data.clear();
-        }
-        else
-        {
-            client->decodePacket(data.left(totalLength));
-            data.remove(0, totalLength);
+            if(totalLength <= 0)
+            {
+                bufferLength = bufferStream.size();
+                packetLength = Varint::decodeVarint(bufferStream, nbDecodedBytes);
+                bufferStream.clear();
+                ui->writeToConsole("Buffer cleared");
+            }
+            else
+            {
+                //ui->writeToConsole("Buffer size: " + QString::number(bufferStream.length()) + " Decoded size: " + QString::number(totalLength));
+                client->decodePacket(bufferStream.left(totalLength));
+                bufferStream = bufferStream.right(bufferStream.length() - totalLength);
+            }
+            totalLength = 0;
         }
     }
-    //client->decodePacket(data);
 }
 
 void MyTcpSocket::write(QByteArray data)

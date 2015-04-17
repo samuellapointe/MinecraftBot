@@ -108,9 +108,9 @@ void Client::handlePacket(Packet &packet) //The big switch case of doom, to hand
             case 0: //Keep alive
                 {
                     KeepAlive ka = KeepAlive(&socket, ui, packet.data);
-                    ui->writeToConsole(QString::number(packet.packetSize));
-                    //ka.sendPacket(compressionSet);
-                    //packetsSinceLastKA = 0;
+                    //ui->writeToConsole(QString::number(packet.packetSize));
+                    ka.sendPacket(compressionSet);
+                    packetsSinceLastKA = 0;
                 }
                 break;
             case 1: //Join game
@@ -131,7 +131,6 @@ void Client::handlePacket(Packet &packet) //The big switch case of doom, to hand
                 {
                     PlayerPositionAndLook ppal = PlayerPositionAndLook(&socket, ui, packet.data);
                     player->setPositionAndLook(ppal.x, ppal.y, ppal.z, ppal.yaw, ppal.pitch, ppal.flags);
-                    ui->writeToConsole("WHAT");
                     if(commandManager->waitingForCoords)
                     {
                         commandManager->setHome(ppal.x, ppal.y, ppal.z); //For the !sethome command
