@@ -278,28 +278,54 @@ void World::setBlock(Position pos, int i)
 
 bool World::canGo(Position pos, Direction d)
 {
+    /* The Block::walkableBlocks array works this way:
+     * 0 is walkable,
+     * 1 is solid block,
+     * 2 is liquid,
+     * 3 is avoid because dangereous,
+     * 4 doesn't exist,
+     * 5 is halfblock,
+     * 6 is walkable through but you don't fall
+     */
     switch(d)
     {
     case UP:
-        return (getBlock(pos+DOWN).getType() != 0 && getBlock(pos + UP + UP).getType() == 0);
+    {
+        char typeBlockBelow = Block::walkableBlocks[getBlock(pos+DOWN).getType()];              //The type of the block below
+        char typeBlockAbove = Block::walkableBlocks[getBlock(pos + UP + UP).getType()];         //The type of the block above
+        bool solidBelow = (typeBlockBelow == 1 || typeBlockBelow == 5 || typeBlockBelow == 6);  //The block below has to be solid
+        bool emptyAbove = (typeBlockAbove == 0 || typeBlockAbove == 2);                   //The block above has to be walkable through
+        return (solidBelow && emptyAbove);
+    }
         break;
     case DOWN:
-        return (getBlock(pos+DOWN).getType() == 0);
+    {
+        char typeBlockBelow = Block::walkableBlocks[getBlock(pos+DOWN).getType()];      //The type of the block below
+        bool emptyBelow = (typeBlockBelow == 0 || typeBlockBelow == 2);                 //The block below has to be empty to fall through
+        return emptyBelow;
+    }
         break;
     case NORTH: case SOUTH: case WEST: case EAST:
-        return (!(getBlock(pos+DOWN).getType() == 0 && getBlock(pos+d+DOWN).getType() == 0) &&
-                getBlock(pos + d).getType() == 0 &&
-                getBlock(pos + d + UP).getType() == 0);
+    {
+        char typeBlockBelow = Block::walkableBlocks[getBlock(pos+DOWN).getType()];              //The type of the block below
+        char typeBlockBelowDirection = Block::walkableBlocks[getBlock(pos+DOWN+d).getType()];   //The type of the block below the destination
+        char typeBlockDirection1 = Block::walkableBlocks[getBlock(pos + d).getType()];
+        char typeBlockDirection2 = Block::walkableBlocks[getBlock(pos + d + UP).getType()]; //The two blocks at the destination
+
+        bool solidBelow = (typeBlockBelow == 1 || typeBlockBelow == 5 || typeBlockBelow == 6);
+        bool solidBelowDirection = (typeBlockBelowDirection == 1 || typeBlockBelowDirection == 5 || typeBlockBelowDirection == 6);
+        bool oneBlockBelowSolid = (solidBelow || solidBelowDirection); //The block has to be solid under the player or under the target to walk there
+
+        bool blockEmpty1 = (typeBlockDirection1 == 0 || typeBlockDirection1 == 2);
+        bool blockEmpty2 = (typeBlockDirection2 == 0 || typeBlockDirection2 == 2);
+
+        return(oneBlockBelowSolid && blockEmpty1 && blockEmpty2);
+    }
         break;
     default:
         return false;
     }
 }
-
-/*int World::mod(int k, int n) //Taken from http://stackoverflow.com/questions/12276675/modulus-with-negative-numbers-in-c
-{
-    return ((k %= n) < 0) ? k+n : k;
-}*/
 
 void World::unloadChunk(int x, int z) //To remove a chunk, the server tells us what to unload
 {

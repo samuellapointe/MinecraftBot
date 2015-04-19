@@ -5,6 +5,7 @@
 class Block
 {
 public:
+    static const char* walkableBlocks;
     Block();
     Block(short type);
     ~Block();

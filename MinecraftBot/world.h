@@ -28,7 +28,6 @@ public:
     std::map<std::pair<int, int>, ChunkColumn> chunkColumns;
     QHash<Position, Block> allBlocks;
 private:
-    int mod(int k, int n);
 
 };
 
