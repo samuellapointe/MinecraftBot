@@ -37,6 +37,7 @@ Packet::Packet(MainWindow * i_ui, const QByteArray &d, bool compressed)
     buffer = (uint8_t*)data.data();
     packetID = Varint::decode_unsigned_varint(buffer, nbBytesDecoded);
     data.remove(0, nbBytesDecoded); //What's left in data is the data value of the packet
+
 }
 
 QByteArray Packet::packPacket(const QByteArray &d, bool compressed)
@@ -69,7 +70,9 @@ QByteArray Packet::packPacket(const QByteArray &d, bool compressed)
 
 int Packet::sendPacket(const QByteArray &data)
 {
-    socket->write(data);
+    //socket->write(data);
+    connect(this, SIGNAL(emitSendPacket(const QByteArray&)), socket, SLOT(write(const QByteArray&)), Qt::DirectConnection);
+    emit(emitSendPacket(data));
     return data.length();
 }
 

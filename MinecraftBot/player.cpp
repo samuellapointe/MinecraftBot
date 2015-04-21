@@ -118,7 +118,7 @@ void Player::startAction()
         myAction->moveToThread(thread);
 
         connect(thread, SIGNAL(started()), myAction, SLOT(run()));
-        connect(myAction, SIGNAL(sendPacket(QByteArray)), this, SLOT(sendPacket(QByteArray)));
+        connect(myAction, SIGNAL(sendPacket(QByteArray)), this, SLOT(sendPacket(QByteArray)), Qt::DirectConnection);
         connect(myAction, SIGNAL(actionFinished()), this, SLOT(actionFinished()));
         connect(myAction, SIGNAL(actionFinished()), myAction, SLOT(deleteLater()));
         connect(thread, SIGNAL(actionFinished()), thread, SLOT(deleteLater()));

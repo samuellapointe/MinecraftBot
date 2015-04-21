@@ -105,7 +105,7 @@ void MyTcpSocket::readyRead()
     }
 }
 
-void MyTcpSocket::write(QByteArray data)
+void MyTcpSocket::write(const QByteArray &data)
 {
     QByteArray encryptedData = data;
     if(client->encrypted)

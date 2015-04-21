@@ -41,6 +41,7 @@ void World::addChunk(QByteArray data) //Packet 0x21 (33)
         ChunkColumn actualColumn = ChunkColumn(chunkX, chunkZ, bitmask);
         for (int j=0; j<16; j++) //The chunks inside a column
         {
+            Chunk chunk = Chunk();
             if (actualColumn.bitmask & (1 << j))
             {
 
@@ -54,13 +55,15 @@ void World::addChunk(QByteArray data) //Packet 0x21 (33)
                         {
                             unsigned short type;
                             stream >> type;
-                            Position pos = Position(actualColumn.position_x*16 + x, j*16 + y, actualColumn.position_z * 16 + z);
-                            allBlocks.insert(pos, Block(type));
+                            Position pos = Position(actualColumn.position.x*16 + x, j*16 + y, actualColumn.position.z * 16 + z);
+                            //allBlocks.insert(pos, Block(type));
+                            chunk.blocks[x][y][z] = Block(type);
                         }
                     }
                 }
 
             }
+            actualColumn.chunks[j] = chunk;
         }
         //Lights
         stream.setByteOrder(stream.BigEndian);
@@ -76,14 +79,16 @@ void World::addChunk(QByteArray data) //Packet 0x21 (33)
                         {
                             unsigned char light;
                             stream >> light;
-                            allBlocks[Position(chunkX*16 + x, j*16 + y, chunkZ * 16 + z)].light = (light >> 4); //Even index = high bits
-                            allBlocks[Position(chunkX*16 + x+1, j*16 + y, chunkZ * 16 + z)].light = (light & 15); //Odd index = low bits
+                            //allBlocks[Position(chunkX*16 + x, j*16 + y, chunkZ * 16 + z)].light = (light >> 4); //Even index = high bits
+                            //allBlocks[Position(chunkX*16 + x+1, j*16 + y, chunkZ * 16 + z)].light = (light & 15); //Odd index = low bits
+                            actualColumn.chunks[j].blocks[x][y][z].light = (light >> 4);
+                            actualColumn.chunks[j].blocks[x+1][y][z].light = (light & 15);
                         }
                     }
                 }
             }
         }
-        chunkColumns.insert(std::make_pair(std::make_pair(actualColumn.position_x, actualColumn.position_z), actualColumn));
+        chunkColumns.insert(actualColumn.position, actualColumn);
     }
 }
 
@@ -120,6 +125,8 @@ void World::addChunks(QByteArray data) //Packet 0x26 (38)
         //Blocks
         for (int j=0; j<16; j++) //The chunks inside a column
         {
+            Chunk chunk = Chunk();
+
             if (actualColumn.bitmask & (1 << j))
             {
 
@@ -133,13 +140,15 @@ void World::addChunks(QByteArray data) //Packet 0x26 (38)
                         {
                             unsigned short type;
                             stream >> type;
-                            Position pos = Position(actualColumn.position_x*16 + x, j*16 + y, actualColumn.position_z * 16 + z);
-                            allBlocks.insert(pos, Block(type));
+                            Position pos = Position(actualColumn.position.x*16 + x, j*16 + y, actualColumn.position.z * 16 + z);
+                            //allBlocks.insert(pos, Block(type));
+                            chunk.blocks[x][y][z] = Block(type);
                         }
                     }
                 }
 
             }
+            actualColumn.chunks[j] = chunk;
         }
         //Lights
         stream.setByteOrder(stream.BigEndian);
@@ -155,8 +164,10 @@ void World::addChunks(QByteArray data) //Packet 0x26 (38)
                         {
                             unsigned char light;
                             stream >> light;
-                            allBlocks[Position(chunkX*16 + x, j*16 + y, chunkZ * 16 + z)].light = (light >> 4); //Even index = high bits
-                            allBlocks[Position(chunkX*16 + x+1, j*16 + y, chunkZ * 16 + z)].light = (light & 15); //Odd index = low bits
+                            //allBlocks[Position(chunkX*16 + x, j*16 + y, chunkZ * 16 + z)].light = (light >> 4); //Even index = high bits
+                            //allBlocks[Position(chunkX*16 + x+1, j*16 + y, chunkZ * 16 + z)].light = (light & 15); //Odd index = low bits
+                            actualColumn.chunks[j].blocks[x][y][z].light = (light >> 4);
+                            actualColumn.chunks[j].blocks[x+1][y][z].light = (light & 15);
                         }
                     }
                 }
@@ -177,8 +188,8 @@ void World::addChunks(QByteArray data) //Packet 0x26 (38)
                             {
                                 unsigned char light;
                                 stream >> light;
-                                allBlocks[Position(chunkX*16 + x, j*16 + y, chunkZ * 16 + z)].light = (light >> 4); //Even index = high bits
-                                allBlocks[Position(chunkX*16 + x+1, j*16 + y, chunkZ * 16 + z)].light = (light & 15); //Odd index = low bits
+                                actualColumn.chunks[j].blocks[x][y][z].light = (light >> 4);
+                                actualColumn.chunks[j].blocks[x+1][y][z].light = (light & 15);
                             }
                         }
                     }
@@ -186,7 +197,7 @@ void World::addChunks(QByteArray data) //Packet 0x26 (38)
             }
         }
         stream.skipRawData(256); //Skip biomes
-        chunkColumns.insert(std::make_pair(std::make_pair(actualColumn.position_x, actualColumn.position_z), actualColumn));
+        chunkColumns.insert(actualColumn.position, actualColumn);
     }
 
 }
@@ -257,22 +268,47 @@ void World::updateBlocks(QByteArray data) //Packet 0x22 (34)
 
 Block World::getBlock(Position pos)
 {
-    if(allBlocks.contains(pos.getFloored()))
+    int posX = pos.getXFloored();
+    int posY = pos.getYFloored();
+    int posZ = pos.getZFloored();
+
+    int chunkX = posX >> 4;
+    int chunkY = posY >> 4;
+    int chunkZ = posZ >> 4;
+    Position columnPos = Position(chunkX, -1, chunkZ);
+
+    if(chunkColumns.contains(columnPos) && chunkY >= 0 && chunkY < 16)
     {
-        return allBlocks[pos.getFloored()];
+        ChunkColumn cc = chunkColumns[columnPos];
+        Chunk c = cc.chunks[chunkY];
+        Block b = c.blocks[posX & 15][posY & 15][posZ & 15];
+        return b;
     }
     else
     {
-        Block b = Block();
-        return b;
+        return Block();
     }
 }
 
 void World::setBlock(Position pos, int i)
 {
-    if(allBlocks.contains(pos.getFloored()))
+    int posX = pos.getXFloored();
+    int posY = pos.getYFloored();
+    int posZ = pos.getZFloored();
+
+    int chunkX = posX >> 4;
+    int chunkY = posY >> 4;
+    int chunkZ = posZ >> 4;
+    Position columnPos = Position(chunkX, -1, chunkZ);
+
+    if(chunkColumns.contains(columnPos) && chunkY >= 0 && chunkY < 16)
     {
-        allBlocks[pos.getFloored()].type = i;
+        ChunkColumn cc = chunkColumns[columnPos];
+        Chunk c = cc.chunks[chunkY];
+        int blockX = posX & 15;
+        int blockY = posY & 15;
+        int blockZ = posZ & 15;
+        c.blocks[blockX][blockY][blockZ].type = i;
     }
 }
 
@@ -292,10 +328,12 @@ bool World::canGo(Position pos, Direction d)
     case UP:
     {
         char typeBlockBelow = Block::walkableBlocks[getBlock(pos+DOWN).getType()];              //The type of the block below
+        char typeBlockActual = Block::walkableBlocks[getBlock(pos).getType()];                 //The type of the block where the player is
         char typeBlockAbove = Block::walkableBlocks[getBlock(pos + UP + UP).getType()];         //The type of the block above
         bool solidBelow = (typeBlockBelow == 1 || typeBlockBelow == 5 || typeBlockBelow == 6);  //The block below has to be solid
+        bool liquidActual = (typeBlockBelow == 2);
         bool emptyAbove = (typeBlockAbove == 0 || typeBlockAbove == 2);                   //The block above has to be walkable through
-        return (solidBelow && emptyAbove);
+        return ((solidBelow || liquidActual) && emptyAbove);
     }
         break;
     case DOWN:
@@ -309,17 +347,18 @@ bool World::canGo(Position pos, Direction d)
     {
         char typeBlockBelow = Block::walkableBlocks[getBlock(pos+DOWN).getType()];              //The type of the block below
         char typeBlockBelowDirection = Block::walkableBlocks[getBlock(pos+DOWN+d).getType()];   //The type of the block below the destination
+        char typeBlockActual = Block::walkableBlocks[getBlock(pos).getType()]; //the block where the player is
         char typeBlockDirection1 = Block::walkableBlocks[getBlock(pos + d).getType()];
         char typeBlockDirection2 = Block::walkableBlocks[getBlock(pos + d + UP).getType()]; //The two blocks at the destination
 
         bool solidBelow = (typeBlockBelow == 1 || typeBlockBelow == 5 || typeBlockBelow == 6);
         bool solidBelowDirection = (typeBlockBelowDirection == 1 || typeBlockBelowDirection == 5 || typeBlockBelowDirection == 6);
         bool oneBlockBelowSolid = (solidBelow || solidBelowDirection); //The block has to be solid under the player or under the target to walk there
-
+        bool bothLiquids = (typeBlockActual == 2 && typeBlockDirection1 == 2); //Can move through water
         bool blockEmpty1 = (typeBlockDirection1 == 0 || typeBlockDirection1 == 2);
         bool blockEmpty2 = (typeBlockDirection2 == 0 || typeBlockDirection2 == 2);
 
-        return(oneBlockBelowSolid && blockEmpty1 && blockEmpty2);
+        return((oneBlockBelowSolid || bothLiquids) && blockEmpty1 && blockEmpty2);
     }
         break;
     default:
@@ -329,12 +368,12 @@ bool World::canGo(Position pos, Direction d)
 
 void World::unloadChunk(int x, int z) //To remove a chunk, the server tells us what to unload
 {
-    std::map<std::pair<int, int>, ChunkColumn>::iterator it;
-    it=chunkColumns.find(std::make_pair(x, z));
-    if(it != chunkColumns.end())
+    //it=chunkColumns.find(std::make_pair(x, z));
+    Position columnPos = Position(x, -1, z);
+    if(chunkColumns.contains(columnPos))
     {
-        chunkColumns.erase(it);
-        for(int xx = 0; xx < 16; xx++)
+        chunkColumns.remove(columnPos);
+        /*for(int xx = 0; xx < 16; xx++)
         {
             for(int zz = 0; zz < 16; zz++)
             {
@@ -346,6 +385,6 @@ void World::unloadChunk(int x, int z) //To remove a chunk, the server tells us w
                     }
                 }
             }
-        }
+        }*/
     }
 }

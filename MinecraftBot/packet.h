@@ -13,8 +13,11 @@
 #include "mainwindow.h"
 #include <QtZlib/zlib.h>
 
-class Packet
+class Packet : public QObject
 {
+    Q_OBJECT
+private:
+    Packet(const Packet &p);
 public:
     Packet();
     Packet(MainWindow * ui, const QByteArray &data, bool compressed);
@@ -33,6 +36,8 @@ public:
     QByteArray data;
     MyTcpSocket * socket;
     MainWindow * ui;
+signals:
+    void emitSendPacket(const QByteArray &data);
 
 };
 

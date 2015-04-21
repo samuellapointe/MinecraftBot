@@ -25,10 +25,8 @@ public:
     Block getBlock(Position pos);
     void setBlock(Position pos, int i);
     bool canGo(Position pos, Direction d);
-    std::map<std::pair<int, int>, ChunkColumn> chunkColumns;
-    QHash<Position, Block> allBlocks;
+    QHash<Position, ChunkColumn> chunkColumns;
 private:
-
 };
 
 #endif // WORLD_H

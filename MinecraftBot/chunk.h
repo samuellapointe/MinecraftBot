@@ -9,9 +9,6 @@ public:
     Chunk();
     ~Chunk();
     Block blocks[16][16][16];
-private:
-
-
 };
 
 #endif // CHUNK_H

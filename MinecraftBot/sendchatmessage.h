@@ -7,6 +7,8 @@
 
 class SendChatMessage : public Packet
 {
+private:
+    SendChatMessage(const SendChatMessage &scm);
 public:
     SendChatMessage(MyTcpSocket * socket, MainWindow * ui, QString message);
     ~SendChatMessage();

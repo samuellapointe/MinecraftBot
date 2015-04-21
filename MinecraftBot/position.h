@@ -35,6 +35,10 @@ public:
     static Direction getDirectionFromPosition(Position p);
     static Position normalize(Position p); //ex: (-2, 0, 3.5) becomes (-1, 0, 1)
 
+    int getXFloored();
+    int getYFloored();
+    int getZFloored();
+
 };
 
 inline uint qHash(const Position & pos) //Taken from http://stackoverflow.com/questions/29461703/how-can-i-store-a-3d-map-allowing-o1-random-access-c

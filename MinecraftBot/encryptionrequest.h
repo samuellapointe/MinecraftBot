@@ -5,6 +5,8 @@
 
 class EncryptionRequest : public Packet
 {
+private:
+    EncryptionRequest(const EncryptionRequest &er);
 public:
     EncryptionRequest(QByteArray data, MainWindow * ui);
     ~EncryptionRequest();

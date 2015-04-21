@@ -12,8 +12,7 @@ ChunkColumn::~ChunkColumn()
 
 ChunkColumn::ChunkColumn(int x, int z, unsigned short bit)
 {
-    position_x = x;
-    position_z = z;
+    position = Position(x, -1, z);
     bitmask = bit;
 }
 

@@ -64,8 +64,7 @@ void Client::startConnect()
 
 void Client::decodePacket(QByteArray data)
 {
-    Packet p = Packet(ui, data, compressionSet);
-    handlePacket(p);
+    handlePacket(Packet(ui, data, compressionSet));
 }
 
 void Client::handlePacket(Packet &packet) //The big switch case of doom, to handle every packet
@@ -85,7 +84,7 @@ void Client::handlePacket(Packet &packet) //The big switch case of doom, to hand
                 ui->writeToConsole(packet.data);
                 break;
             case 1: //Encryption request
-                enableEncryption(packet);
+                enableEncryption(&packet);
                 break;
             case 2: //Login Success
                 ui->writeToConsole("Login successful");
@@ -209,9 +208,9 @@ void Client::handlePacket(Packet &packet) //The big switch case of doom, to hand
     }
 
 }
-void Client::enableEncryption(Packet packet)
+void Client::enableEncryption(Packet * packet)
 {
-    EncryptionRequest er = EncryptionRequest(packet.data, ui); //Decypher the data into an encryption request packet
+    EncryptionRequest er(packet->data, ui); //Decypher the data into an encryption request packet
     crypt->loadKey(er.publicKey); //Load the RSA public key into the cryptography manager
     QByteArray hash = crypt->getHash(er.publicKey, er.serverID); //Get the hash necessary for the encryption response
     ui->writeToConsole(hash);
@@ -237,7 +236,7 @@ void Client::sendMessage(QString message)
     //Cut the message in 100 bytes parts
     while(message.length() > 0)
     {
-        SendChatMessage scm = SendChatMessage(&socket, ui, message.left(100));
+        SendChatMessage scm(&socket, ui, message.left(100));
         scm.sendPacket(compressionSet);
         message.remove(0, 100);
     }

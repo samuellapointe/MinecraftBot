@@ -157,3 +157,18 @@ Position Position::normalize(Position p)
     }
     return Position(after[0], after[1], after[2]);
 }
+
+int Position::getXFloored()
+{
+    return (int)floor(x);
+}
+
+int Position::getYFloored()
+{
+    return (int)floor(y);
+}
+
+int Position::getZFloored()
+{
+    return (int)floor(z);
+}

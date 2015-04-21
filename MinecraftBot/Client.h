@@ -45,7 +45,7 @@ private:
     MyTcpSocket socket;    int packetsSinceLastKA; //Packets received since the last keep alive, because it seems the server doesn't send enough to keep me alive!
     //Functions
     void authentificate();
-    void enableEncryption(Packet packet);
+    void enableEncryption(Packet * packet);
 
 
 };

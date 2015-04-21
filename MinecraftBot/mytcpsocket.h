@@ -22,7 +22,6 @@ public:
     void doConnect(const QString &ip, const int port);
     MainWindow * ui; //For writing in the console
     Client * client; //To send the client the packets
-    void write(QByteArray data);
 
     //vars
     bool connectedBool;
@@ -36,6 +35,7 @@ public slots:
     void disconnected();
     void bytesWritten(qint64 bytes);
     void readyRead();
+    void write(const QByteArray &data);
 
 private:
     QTcpSocket *socket;
