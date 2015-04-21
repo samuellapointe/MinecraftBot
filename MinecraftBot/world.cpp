@@ -41,7 +41,6 @@ void World::addChunk(QByteArray data) //Packet 0x21 (33)
         ChunkColumn actualColumn = ChunkColumn(chunkX, chunkZ, bitmask);
         for (int j=0; j<16; j++) //The chunks inside a column
         {
-            Chunk chunk = Chunk();
             if (actualColumn.bitmask & (1 << j))
             {
 
@@ -55,15 +54,13 @@ void World::addChunk(QByteArray data) //Packet 0x21 (33)
                         {
                             unsigned short type;
                             stream >> type;
-                            Position pos = Position(actualColumn.position.x*16 + x, j*16 + y, actualColumn.position.z * 16 + z);
-                            //allBlocks.insert(pos, Block(type));
-                            chunk.blocks[x][y][z] = Block(type);
+                            Position pos = Position(actualColumn.position_x*16 + x, j*16 + y, actualColumn.position_z * 16 + z);
+                            allBlocks.insert(pos, Block(type));
                         }
                     }
                 }
 
             }
-            actualColumn.chunks[j] = chunk;
         }
         //Lights
         stream.setByteOrder(stream.BigEndian);
@@ -79,16 +76,14 @@ void World::addChunk(QByteArray data) //Packet 0x21 (33)
                         {
                             unsigned char light;
                             stream >> light;
-                            //allBlocks[Position(chunkX*16 + x, j*16 + y, chunkZ * 16 + z)].light = (light >> 4); //Even index = high bits
-                            //allBlocks[Position(chunkX*16 + x+1, j*16 + y, chunkZ * 16 + z)].light = (light & 15); //Odd index = low bits
-                            actualColumn.chunks[j].blocks[x][y][z].light = (light >> 4);
-                            actualColumn.chunks[j].blocks[x+1][y][z].light = (light & 15);
+                            allBlocks[Position(chunkX*16 + x, j*16 + y, chunkZ * 16 + z)].light = (light >> 4); //Even index = high bits
+                            allBlocks[Position(chunkX*16 + x+1, j*16 + y, chunkZ * 16 + z)].light = (light & 15); //Odd index = low bits
                         }
                     }
                 }
             }
         }
-        chunkColumns.insert(actualColumn.position, actualColumn);
+        chunkColumns.insert(std::make_pair(std::make_pair(actualColumn.position_x, actualColumn.position_z), actualColumn));
     }
 }
 
@@ -125,8 +120,6 @@ void World::addChunks(QByteArray data) //Packet 0x26 (38)
         //Blocks
         for (int j=0; j<16; j++) //The chunks inside a column
         {
-            Chunk chunk = Chunk();
-
             if (actualColumn.bitmask & (1 << j))
             {
 
@@ -140,15 +133,13 @@ void World::addChunks(QByteArray data) //Packet 0x26 (38)
                         {
                             unsigned short type;
                             stream >> type;
-                            Position pos = Position(actualColumn.position.x*16 + x, j*16 + y, actualColumn.position.z * 16 + z);
-                            //allBlocks.insert(pos, Block(type));
-                            chunk.blocks[x][y][z] = Block(type);
+                            Position pos = Position(actualColumn.position_x*16 + x, j*16 + y, actualColumn.position_z * 16 + z);
+                            allBlocks.insert(pos, Block(type));
                         }
                     }
                 }
 
             }
-            actualColumn.chunks[j] = chunk;
         }
         //Lights
         stream.setByteOrder(stream.BigEndian);
@@ -164,10 +155,8 @@ void World::addChunks(QByteArray data) //Packet 0x26 (38)
                         {
                             unsigned char light;
                             stream >> light;
-                            //allBlocks[Position(chunkX*16 + x, j*16 + y, chunkZ * 16 + z)].light = (light >> 4); //Even index = high bits
-                            //allBlocks[Position(chunkX*16 + x+1, j*16 + y, chunkZ * 16 + z)].light = (light & 15); //Odd index = low bits
-                            actualColumn.chunks[j].blocks[x][y][z].light = (light >> 4);
-                            actualColumn.chunks[j].blocks[x+1][y][z].light = (light & 15);
+                            allBlocks[Position(chunkX*16 + x, j*16 + y, chunkZ * 16 + z)].light = (light >> 4); //Even index = high bits
+                            allBlocks[Position(chunkX*16 + x+1, j*16 + y, chunkZ * 16 + z)].light = (light & 15); //Odd index = low bits
                         }
                     }
                 }
@@ -188,8 +177,8 @@ void World::addChunks(QByteArray data) //Packet 0x26 (38)
                             {
                                 unsigned char light;
                                 stream >> light;
-                                actualColumn.chunks[j].blocks[x][y][z].light = (light >> 4);
-                                actualColumn.chunks[j].blocks[x+1][y][z].light = (light & 15);
+                                allBlocks[Position(chunkX*16 + x, j*16 + y, chunkZ * 16 + z)].light = (light >> 4); //Even index = high bits
+                                allBlocks[Position(chunkX*16 + x+1, j*16 + y, chunkZ * 16 + z)].light = (light & 15); //Odd index = low bits
                             }
                         }
                     }
@@ -197,7 +186,7 @@ void World::addChunks(QByteArray data) //Packet 0x26 (38)
             }
         }
         stream.skipRawData(256); //Skip biomes
-        chunkColumns.insert(actualColumn.position, actualColumn);
+        chunkColumns.insert(std::make_pair(std::make_pair(actualColumn.position_x, actualColumn.position_z), actualColumn));
     }
 
 }
@@ -268,47 +257,22 @@ void World::updateBlocks(QByteArray data) //Packet 0x22 (34)
 
 Block World::getBlock(Position pos)
 {
-    int posX = pos.getXFloored();
-    int posY = pos.getYFloored();
-    int posZ = pos.getZFloored();
-
-    int chunkX = posX >> 4;
-    int chunkY = posY >> 4;
-    int chunkZ = posZ >> 4;
-    Position columnPos = Position(chunkX, -1, chunkZ);
-
-    if(chunkColumns.contains(columnPos) && chunkY >= 0 && chunkY < 16)
+    if(allBlocks.contains(pos.getFloored()))
     {
-        ChunkColumn cc = chunkColumns[columnPos];
-        Chunk c = cc.chunks[chunkY];
-        Block b = c.blocks[posX & 15][posY & 15][posZ & 15];
-        return b;
+        return allBlocks[pos.getFloored()];
     }
     else
     {
-        return Block();
+        Block b = Block();
+        return b;
     }
 }
 
 void World::setBlock(Position pos, int i)
 {
-    int posX = pos.getXFloored();
-    int posY = pos.getYFloored();
-    int posZ = pos.getZFloored();
-
-    int chunkX = posX >> 4;
-    int chunkY = posY >> 4;
-    int chunkZ = posZ >> 4;
-    Position columnPos = Position(chunkX, -1, chunkZ);
-
-    if(chunkColumns.contains(columnPos) && chunkY >= 0 && chunkY < 16)
+    if(allBlocks.contains(pos.getFloored()))
     {
-        ChunkColumn cc = chunkColumns[columnPos];
-        Chunk c = cc.chunks[chunkY];
-        int blockX = posX & 15;
-        int blockY = posY & 15;
-        int blockZ = posZ & 15;
-        c.blocks[blockX][blockY][blockZ].type = i;
+        allBlocks[pos.getFloored()].type = i;
     }
 }
 
@@ -368,12 +332,12 @@ bool World::canGo(Position pos, Direction d)
 
 void World::unloadChunk(int x, int z) //To remove a chunk, the server tells us what to unload
 {
-    //it=chunkColumns.find(std::make_pair(x, z));
-    Position columnPos = Position(x, -1, z);
-    if(chunkColumns.contains(columnPos))
+    std::map<std::pair<int, int>, ChunkColumn>::iterator it;
+    it=chunkColumns.find(std::make_pair(x, z));
+    if(it != chunkColumns.end())
     {
-        chunkColumns.remove(columnPos);
-        /*for(int xx = 0; xx < 16; xx++)
+        chunkColumns.erase(it);
+        for(int xx = 0; xx < 16; xx++)
         {
             for(int zz = 0; zz < 16; zz++)
             {
@@ -385,6 +349,6 @@ void World::unloadChunk(int x, int z) //To remove a chunk, the server tells us w
                     }
                 }
             }
-        }*/
+        }
     }
 }

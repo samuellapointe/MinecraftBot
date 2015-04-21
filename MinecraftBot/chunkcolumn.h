@@ -10,9 +10,10 @@ public:
     ChunkColumn();
     ChunkColumn(int position_x, int position_z, unsigned short bitmask);
     ~ChunkColumn();
-    Position position;
+    int position_x;
+    int position_z;
     unsigned short bitmask;
-    Chunk chunks[16];
+    //Chunk chunks[16];
 private:
 
 };
