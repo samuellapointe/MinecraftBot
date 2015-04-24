@@ -1,19 +1,18 @@
 #include "node.h"
 
-Node::Node()
+Node::Node(Position _nodeCoords, Position endCoords, Node * _parent)
 {
-    gScore = 0;
-    hScore = 0;
-}
-
-Node::Node(Position _coords)
-{
-    coords = _coords;
-    gScore = 0;
-    hScore = 0;
-    closed = false;
-    visited = false;
-    parent = 0;
+    coords = _nodeCoords;
+    hScore = coords.distance(endCoords);
+    parent = _parent;
+    if(parent != 0)
+    {
+        gScore = _parent->gScore + 1;
+    }
+    else
+    {
+        gScore = 0;
+    }
     for(int i = 0; i < 6; i++)
     {
         neighbors[i] = 0;

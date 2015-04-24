@@ -6,6 +6,7 @@
 #include <list>
 #include <vector>
 #include <algorithm>
+#include <queue>
 
 class CompareNode
 {
